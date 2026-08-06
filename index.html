@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#FF8A80">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="打卡岛">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="icons/favicon.svg">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <title>打卡宠物岛</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- 顶部状态栏 -->
+    <header class="topbar">
+      <div class="topbar-child">
+        <span class="topbar-avatar" id="topAvatar">🦊</span>
+        <span class="topbar-name" id="topName">小宝</span>
+      </div>
+      <div class="topbar-wallet" id="topWallet">
+        <span class="coin-ico"></span><span id="topPoints">0</span>
+      </div>
+    </header>
+
+    <!-- 主内容区：5 个 Tab 页面 -->
+    <main id="views">
+      <!-- 首页（决斗主舞台） -->
+      <section class="view" id="view-home" data-tab="home"></section>
+      <!-- 打卡 -->
+      <section class="view" id="view-checkin" data-tab="checkin" hidden></section>
+      <!-- 宠物 -->
+      <section class="view" id="view-pets" data-tab="pets" hidden></section>
+      <!-- 商店 -->
+      <section class="view" id="view-shop" data-tab="shop" hidden></section>
+      <!-- 设置 -->
+      <section class="view" id="view-settings" data-tab="settings" hidden></section>
+    </main>
+
+    <!-- 底部导航 -->
+    <nav class="tabbar">
+      <button class="tab" data-tab="home" aria-label="首页">
+        <span class="tab-icon">🏠</span>
+        <span class="tab-label">首页</span>
+      </button>
+      <button class="tab" data-tab="checkin" aria-label="打卡">
+        <span class="tab-icon">📋</span>
+        <span class="tab-label">打卡</span>
+      </button>
+      <button class="tab tab-center" data-tab="pets" aria-label="宠物">
+        <span class="tab-center-bg">
+          <svg viewBox="0 0 100 100" style="width:32px;height:32px;display:block;">
+            <!-- 身体 -->
+            <circle cx="50" cy="55" r="30" fill="#E8A86F" stroke="#4A3B2A" stroke-width="2.5"/>
+            <!-- 耳朵 -->
+            <ellipse cx="30" cy="30" rx="12" ry="20" fill="#E8A86F" stroke="#4A3B2A" stroke-width="2.5" transform="rotate(-20 30 30)"/>
+            <ellipse cx="70" cy="30" rx="12" ry="20" fill="#E8A86F" stroke="#4A3B2A" stroke-width="2.5" transform="rotate(20 70 30)"/>
+            <!-- 眼睛 -->
+            <circle cx="40" cy="50" r="8" fill="white" stroke="#4A3B2A" stroke-width="2"/>
+            <circle cx="60" cy="50" r="8" fill="white" stroke="#4A3B2A" stroke-width="2"/>
+            <circle cx="40" cy="52" r="5" fill="#2a2a2a"/>
+            <circle cx="60" cy="52" r="5" fill="#2a2a2a"/>
+            <circle cx="38" cy="50" r="2" fill="white"/>
+            <circle cx="58" cy="50" r="2" fill="white"/>
+            <!-- 腮红 -->
+            <circle cx="32" cy="60" r="4" fill="#FFAB91" opacity="0.6"/>
+            <circle cx="68" cy="60" r="4" fill="#FFAB91" opacity="0.6"/>
+            <!-- 鼻子 -->
+            <circle cx="50" cy="62" r="3" fill="#2a2a2a"/>
+            <!-- 嘴巴 -->
+            <path d="M44 68 q6 6 12 0" fill="none" stroke="#4A3B2A" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </span>
+      </button>
+      <button class="tab" data-tab="shop" aria-label="商店">
+        <span class="tab-icon">🎁</span>
+        <span class="tab-label">商店</span>
+      </button>
+      <button class="tab" data-tab="settings" aria-label="设置">
+        <span class="tab-icon">⚙️</span>
+        <span class="tab-label">设置</span>
+      </button>
+    </nav>
+
+    <!-- 全局浮层：战斗动画 / 提示 -->
+    <div class="overlay" id="overlay" hidden>
+      <div class="overlay-card" id="overlayCard"></div>
+    </div>
+
+    <!-- Toast 提示 -->
+    <div class="toast" id="toast" hidden></div>
+  </div>
+
+  <script>
+    // 版本升级时强制清缓存刷新一次
+    (function(){
+      var VER = 'v31';
+      if (localStorage.getItem('__appver') !== VER) {
+        localStorage.setItem('__appver', VER);
+        var p = [];
+        if ('caches' in window) p.push(caches.keys().then(ks => ks.forEach(k => caches.delete(k))));
+        if (navigator.serviceWorker) p.push(navigator.serviceWorker.getRegistrations().then(rs => Promise.all(rs.map(r => r.unregister()))));
+        Promise.all(p).then(function(){
+          // SW 注销后强制重新加载页面（走纯网络，拿最新文件）
+          location.reload();
+        });
+        // 防止后续 app.js 用旧缓存执行
+        return;
+      }
+    })();
+    // 如果上面 return 了，这段不执行
+  </script>
+  <script type="module" src="js/app.js?v=31"></script>
+</body>
+</html>

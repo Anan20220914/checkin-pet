@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>诊断 - 打卡宠物岛</title>
+  <style>
+    body { font-family: -apple-system, "PingFang SC", sans-serif; padding: 20px; line-height: 1.6; }
+    h1 { font-size: 18px; }
+    .log { background: #f5f5f5; padding: 10px; border-radius: 8px; margin: 10px 0; font-family: monospace; font-size: 13px; white-space: pre-wrap; word-break: break-all; }
+    .error { color: #c00; }
+    .success { color: #080; }
+    button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>🔍 打卡宠物岛 - JavaScript 诊断</h1>
+  <p>点击下方按钮运行诊断，找出页面空白的原因。</p>
+
+  <button onclick="runDiagnostics()">运行诊断</button>
+  <button onclick="clearAllCache()">清除所有缓存</button>
+  <button onclick="window.location.href='https://anan20220914.github.io/checkin-pet/'">返回首页</button>
+
+  <div id="output"></div>
+
+<script>
+function log(msg, isError) {
+  const div = document.createElement('div');
+  div.className = 'log' + (isError ? ' error' : '');
+  div.textContent = msg;
+  document.getElementById('output').appendChild(div);
+}
+
+async function runDiagnostics() {
+  document.getElementById('output').innerHTML = '';
+
+  // 1. Check browser info
+  log('=== 浏览器信息 ===');
+  log('UserAgent: ' + navigator.userAgent);
+  log('ES Module 支持: ' + ('noModule' in HTMLScriptElement.prototype ? '是' : '否'));
+
+  // 2. Try loading key modules
+  const modules = [
+    { name: 'store.js', url: 'https://anan20220914.github.io/checkin-pet/js/store.js' },
+    { name: 'db2.js', url: 'https://anan20220914.github.io/checkin-pet/js/db2.js' },
+    { name: 'pet-svgs.js', url: 'https://anan20220914.github.io/checkin-pet/js/pet-svgs.js' },
+    { name: 'pet-render.js', url: 'https://anan20220914.github.io/checkin-pet/js/pet-render.js' },
+    { name: 'app.js', url: 'https://anan20220914.github.io/checkin-pet/js/app.js?v=30' },
+    { name: 'home.js', url: 'https://anan20220914.github.io/checkin-pet/js/views/home.js' },
+    { name: 'checkin.js', url: 'https://anan20220914.github.io/checkin-pet/js/views/checkin.js' },
+  ];
+
+  log('\n=== 模块加载测试 ===');
+  for (const mod of modules) {
+    try {
+      const response = await fetch(mod.url, { cache: 'no-cache' });
+      const text = await response.text();
+
+      // Check for syntax errors by looking for common patterns
+      const hasExport = text.includes('export');
+      const hasImport = text.includes('import');
+      const size = text.length;
+
+      log(`✅ ${mod.name}: ${size} bytes | exports: ${hasExport} | imports: ${hasImport}`);
+
+      // Check for specific syntax issues
+      if (mod.name === 'pet-svgs.js') {
+        if (text.includes('export function getPetSvg')) {
+          log('   ✓ getPetSvg exported');
+        } else {
+          log('   ✗ getPetSvg NOT exported', true);
+        }
+        if (text.includes('export function petDefaultColor')) {
+          log('   ✓ petDefaultColor exported');
+        } else {
+          log('   ✗ petDefaultColor NOT exported', true);
+        }
+        if (text.includes('export function growthStageLabel')) {
+          log('   ✓ growthStageLabel exported');
+        } else {
+          log('   ✗ growthStageLabel NOT exported', true);
+        }
+      }
+
+      if (mod.name === 'pet-render.js') {
+        if (text.includes("import { getPetSvg, growthStageLabel, petDefaultColor } from './pet-svgs.js'")) {
+          log('   ✓ Imports correct');
+        } else {
+          log('   ✗ Imports may be incorrect', true);
+        }
+      }
+
+    } catch (e) {
+      log(`❌ ${mod.name}: ${e.message}`, true);
+    }
+  }
+
+  // 3. Check localStorage
+  log('\n=== LocalStorage 检查 ===');
+  try {
+    const keys = Object.keys(localStorage);
+    log(`localStorage keys: ${keys.length}`);
+    keys.forEach(k => {
+      const val = localStorage.getItem(k);
+      log(`  ${k}: ${val ? val.substring(0, 100) : 'null'}...`);
+    });
+  } catch (e) {
+    log('localStorage error: ' + e.message, true);
+  }
+
+  // 4. Check caches
+  log('\n=== Cache 检查 ===');
+  if ('caches' in window) {
+    try {
+      const cacheNames = await caches.keys();
+      log(`Cache names: ${cacheNames.join(', ') || 'none'}`);
+    } catch (e) {
+      log('Cache error: ' + e.message, true);
+    }
+  } else {
+    log('caches API not available');
+  }
+
+  // 5. Check service worker
+  log('\n=== Service Worker 检查 ===');
+  if ('serviceWorker' in navigator) {
+    try {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      log(`Service Workers: ${registrations.length}`);
+      registrations.forEach(r => {
+        log(`  Scope: ${r.scope}`);
+      });
+    } catch (e) {
+      log('SW error: ' + e.message, true);
+    }
+  } else {
+    log('Service Worker not supported');
+  }
+
+  log('\n=== 诊断完成 ===');
+}
+
+async function clearAllCache() {
+  try {
+    localStorage.clear();
+    if ('caches' in window) {
+      const names = await caches.keys();
+      await Promise.all(names.map(n => caches.delete(n)));
+    }
+    if ('serviceWorker' in navigator) {
+      const regs = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map(r => r.unregister()));
+    }
+    alert('所有缓存已清除！请刷新页面。');
+  } catch (e) {
+    alert('清除缓存时出错: ' + e.message);
+  }
+}
+
+// Auto-run on load
+window.addEventListener('load', runDiagnostics);
+</script>
+</body>
+</html>

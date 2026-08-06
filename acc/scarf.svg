@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 50" width="140" height="50">
+  <!-- 围巾主体（横跨颈部） -->
+  <path d="M10 14 Q70 4 130 14 L130 30 Q70 38 10 30 Z" fill="#ef4444" stroke="#991b1b" stroke-width="2.5"/>
+  <!-- 流苏下摆（右侧垂下） -->
+  <path d="M118 28 L128 46 L122 46 L116 30 Z" fill="#ef4444" stroke="#991b1b" stroke-width="2"/>
+  <path d="M110 28 L118 44 L113 44 L108 30 Z" fill="#dc2626" stroke="#991b1b" stroke-width="2"/>
+  <!-- 横纹 -->
+  <path d="M16 18 Q70 10 124 18" fill="none" stroke="#fca5a5" stroke-width="2.5"/>
+  <!-- 装饰条纹 -->
+  <line x1="40" y1="22" x2="48" y2="26" stroke="#fde68a" stroke-width="3"/>
+  <line x1="70" y1="22" x2="78" y2="26" stroke="#fde68a" stroke-width="3"/>
+  <line x1="100" y1="22" x2="108" y2="26" stroke="#fde68a" stroke-width="3"/>
+</svg>

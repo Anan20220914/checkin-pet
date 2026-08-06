@@ -1,0 +1,17 @@
+{
+  "name": "打卡宠物岛",
+  "short_name": "打卡岛",
+  "description": "孩子日常打卡 + 养宠物打怪兽的游戏化激励工作台",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fdf6e3",
+  "theme_color": "#f59e0b",
+  "lang": "zh-CN",
+  "categories": ["education", "kids", "productivity"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

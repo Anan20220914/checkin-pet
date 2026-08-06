@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 50" width="140" height="50">
+  <!-- 左镜片 -->
+  <rect x="10" y="8" width="44" height="30" rx="14" fill="#1f2937" stroke="#000" stroke-width="3"/>
+  <!-- 右镜片 -->
+  <rect x="86" y="8" width="44" height="30" rx="14" fill="#1f2937" stroke="#000" stroke-width="3"/>
+  <!-- 鼻梁 -->
+  <rect x="54" y="16" width="32" height="6" rx="3" fill="#1f2937" stroke="#000" stroke-width="2"/>
+  <!-- 镜腿 -->
+  <rect x="4" y="16" width="8" height="4" fill="#1f2937"/>
+  <rect x="128" y="16" width="8" height="4" fill="#1f2937"/>
+  <!-- 反光 -->
+  <ellipse cx="24" cy="16" rx="8" ry="4" fill="#9ca3af" opacity="0.6"/>
+  <ellipse cx="100" cy="16" rx="8" ry="4" fill="#9ca3af" opacity="0.6"/>
+</svg>

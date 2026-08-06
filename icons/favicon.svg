@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fbbf24"/>
+      <stop offset="1" stop-color="#f97316"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="110" fill="url(#bg)"/>
+  <!-- 小狗脸 -->
+  <circle cx="256" cy="270" r="150" fill="#fff8e7" stroke="#7c5a2e" stroke-width="10"/>
+  <!-- 耳朵 -->
+  <ellipse cx="150" cy="180" rx="48" ry="70" fill="#d4a373" stroke="#7c5a2e" stroke-width="8" transform="rotate(-25 150 180)"/>
+  <ellipse cx="362" cy="180" rx="48" ry="70" fill="#d4a373" stroke="#7c5a2e" stroke-width="8" transform="rotate(25 362 180)"/>
+  <!-- 眼睛 -->
+  <circle cx="206" cy="250" r="26" fill="#3a2a1a"/>
+  <circle cx="306" cy="250" r="26" fill="#3a2a1a"/>
+  <circle cx="214" cy="242" r="8" fill="#fff"/>
+  <circle cx="314" cy="242" r="8" fill="#fff"/>
+  <!-- 鼻子 -->
+  <ellipse cx="256" cy="310" rx="24" ry="18" fill="#3a2a1a"/>
+  <!-- 嘴 -->
+  <path d="M256 328 Q256 360 220 360 M256 328 Q256 360 292 360" fill="none" stroke="#3a2a1a" stroke-width="8" stroke-linecap="round"/>
+  <!-- 对勾 -->
+  <path d="M360 380 l30 40 l60 -80" fill="none" stroke="#22a06b" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

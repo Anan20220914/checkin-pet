@@ -360,10 +360,10 @@ export function migrate(data) {
   // 数据修复：添加决斗记录、怪物图鉴、刷新怪物（2026-08-06）
   if (!data.meta) data.meta = {};
   if (!data.meta.dataFix_20260806) {
+    // 只添加前天（周一）和昨天（周二）的决斗记录，今天（周三）还没有打卡
     const duelDates = [
       { date: '2026-08-04', turns: 6 },
       { date: '2026-08-05', turns: 5 },
-      { date: '2026-08-06', turns: 7 },
     ];
 
     if (!data.battles) data.battles = [];
@@ -385,7 +385,7 @@ export function migrate(data) {
       }
     }
 
-    // 更新 stats
+    // 更新 stats（只计算前天和昨天的记录）
     if (!data.stats) data.stats = {};
     data.stats.totalBattles = (data.stats.totalBattles || 0) + addedCount;
     data.stats.totalWins = (data.stats.totalWins || 0) + addedCount;

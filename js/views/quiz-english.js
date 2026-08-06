@@ -20,9 +20,9 @@ export function openEnglishQuiz(taskId) {
   const allWordKeys = ALL_ENGLISH_WORDS.map(w => w.word);
   const wordKeys = allWordKeys.slice(9);
   const phraseKeys = ENGLISH_PHRASES.map(p => p.word);
-  const wordPlan = buildDailyList('english', wordKeys, 9, 2);
+  const wordPlan = buildDailyList('english', wordKeys, 10, 2);
   const phrasePlan = buildDailyList('english', phraseKeys, 1, 1);
-  const wordList = wordPlan.all.length ? wordPlan.all : wordKeys.slice(0, 9);
+  const wordList = wordPlan.all.length ? wordPlan.all : wordKeys.slice(0, 10);
   const phraseList = phrasePlan.all.length ? phrasePlan.all : [phraseKeys[0]];
   // 映射回对象
   const wordItems = wordList.map(w => ALL_ENGLISH_WORDS.find(x => x.word === w)).filter(Boolean);

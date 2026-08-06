@@ -201,6 +201,244 @@ function vehicleArt(key) {
   }
 }
 
+/** ABC基础类 */
+function abcArt(key) {
+  const stroke = '#3a2a1a';
+  switch (key) {
+    // 食物类
+    case 'banana':
+      return svg(`<path d="M20 80 Q40 20 100 30 Q90 70 70 90 Q50 110 30 90 Q10 70 20 80 Z" fill="#facc15" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M95 30 L100 25" stroke="#92400e" stroke-width="4" stroke-linecap="round"/>`);
+    case 'apple':
+      return svg(`<circle cx="45" cy="60" r="22" fill="#ef4444" stroke="${stroke}" stroke-width="3"/>
+        <circle cx="75" cy="60" r="22" fill="#ef4444" stroke="${stroke}" stroke-width="3"/>
+        <path d="M60 38 Q60 20 70 18" stroke="#22c55e" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <path d="M60 38 Q50 20 40 25" fill="#22c55e" stroke="${stroke}" stroke-width="2"/>`);
+    case 'peas':
+      return svg(`${[30,60,90].map(x => `<circle cx="${x}" cy="50" r="14" fill="#22c55e" stroke="${stroke}" stroke-width="3"/>`).join('')}
+        <circle cx="45" cy="70" r="14" fill="#22c55e" stroke="${stroke}" stroke-width="3"/>
+        <circle cx="75" cy="70" r="14" fill="#22c55e" stroke="${stroke}" stroke-width="3"/>`);
+    case 'beans':
+      return svg(`${[[35,50],[60,45],[85,50]].map(([x,y]) => `<ellipse cx="${x}" cy="${y}" rx="14" ry="20" fill="#a16207" stroke="${stroke}" stroke-width="3"/>`).join('')}`);
+    case 'cake':
+      return svg(`<rect x="20" y="50" width="80" height="40" rx="6" fill="#fde68a" stroke="${stroke}" stroke-width="3"/>
+        <rect x="20" y="38" width="80" height="16" rx="4" fill="#f472b6" stroke="${stroke}" stroke-width="3"/>
+        <path d="M30 38 L30 26 M50 38 L50 22 M70 38 L70 26 M90 38 L90 22" stroke="#f59e0b" stroke-width="3" stroke-linecap="round"/>`);
+    case 'mango':
+      return svg(`<path d="M40 30 Q70 20 90 50 Q100 80 70 95 Q40 100 30 80 Q20 50 40 30 Z" fill="#fbbf24" stroke="${stroke}" stroke-width="3"/>`);
+    case 'egg':
+      return svg(`<ellipse cx="60" cy="60" rx="30" ry="38" fill="#fef3c7" stroke="${stroke}" stroke-width="3"/>
+        <path d="M45 45 Q55 40 65 45" stroke="${stroke}" stroke-width="2" fill="none"/>`);
+    case 'milk':
+      return svg(`<rect x="40" y="30" width="40" height="70" rx="4" fill="#e0f2fe" stroke="${stroke}" stroke-width="3"/>
+        <path d="M40 30 L35 20 H85 L80 30" fill="none" stroke="${stroke}" stroke-width="3"/>
+        <text x="60" y="70" text-anchor="middle" font-size="14" fill="#1f2937" font-family="sans-serif">MILK</text>`);
+    case 'fish':
+      return svg(`<ellipse cx="55" cy="60" rx="30" ry="18" fill="#60a5fa" stroke="${stroke}" stroke-width="3"/>
+        <polygon points="85,60 105,40 105,80" fill="#3b82f6" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>
+        <circle cx="40" cy="55" r="3" fill="#1f2937"/>`);
+
+    // 动物类
+    case 'dog':
+      return svg(`<ellipse cx="60" cy="60" rx="32" ry="26" fill="#d97706" stroke="${stroke}" stroke-width="3"/>
+        <ellipse cx="38" cy="38" rx="10" ry="14" fill="#d97706" stroke="${stroke}" stroke-width="3"/>
+        <ellipse cx="82" cy="38" rx="10" ry="14" fill="#d97706" stroke="${stroke}" stroke-width="3"/>
+        <circle cx="48" cy="56" r="4" fill="#1f2937"/><circle cx="72" cy="56" r="4" fill="#1f2937"/>
+        <ellipse cx="60" cy="74" rx="8" ry="5" fill="#1f2937"/>
+        <path d="M52 80 Q60 92 68 80" stroke="#1f2937" stroke-width="3" fill="none" stroke-linecap="round"/>`);
+    case 'duck':
+      return svg(`<ellipse cx="60" cy="60" rx="28" ry="24" fill="#fde047" stroke="${stroke}" stroke-width="3"/>
+        <ellipse cx="88" cy="58" rx="12" ry="10" fill="#fde047" stroke="${stroke}" stroke-width="3"/>
+        <ellipse cx="96" cy="60" rx="8" ry="5" fill="#f97316" stroke="${stroke}" stroke-width="2"/>
+        <circle cx="84" cy="54" r="3" fill="#1f2937"/>
+        <ellipse cx="60" cy="90" rx="14" ry="8" fill="#fde047" stroke="${stroke}" stroke-width="3"/>`);
+    case 'lion':
+      return svg(`<circle cx="60" cy="60" r="25" fill="#facc15" stroke="${stroke}" stroke-width="3"/>
+        ${[0,45,90,135,180,225,270,315].map(a => {
+          const rad = a * Math.PI / 180;
+          return `<line x1="${60 + Math.cos(rad) * 25}" y1="${60 + Math.sin(rad) * 25}" x2="${60 + Math.cos(rad) * 35}" y2="${60 + Math.sin(rad) * 35}" stroke="${stroke}" stroke-width="4" stroke-linecap="round"/>`;
+        }).join('')}
+        <circle cx="52" cy="55" r="3" fill="#1f2937"/><circle cx="68" cy="55" r="3" fill="#1f2937"/>
+        <ellipse cx="60" cy="68" rx="6" ry="4" fill="#1f2937"/>`);
+    case 'mouse':
+      return svg(`<ellipse cx="60" cy="65" rx="22" ry="18" fill="#9ca3af" stroke="${stroke}" stroke-width="3"/>
+        <ellipse cx="40" cy="48" rx="14" ry="14" fill="#9ca3af" stroke="${stroke}" stroke-width="3"/>
+        <ellipse cx="80" cy="48" rx="14" ry="14" fill="#9ca3af" stroke="${stroke}" stroke-width="3"/>
+        <circle cx="52" cy="62" r="3" fill="#1f2937"/><circle cx="68" cy="62" r="3" fill="#1f2937"/>
+        <path d="M85 75 Q100 80 105 90" stroke="#9ca3af" stroke-width="3" fill="none" stroke-linecap="round"/>`);
+    case 'whale':
+      return svg(`<ellipse cx="60" cy="60" rx="40" ry="22" fill="#60a5fa" stroke="${stroke}" stroke-width="3"/>
+        <path d="M20 60 Q10 50 15 40 Q20 30 30 35" fill="#60a5fa" stroke="${stroke}" stroke-width="3"/>
+        <path d="M95 42 Q100 35 105 30" stroke="#60a5fa" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="80" cy="55" r="3" fill="#1f2937"/>`);
+    case 'bee':
+      return svg(`<ellipse cx="60" cy="60" rx="20" ry="16" fill="#facc15" stroke="${stroke}" stroke-width="3"/>
+        <line x1="45" y1="55" x2="75" y2="55" stroke="${stroke}" stroke-width="2"/>
+        <line x1="43" y1="63" x2="77" y2="63" stroke="${stroke}" stroke-width="2"/>
+        <ellipse cx="78" cy="48" rx="8" ry="12" fill="#e5e7eb" stroke="${stroke}" stroke-width="2"/>
+        <ellipse cx="42" cy="48" rx="8" ry="12" fill="#e5e7eb" stroke="${stroke}" stroke-width="2"/>
+        <circle cx="55" cy="56" r="2" fill="#1f2937"/>`);
+    case 'bird':
+      return svg(`<ellipse cx="60" cy="55" rx="20" ry="16" fill="#60a5fa" stroke="${stroke}" stroke-width="3"/>
+        <polygon points="80,52 95,48 82,60" fill="#f97316" stroke="${stroke}" stroke-width="2" stroke-linejoin="round"/>
+        <circle cx="55" cy="52" r="3" fill="#1f2937"/>
+        <path d="M50 40 Q45 30 40 35" stroke="#60a5fa" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path d="M70 40 Q75 30 80 35" stroke="#60a5fa" stroke-width="3" fill="none" stroke-linecap="round"/>`);
+    case 'monkey':
+      return svg(`<circle cx="60" cy="60" r="22" fill="#a16207" stroke="${stroke}" stroke-width="3"/>
+        <ellipse cx="38" cy="50" rx="10" ry="14" fill="#a16207" stroke="${stroke}" stroke-width="3"/>
+        <ellipse cx="82" cy="50" rx="10" ry="14" fill="#a16207" stroke="${stroke}" stroke-width="3"/>
+        <ellipse cx="48" cy="62" rx="4" ry="6" fill="#fde68a" stroke="${stroke}" stroke-width="2"/>
+        <ellipse cx="72" cy="62" rx="4" ry="6" fill="#fde68a" stroke="${stroke}" stroke-width="2"/>
+        <ellipse cx="60" cy="74" rx="10" ry="6" fill="#fde68a" stroke="${stroke}" stroke-width="2"/>`);
+    case 'cat':
+      return svg(`<ellipse cx="60" cy="62" rx="24" ry="20" fill="#fb923c" stroke="${stroke}" stroke-width="3"/>
+        <polygon points="36,50 32,30 46,42" fill="#fb923c" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>
+        <polygon points="84,50 88,30 74,42" fill="#fb923c" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>
+        <circle cx="52" cy="58" r="3" fill="#1f2937"/><circle cx="68" cy="58" r="3" fill="#1f2937"/>
+        <path d="M55 70 Q60 75 65 70" stroke="#1f2937" stroke-width="2" fill="none" stroke-linecap="round"/>`);
+    case 'goat':
+      return svg(`<ellipse cx="60" cy="62" rx="22" ry="18" fill="#9ca3af" stroke="${stroke}" stroke-width="3"/>
+        <path d="M40 48 Q35 30 38 28" stroke="${stroke}" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path d="M80 48 Q85 30 82 28" stroke="${stroke}" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <circle cx="52" cy="58" r="3" fill="#1f2937"/><circle cx="68" cy="58" r="3" fill="#1f2937"/>
+        <ellipse cx="60" cy="72" rx="6" ry="4" fill="#1f2937"/>`);
+    case 'cow':
+      return svg(`<ellipse cx="60" cy="58" rx="26" ry="22" fill="#e5e7eb" stroke="${stroke}" stroke-width="3"/>
+        <ellipse cx="36" cy="70" rx="8" ry="6" fill="#e5e7eb" stroke="${stroke}" stroke-width="3"/>
+        <ellipse cx="84" cy="70" rx="8" ry="6" fill="#e5e7eb" stroke="${stroke}" stroke-width="3"/>
+        <circle cx="50" cy="54" r="3" fill="#1f2937"/><circle cx="70" cy="54" r="3" fill="#1f2937"/>
+        <ellipse cx="60" cy="66" rx="6" ry="4" fill="#f472b6"/>`);
+    case 'donkey':
+      return svg(`<ellipse cx="60" cy="58" rx="24" ry="20" fill="#a8a29e" stroke="${stroke}" stroke-width="3"/>
+        <ellipse cx="40" cy="42" rx="8" ry="16" fill="#a8a29e" stroke="${stroke}" stroke-width="3"/>
+        <ellipse cx="80" cy="42" rx="8" ry="16" fill="#a8a29e" stroke="${stroke}" stroke-width="3"/>
+        <circle cx="52" cy="55" r="3" fill="#1f2937"/><circle cx="68" cy="55" r="3" fill="#1f2937"/>
+        <path d="M60 72 Q65 82 70 90" stroke="#a8a29e" stroke-width="4" fill="none" stroke-linecap="round"/>`);
+    case 'tiger':
+      return svg(`<circle cx="60" cy="60" r="24" fill="#facc15" stroke="${stroke}" stroke-width="3"/>
+        <path d="M36 48 Q42 30 48 48" fill="none" stroke="${stroke}" stroke-width="3"/>
+        <path d="M72 48 Q78 30 84 48" fill="none" stroke="${stroke}" stroke-width="3"/>
+        <line x1="45" y1="55" x2="55" y2="55" stroke="#1f2937" stroke-width="2"/>
+        <line x1="65" y1="55" x2="75" y2="55" stroke="#1f2937" stroke-width="2"/>
+        <ellipse cx="60" cy="68" rx="8" ry="5" fill="#1f2937"/>`);
+
+    // 衣物类
+    case 'boots':
+      return svg(`<path d="M30 30 H50 V70 Q50 85 40 85 H20 Q10 85 10 70 V30 Z" fill="#92400e" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M55 30 H75 V70 Q75 85 65 85 H45 Q35 85 35 70 V30 Z" fill="#92400e" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>`);
+    case 'hat':
+      return svg(`<ellipse cx="60" cy="50" rx="40" ry="12" fill="#ef4444" stroke="${stroke}" stroke-width="3"/>
+        <path d="M40 50 Q40 20 60 20 Q80 20 80 50" fill="#ef4444" stroke="${stroke}" stroke-width="3"/>`);
+    case 'coat':
+      return svg(`<path d="M40 30 Q30 50 30 80 H90 Q90 50 80 30 Z" fill="#3b82f6" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>
+        <line x1="60" y1="30" x2="60" y2="80" stroke="${stroke}" stroke-width="2"/>`);
+    case 'socks':
+      return svg(`<path d="M35 20 H50 V55 Q50 75 35 75 Q20 75 20 55 V30 Q20 20 35 20 Z" fill="#f472b6" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M65 20 H80 V55 Q80 75 65 75 Q50 75 50 55 V30 Q50 20 65 20 Z" fill="#f472b6" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>`);
+    case 'shoes':
+      return svg(`<path d="M20 50 Q20 40 35 40 H55 Q70 40 70 50 V70 Q70 80 55 80 H35 Q20 80 20 70 Z" fill="#3b82f6" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M40 50 Q40 40 55 40 H75 Q90 40 90 50 V70 Q90 80 75 80 H55 Q40 80 40 70 Z" fill="#3b82f6" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>`);
+
+    // 物品类
+    case 'house':
+      return svg(`<polygon points="60,20 100,50 100,90 20,90 20,50" fill="#fde68a" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>
+        <rect x="45" y="60" width="30" height="30" fill="#92400e" stroke="${stroke}" stroke-width="2"/>
+        <rect x="30" y="35" width="20" height="20" fill="#bae6fd" stroke="${stroke}" stroke-width="2"/>
+        <rect x="70" y="35" width="20" height="20" fill="#bae6fd" stroke="${stroke}" stroke-width="2"/>`);
+    case 'bed':
+      return svg(`<rect x="20" y="50" width="80" height="30" rx="4" fill="#60a5fa" stroke="${stroke}" stroke-width="3"/>
+        <rect x="20" y="35" width="80" height="20" rx="4" fill="#fde68a" stroke="${stroke}" stroke-width="3"/>
+        <rect x="15" y="40" width="10" height="45" fill="#92400e" stroke="${stroke}" stroke-width="2"/>`);
+    case 'ball':
+      return svg(`<circle cx="60" cy="60" r="35" fill="#ef4444" stroke="${stroke}" stroke-width="3"/>
+        <path d="M25 60 Q60 45 95 60" stroke="#fff" stroke-width="3" fill="none"/>
+        <path d="M30 75 Q60 60 90 75" stroke="#fff" stroke-width="3" fill="none"/>`);
+    case 'bubble':
+      return svg(`<circle cx="50" cy="50" r="24" fill="none" stroke="#38bdf8" stroke-width="3"/>
+        <circle cx="44" cy="44" r="6" fill="#bae6fd"/>`);
+    case 'key':
+      return svg(`<circle cx="50" cy="50" r="18" fill="#facc15" stroke="${stroke}" stroke-width="3"/>
+        <rect x="65" y="46" width="25" height="8" fill="#facc15" stroke="${stroke}" stroke-width="3"/>
+        <rect x="80" y="54" width="8" height="8" fill="none" stroke="${stroke}" stroke-width="2"/>`);
+    case 'kite':
+      return svg(`<polygon points="60,20 90,60 60,80 30,60" fill="#ef4444" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>
+        <line x1="60" y1="80" x2="60" y2="110" stroke="${stroke}" stroke-width="2"/>
+        <line x1="60" y1="90" x2="45" y2="100" stroke="${stroke}" stroke-width="2"/>
+        <line x1="60" y1="100" x2="75" y2="110" stroke="${stroke}" stroke-width="2"/>`);
+    case 'top':
+      return svg(`<ellipse cx="60" cy="55" rx="30" ry="18" fill="#ef4444" stroke="${stroke}" stroke-width="3"/>
+        <line x1="60" y1="37" x2="60" y2="20" stroke="${stroke}" stroke-width="3" stroke-linecap="round"/>
+        <line x1="50" y1="20" x2="70" y2="20" stroke="${stroke}" stroke-width="3" stroke-linecap="round"/>`);
+    case 'teddy':
+      return svg(`<circle cx="60" cy="60" r="20" fill="#a16207" stroke="${stroke}" stroke-width="3"/>
+        <circle cx="42" cy="42" rx="10" ry="10" fill="#a16207" stroke="${stroke}" stroke-width="3"/>
+        <circle cx="78" cy="42" rx="10" ry="10" fill="#a16207" stroke="${stroke}" stroke-width="3"/>
+        <ellipse cx="60" cy="80" rx="16" ry="14" fill="#a16207" stroke="${stroke}" stroke-width="3"/>
+        <circle cx="55" cy="56" r="2" fill="#1f2937"/><circle cx="65" cy="56" r="2" fill="#1f2937"/>
+        <ellipse cx="60" cy="64" rx="4" ry="2" fill="#1f2937"/>`);
+    case 'rocket':
+      return svg(`<polygon points="60,15 85,70 75,70 75,95 45,95 45,70 35,70" fill="#ef4444" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>
+        <polygon points="60,25 75,60 45,60" fill="#fde68a" stroke="${stroke}" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="45,70 35,85 45,85" fill="#f59e0b" stroke="${stroke}" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="75,70 85,85 75,85" fill="#f59e0b" stroke="${stroke}" stroke-width="2" stroke-linejoin="round"/>`);
+    case 'digger':
+      return svg(`<rect x="25" y="50" width="70" height="25" rx="4" fill="#fbbf24" stroke="${stroke}" stroke-width="3"/>
+        <rect x="55" y="30" width="35" height="25" rx="4" fill="#fde68a" stroke="${stroke}" stroke-width="3"/>
+        <rect x="35" y="55" width="20" height="15" rx="2" fill="#bae6fd" stroke="${stroke}" stroke-width="2"/>
+        <circle cx="35" cy="80" r="10" fill="#1f2937"/><circle cx="85" cy="80" r="10" fill="#1f2937"/>`);
+    case 'swing':
+      return svg(`<line x1="40" y1="20" x2="40" y2="80" stroke="${stroke}" stroke-width="4" stroke-linecap="round"/>
+        <line x1="80" y1="20" x2="80" y2="80" stroke="${stroke}" stroke-width="4" stroke-linecap="round"/>
+        <line x1="40" y1="20" x2="80" y2="20" stroke="${stroke}" stroke-width="4" stroke-linecap="round"/>
+        <rect x="45" y="55" width="30" height="8" rx="3" fill="#a78bfa" stroke="${stroke}" stroke-width="2"/>`);
+    case 'drum':
+      return svg(`<ellipse cx="60" cy="45" rx="35" ry="15" fill="#ef4444" stroke="${stroke}" stroke-width="3"/>
+        <rect x="25" y="45" width="70" height="40" fill="#ef4444" stroke="${stroke}" stroke-width="3"/>
+        <ellipse cx="60" cy="85" rx="35" ry="15" fill="#b91c1c" stroke="${stroke}" stroke-width="3"/>`);
+    case 'tree':
+      return svg(`<rect x="52" y="70" width="16" height="30" fill="#92400e" stroke="${stroke}" stroke-width="3"/>
+        <circle cx="60" cy="45" r="28" fill="#22c55e" stroke="${stroke}" stroke-width="3"/>`);
+    case 'flower':
+      return svg(`<circle cx="60" cy="50" r="10" fill="#facc15" stroke="${stroke}" stroke-width="2"/>
+        <circle cx="45" cy="40" r="10" fill="#ef4444" stroke="${stroke}" stroke-width="2"/>
+        <circle cx="75" cy="40" r="10" fill="#ef4444" stroke="${stroke}" stroke-width="2"/>
+        <circle cx="45" cy="60" r="10" fill="#ef4444" stroke="${stroke}" stroke-width="2"/>
+        <circle cx="75" cy="60" r="10" fill="#ef4444" stroke="${stroke}" stroke-width="2"/>
+        <line x1="60" y1="60" x2="60" y2="90" stroke="#22c55e" stroke-width="3" stroke-linecap="round"/>`);
+
+    // 身体部位
+    case 'hair':
+      return svg(`<path d="M30 70 Q30 30 60 30 Q90 30 90 70" fill="none" stroke="#1f2937" stroke-width="4" stroke-linecap="round"/>
+        <path d="M35 60 Q35 40 60 40 Q85 40 85 60" fill="none" stroke="#1f2937" stroke-width="3" stroke-linecap="round"/>`);
+    case 'nose':
+      return svg(`<ellipse cx="60" cy="60" rx="20" ry="16" fill="#fca5a5" stroke="${stroke}" stroke-width="3"/>
+        <ellipse cx="55" cy="58" rx="4" ry="6" fill="#f472b6"/>
+        <ellipse cx="65" cy="58" rx="4" ry="6" fill="#f472b6"/>`);
+    case 'tummy':
+      return svg(`<ellipse cx="60" cy="60" rx="28" ry="24" fill="#fde68a" stroke="${stroke}" stroke-width="3"/>
+        <path d="M48 52 Q60 48 72 52" stroke="${stroke}" stroke-width="2" fill="none" stroke-linecap="round"/>`);
+    case 'feet':
+      return svg(`<ellipse cx="45" cy="55" rx="18" ry="22" fill="#fca5a5" stroke="${stroke}" stroke-width="3"/>
+        <ellipse cx="75" cy="55" rx="18" ry="22" fill="#fca5a5" stroke="${stroke}" stroke-width="3"/>
+        <line x1="38" y1="48" x2="38" y2="54" stroke="${stroke}" stroke-width="2"/>
+        <line x1="45" y1="46" x2="45" y2="52" stroke="${stroke}" stroke-width="2"/>
+        <line x1="52" y1="48" x2="52" y2="54" stroke="${stroke}" stroke-width="2"/>
+        <line x1="68" y1="48" x2="68" y2="54" stroke="${stroke}" stroke-width="2"/>
+        <line x1="75" y1="46" x2="75" y2="52" stroke="${stroke}" stroke-width="2"/>
+        <line x1="82" y1="48" x2="82" y2="54" stroke="${stroke}" stroke-width="2"/>`);
+
+    // 其他
+    case 'worm':
+      return svg(`<path d="M30 60 Q40 40 50 60 Q60 80 70 60 Q80 40 90 50" stroke="#f472b6" stroke-width="5" fill="none" stroke-linecap="round"/>`);
+    case 'bath':
+      return svg(`<path d="M20 50 H100 Q100 90 60 90 Q20 90 20 50 Z" fill="#bae6fd" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>
+        <rect x="35" y="30" width="20" height="25" rx="4" fill="#e5e7eb" stroke="${stroke}" stroke-width="2"/>`);
+    default:
+      return null;
+  }
+}
+
 /** 颜色映射 */
 const COLORS = {
   red: '#ef4444', blue: '#3b82f6', green: '#22c55e', yellow: '#facc15',
@@ -235,5 +473,8 @@ export function getArt(svgKey) {
   if (['car','bus','bike','train','plane','ship','boat','subway','taxi','truck','ambulance','fire'].includes(svgKey)) {
     return vehicleArt(svgKey);
   }
+  // ABC基础
+  const abcResult = abcArt(svgKey);
+  if (abcResult) return abcResult;
   return svg(`<text x="60" y="68" text-anchor="middle" font-size="40">?</text>`);
 }

@@ -105,8 +105,8 @@ export function buildDailyList(subject, allKeys, perDay = 10, reviewMin = 3) {
     if (dayDiff(lastSeen, today) <= 7) learnedRecent.push(key); else learnedOld.push(key);
   }
   if (isPoem) {
-    let pick = dueAgain[0] || dueReview[0] || notLearned[0] || allKeys[0] || '';
-    return { review: [], fresh: [pick], all: [pick], dueCount: dueAgain.length, learnedCount: allKeys.length - notLearned.length };
+    let pick = yesterdayWeak[0] || dueReview[0] || notLearned[0] || allKeys[0] || '';
+    return { review: [], fresh: [pick], all: [pick], dueCount: yesterdayWeak.length, learnedCount: allKeys.length - notLearned.length };
   }
   const all = [];
   // 1. 昨天不会或一般的字 → 必出现

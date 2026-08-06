@@ -356,6 +356,64 @@ export function migrate(data) {
   }
   // 修复 pokedex
   if (data.pokedex && data.pets) { for (const p of data.pets) { if (!data.pokedex.pets.includes(p.species)) data.pokedex.pets.push(p.species); } }
+
+  // 数据修复：添加决斗记录、怪物图鉴、刷新怪物（2026-08-06）
+  if (!data.meta) data.meta = {};
+  if (!data.meta.dataFix_20260806) {
+    const duelDates = [
+      { date: '2026-08-04', turns: 6 },
+      { date: '2026-08-05', turns: 5 },
+      { date: '2026-08-06', turns: 7 },
+    ];
+
+    if (!data.battles) data.battles = [];
+
+    let addedCount = 0;
+    for (const d of duelDates) {
+      if (!data.battles.some(b => b.date === d.date)) {
+        data.battles.push({
+          id: 'b_fix_' + d.date.replace(/-/g, ''),
+          date: d.date,
+          petId: (data.pets && data.pets[0]) ? data.pets[0].id : 'p_starter',
+          monsterId: 'm_' + d.date + '_456',
+          result: 'win',
+          turns: d.turns,
+          dropEgg: false,
+          earnedPoints: 5
+        });
+        addedCount++;
+      }
+    }
+
+    // 更新 stats
+    if (!data.stats) data.stats = {};
+    data.stats.totalBattles = (data.stats.totalBattles || 0) + addedCount;
+    data.stats.totalWins = (data.stats.totalWins || 0) + addedCount;
+    data.stats.streak = (data.stats.streak || 0) + addedCount;
+    if ((data.stats.bestStreak || 0) < data.stats.streak) {
+      data.stats.bestStreak = data.stats.streak;
+    }
+
+    // 添加小野狼到怪物图鉴
+    if (!data.pokedex) data.pokedex = { pets: ['小狗'], monsters: [] };
+    if (!data.pokedex.monsters) data.pokedex.monsters = [];
+    if (!data.pokedex.monsters.includes(1)) data.pokedex.monsters.push(1);
+
+    // 刷新今天的怪物
+    const todayStr = todayKey();
+    if (!data.monsters) data.monsters = { today: null, history: [] };
+    data.monsters.today = {
+      id: 'm_' + todayStr + '_789',
+      date: todayStr,
+      tier: 1,
+      name: '小野狼',
+      emoji: '🐺',
+      hp: 45, atk: 7, def: 2, maxHp: 45
+    };
+
+    data.meta.dataFix_20260806 = true;
+  }
+
   return data;
 }
 

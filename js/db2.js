@@ -399,16 +399,17 @@ export function migrate(data) {
     if (!data.pokedex.monsters) data.pokedex.monsters = [];
     if (!data.pokedex.monsters.includes(1)) data.pokedex.monsters.push(1);
 
-    // 刷新今天的怪物
+    // 刷新今天的怪物（根据连胜生成新怪物，不是小野狼）
     const todayStr = todayKey();
     if (!data.monsters) data.monsters = { today: null, history: [] };
+    // 连胜3 → tier 2（大棕熊）
     data.monsters.today = {
       id: 'm_' + todayStr + '_789',
       date: todayStr,
-      tier: 1,
-      name: '小野狼',
-      emoji: '🐺',
-      hp: 45, atk: 7, def: 2, maxHp: 45
+      tier: 2,
+      name: '大棕熊',
+      emoji: '🐻',
+      hp: 65, atk: 10, def: 4, maxHp: 65
     };
 
     data.meta.dataFix_20260806 = true;

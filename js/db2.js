@@ -360,7 +360,7 @@ export function migrate(data) {
   // 数据修复：添加决斗记录、怪物图鉴、刷新怪物（2026-08-06）
   if (!data.meta) data.meta = {};
   if (!data.meta.dataFix_20260806) {
-    // 只添加前天（周一）和昨天（周二）的决斗记录，今天（周三）还没有打卡
+    // 前天（周二）和昨天（周三）的决斗记录，今天（周四）还没有打卡
     const duelDates = [
       { date: '2026-08-04', turns: 6 },
       { date: '2026-08-05', turns: 5 },
@@ -385,7 +385,7 @@ export function migrate(data) {
       }
     }
 
-    // 更新 stats（只计算前天和昨天的记录）
+    // 更新 stats（前天和昨天共2场胜利，连胜=2）
     if (!data.stats) data.stats = {};
     data.stats.totalBattles = (data.stats.totalBattles || 0) + addedCount;
     data.stats.totalWins = (data.stats.totalWins || 0) + addedCount;
@@ -399,10 +399,9 @@ export function migrate(data) {
     if (!data.pokedex.monsters) data.pokedex.monsters = [];
     if (!data.pokedex.monsters.includes(1)) data.pokedex.monsters.push(1);
 
-    // 刷新今天的怪物（根据连胜生成新怪物，不是小野狼）
+    // 刷新今天的怪物（连胜2 → tier 2 大棕熊）
     const todayStr = todayKey();
     if (!data.monsters) data.monsters = { today: null, history: [] };
-    // 连胜3 → tier 2（大棕熊）
     data.monsters.today = {
       id: 'm_' + todayStr + '_789',
       date: todayStr,

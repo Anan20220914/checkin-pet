@@ -116,6 +116,12 @@ export function buildDailyList(subject, allKeys, perDay = 10, reviewMin = 3) {
   for (const k of goodReview) { if (all.length < perDay && !all.includes(k)) all.push(k); }
   // 3. 到期的复习字
   for (const k of dueReview) { if (all.length < perDay && !all.includes(k)) all.push(k); }
+  // 3.5 新字保底：每天至少包含 min(3, 未学字数) 个新字，确保新添加的字库能轮到
+  const freshGuarantee = Math.min(3, notLearned.length);
+  const shuffledFresh = shuffleArr(notLearned);
+  for (let i = 0; i < freshGuarantee; i++) {
+    if (all.length < perDay && !all.includes(shuffledFresh[i])) all.push(shuffledFresh[i]);
+  }
   // 4. 近期学过的（20%）
   const rT = Math.max(0, Math.round(perDay * 0.2)), rP = shuffleArr(learnedRecent);
   for (let i = 0; i < rT && i < rP.length; i++) { if (all.length < perDay && !all.includes(rP[i])) all.push(rP[i]); }

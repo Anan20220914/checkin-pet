@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数据修复 - 打卡宠物岛</title>
+<style>
+  body { font-family: system-ui, -apple-system, sans-serif; padding: 16px; line-height: 1.6; background: #f5f5f5; }
+  .container { max-width: 600px; margin: 0 auto; }
+  h1 { font-size: 20px; color: #1e293b; text-align: center; }
+  .card { background: #fff; border-radius: 12px; padding: 16px; margin: 12px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+  .card h2 { font-size: 16px; color: #3b82f6; margin-bottom: 12px; }
+  .row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+  .row:last-child { border-bottom: none; }
+  .label { color: #64748b; }
+  .value { font-weight: 600; color: #1e293b; }
+  button { display: block; width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 12px; }
+  .btn-primary { background: #3b82f6; color: #fff; }
+  .btn-primary:active { opacity: 0.8; }
+  .btn-secondary { background: #f1f5f9; color: #1e293b; }
+  .btn-danger { background: #ef4444; color: #fff; }
+  .alert { padding: 12px; border-radius: 8px; margin: 12px 0; font-size: 14px; }
+  .alert.green { background: #dcfce7; color: #166534; }
+  .alert.red { background: #fee2e2; color: #991b1b; }
+  .alert.yellow { background: #fef3c7; color: #92400e; }
+  pre { background: #1e293b; color: #e2e8f0; padding: 12px; border-radius: 8px; font-size: 12px; overflow-x: auto; max-height: 200px; overflow-y: auto; }
+  .section { margin: 16px 0; }
+  .section-title { font-size: 14px; font-weight: 600; color: #64748b; margin-bottom: 8px; }
+  .item-list { display: flex; flex-wrap: wrap; gap: 8px; }
+  .item-tag { background: #f1f5f9; padding: 4px 12px; border-radius: 20px; font-size: 13px; color: #1e293b; }
+  .item-tag.weapon { background: #fee2e2; color: #991b1b; }
+  .item-tag.food { background: #dcfce7; color: #166534; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🔧 打卡宠物岛 - 数据修复</h1>
+
+  <div class="card">
+    <h2>📋 修复内容预览</h2>
+    <div id="preview"></div>
+  </div>
+
+  <div class="card">
+    <h2>⚠️ 操作前确认</h2>
+    <div class="alert yellow">
+      <strong>当前数据状态：</strong>
+      <div id="currentStatus">检测中...</div>
+    </div>
+    <div class="alert red">
+      <strong>警告：</strong>修复操作会覆盖当前的 localStorage 数据。请确保已经备份重要数据！
+    </div>
+  </div>
+
+  <div class="card">
+    <button class="btn-primary" onclick="applyFix()">✅ 应用数据修复</button>
+    <button class="btn-secondary" onclick="exportCurrent()">📤 导出当前数据（备份）</button>
+    <button class="btn-danger" onclick="resetToDefault()">🔄 重置为默认数据</button>
+  </div>
+
+  <div class="card" id="resultCard" style="display:none;">
+    <h2>✅ 修复结果</h2>
+    <div id="resultContent"></div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'chckn-pet-island-v1';
+
+// 获取当前数据
+function getData() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch (e) {
+    return null;
+  }
+}
+
+// 保存数据
+function saveData(data) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+// 显示当前状态
+function showCurrentStatus() {
+  const data = getData();
+  const div = document.getElementById('currentStatus');
+  if (!data) {
+    div.innerHTML = '❌ 无数据（应用从未初始化）';
+    return;
+  }
+
+  const wallet = data.wallet || { points: 0, totalEarned: 0 };
+  const inventory = data.inventory || { weapons: [], foods: [], eggs: [] };
+  const checkins = data.checkins || {};
+  const battles = data.battles || [];
+  const totalCheckinDays = Object.keys(checkins).length;
+
+  div.innerHTML = `
+    <div class="row"><span class="label">钱包余额</span><span class="value">${wallet.points} 金币</span></div>
+    <div class="row"><span class="label">武器数量</span><span class="value">${inventory.weapons?.length || 0} 个</span></div>
+    <div class="row"><span class="label">食物数量</span><span class="value">${inventory.foods?.length || 0} 种</span></div>
+    <div class="row"><span class="label">打卡天数</span><span class="value">${totalCheckinDays} 天</span></div>
+    <div class="row"><span class="label">决斗次数</span><span class="value">${battles.length} 次</span></div>
+  `;
+}
+
+// 显示修复预览
+function showPreview() {
+  const div = document.getElementById('preview');
+  div.innerHTML = `
+    <div class="row">
+      <span class="label">钱包余额</span>
+      <span class="value">20 → 3 金币</span>
+    </div>
+    <div class="row">
+      <span class="label">武器</span>
+      <span class="value">空 → 弩箭、木剑</span>
+    </div>
+    <div class="row">
+      <span class="label">食物</span>
+      <span class="value">面包、苹果 → 苹果、牛奶</span>
+    </div>
+    <div class="row">
+      <span class="label">打卡记录</span>
+      <span class="value">添加 8/4 ~ 8/7 共4天</span>
+    </div>
+    <div class="row">
+      <span class="label">决斗记录</span>
+      <span class="value">添加周一至周四共4次（全部胜利）</span>
+    </div>
+    <div class="row">
+      <span class="label">累计打卡天数</span>
+      <span class="value">0 → 4 天</span>
+    </div>
+    <div class="row">
+      <span class="label">连续胜利</span>
+      <span class="value">0 → 4 场</span>
+    </div>
+  `;
+}
+
+// 应用修复
+function applyFix() {
+  const today = '2026-08-08'; // 今天（周五）
+  const yesterday = '2026-08-07'; // 昨天（周四）
+
+  // 获取当前数据，如果没有则创建初始数据
+  let data = getData();
+  if (!data) {
+    alert('❌ localStorage 中没有数据！请先打开一次应用，让应用初始化。');
+    return;
+  }
+
+  // 1. 修复钱包余额
+  data.wallet = data.wallet || {};
+  data.wallet.points = 3;
+  data.wallet.totalEarned = data.wallet.totalEarned || 20;
+
+  // 2. 修复库存
+  data.inventory = data.inventory || {};
+  data.inventory.weapons = [
+    { id: 'w_bow', name: '弩箭', emoji: '🏹', atk: 12 },
+    { id: 'w_wood', name: '木剑', emoji: '🗡️', atk: 4 }
+  ];
+  data.inventory.foods = [
+    { id: 'f_apple', name: '苹果', emoji: '🍎', qty: 5 },
+    { id: 'f_milk', name: '牛奶', emoji: '🥛', qty: 1 }
+  ];
+  data.inventory.eggs = data.inventory.eggs || [];
+
+  // 3. 修复打卡记录（周一至周四）
+  data.checkins = data.checkins || {};
+  const dates = ['2026-08-04', '2026-08-05', '2026-08-06', '2026-08-07'];
+  dates.forEach(date => {
+    if (!data.checkins[date]) {
+      data.checkins[date] = {};
+    }
+  });
+
+  // 4. 修复决斗记录（周一至周四全部胜利）
+  data.battles = data.battles || [];
+  // 清空现有记录，重新添加
+  data.battles = [];
+  const duelDates = [
+    { date: '2026-08-04', turns: 6, tier: 1, name: '小野狼', emoji: '🐺' },
+    { date: '2026-08-05', turns: 5, tier: 2, name: '大棕熊', emoji: '🐻' },
+    { date: '2026-08-06', turns: 7, tier: 3, name: '剑齿虎', emoji: '🐅' },
+    { date: '2026-08-07', turns: 6, tier: 3, name: '剑齿虎', emoji: '🐅' }
+  ];
+  duelDates.forEach(d => {
+    data.battles.push({
+      id: 'b_fix_' + d.date.replace(/-/g, ''),
+      date: d.date,
+      petId: data.pets?.[0]?.id || 'p_starter',
+      monsterId: 'm_' + d.date + '_' + Math.floor(Math.random() * 900 + 100),
+      result: 'win',
+      turns: d.turns,
+      dropEgg: false,
+      earnedPoints: 5
+    });
+  });
+
+  // 5. 修复统计数据
+  data.stats = data.stats || {};
+  data.stats.totalCheckinDays = 4;
+  data.stats.streak = 4;
+  data.stats.bestStreak = Math.max(data.stats.bestStreak || 0, 4);
+  data.stats.totalBattles = 4;
+  data.stats.totalWins = 4;
+  data.stats.noDropStreak = 0;
+
+  // 6. 修复怪物（今天的怪兽）
+  data.monsters = data.monsters || { today: null, history: [] };
+  data.monsters.today = {
+    id: 'm_' + today + '_' + Math.floor(Math.random() * 900 + 100),
+    date: today,
+    tier: 4,
+    name: '猛犸象',
+    emoji: '🦣',
+    hp: 145, atk: 19, def: 9, maxHp: 145
+  };
+
+  // 7. 修复成就
+  data.achievements = data.achievements || { unlocked: [], seen: [] };
+  if (!data.achievements.unlocked.includes('checkin_3')) {
+    data.achievements.unlocked.push('checkin_3');
+  }
+
+  // 8. 修复怪物图鉴
+  data.pokedex = data.pokedex || { pets: ['小狗'], monsters: [] };
+  data.pokedex.monsters = data.pokedex.monsters || [];
+  [1, 2, 3].forEach(tier => {
+    if (!data.pokedex.monsters.includes(tier)) {
+      data.pokedex.monsters.push(tier);
+    }
+  });
+
+  // 保存数据
+  saveData(data);
+
+  // 显示结果
+  showResult(data);
+}
+
+// 显示修复结果
+function showResult(data) {
+  const card = document.getElementById('resultCard');
+  const div = document.getElementById('resultContent');
+
+  const wallet = data.wallet || { points: 0, totalEarned: 0 };
+  const inventory = data.inventory || { weapons: [], foods: [], eggs: [] };
+  const checkins = data.checkins || {};
+  const battles = data.battles || [];
+
+  div.innerHTML = `
+    <div class="alert green">✅ 数据修复成功！</div>
+    <div class="row"><span class="label">钱包余额</span><span class="value">${wallet.points} 金币</span></div>
+    <div class="row"><span class="label">武器</span><span class="value">${inventory.weapons?.map(w => w.name).join(', ') || '无'}</span></div>
+    <div class="row"><span class="label">食物</span><span class="value">${inventory.foods?.map(f => f.name).join(', ') || '无'}</span></div>
+    <div class="row"><span class="label">打卡天数</span><span class="value">${Object.keys(checkins).length} 天</span></div>
+    <div class="row"><span class="label">决斗次数</span><span class="value">${battles.length} 次（${battles.filter(b => b.result === 'win').length} 胜）</span></div>
+    <div class="row"><span class="label">连胜</span><span class="value">${data.stats?.streak || 0} 场</span></div>
+    <div class="alert yellow">请刷新应用页面查看更新后的数据。</div>
+  `;
+
+  card.style.display = 'block';
+}
+
+// 导出当前数据
+function exportCurrent() {
+  const data = getData();
+  if (!data) {
+    alert('❌ 没有数据可导出');
+    return;
+  }
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'checkin-pet-backup-' + new Date().toISOString().split('T')[0] + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  alert('✅ 数据已导出，请保存好备份文件！');
+}
+
+// 重置为默认数据
+function resetToDefault() {
+  if (!confirm('确定要重置为默认数据吗？这将清除所有进度！')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  alert('✅ 数据已重置为默认值。请重新打开应用。');
+  location.reload();
+}
+
+// 初始化
+showPreview();
+showCurrentStatus();
+</script>
+</body>
+</html>

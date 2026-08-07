@@ -415,6 +415,93 @@ export function migrate(data) {
     data.meta.dataFix_20260806 = true;
   }
 
+  // ============================================================
+  // v32 数据修复：自动修复被重置的数据（2026-08-08）
+  // ============================================================
+  if (!data.meta.dataFix_20260808) {
+    // 检测数据是否被重置为初始值（20元、无武器、面包x3、苹果x5、无决斗、无打卡）
+    const isReset =
+      data.wallet && data.wallet.points === 20 &&
+      data.wallet.totalEarned === 20 &&
+      data.inventory &&
+      data.inventory.weapons.length === 0 &&
+      data.inventory.foods.length === 2 &&
+      data.inventory.foods[0].id === 'f_bread' &&
+      data.inventory.foods[0].qty === 3 &&
+      data.inventory.foods[1].id === 'f_apple' &&
+      data.inventory.foods[1].qty === 5 &&
+      (!data.battles || data.battles.length === 0) &&
+      (!data.checkins || Object.keys(data.checkins).length === 0);
+
+    if (isReset) {
+      // 修复钱包余额（3元）
+      data.wallet.points = 3;
+
+      // 修复库存（弩箭、木剑、苹果、牛奶）
+      data.inventory = {
+        weapons: [
+          { id: 'w_bow', name: '弩箭', emoji: '🏹', atk: 12 },
+          { id: 'w_wood', name: '木剑', emoji: '🗡️', atk: 4 }
+        ],
+        foods: [
+          { id: 'f_apple', name: '苹果', emoji: '🍎', qty: 5 },
+          { id: 'f_milk', name: '牛奶', emoji: '🥛', qty: 1 }
+        ],
+        eggs: []
+      };
+
+      // 添加打卡记录（周一至周四）
+      data.checkins = {};
+      ['2026-08-04', '2026-08-05', '2026-08-06', '2026-08-07'].forEach(date => {
+        data.checkins[date] = {};
+      });
+
+      // 添加决斗记录（周一至周四全部胜利）
+      data.battles = [
+        { id: 'b_fix_20260804', date: '2026-08-04', petId: 'p_starter', monsterId: 'm_20260804_456', result: 'win', turns: 6, dropEgg: false, earnedPoints: 5 },
+        { id: 'b_fix_20260805', date: '2026-08-05', petId: 'p_starter', monsterId: 'm_20260805_457', result: 'win', turns: 5, dropEgg: false, earnedPoints: 5 },
+        { id: 'b_fix_20260806', date: '2026-08-06', petId: 'p_starter', monsterId: 'm_20260806_458', result: 'win', turns: 7, dropEgg: false, earnedPoints: 5 },
+        { id: 'b_fix_20260807', date: '2026-08-07', petId: 'p_starter', monsterId: 'm_20260807_459', result: 'win', turns: 6, dropEgg: false, earnedPoints: 5 }
+      ];
+
+      // 修复统计数据
+      data.stats = data.stats || {};
+      data.stats.totalCheckinDays = 4;
+      data.stats.streak = 4;
+      data.stats.bestStreak = Math.max(data.stats.bestStreak || 0, 4);
+      data.stats.totalBattles = 4;
+      data.stats.totalWins = 4;
+      data.stats.noDropStreak = 0;
+
+      // 修复怪物图鉴
+      data.pokedex = data.pokedex || { pets: ['小狗'], monsters: [] };
+      data.pokedex.monsters = data.pokedex.monsters || [];
+      [1, 2, 3].forEach(tier => {
+        if (!data.pokedex.monsters.includes(tier)) data.pokedex.monsters.push(tier);
+      });
+
+      // 刷新今天的怪兽
+      const todayStr = todayKey();
+      data.monsters = data.monsters || { today: null, history: [] };
+      data.monsters.today = {
+        id: 'm_' + todayStr + '_789',
+        date: todayStr,
+        tier: 4,
+        name: '猛犸象',
+        emoji: '🦣',
+        hp: 145, atk: 19, def: 9, maxHp: 145
+      };
+
+      // 修复成就
+      data.achievements = data.achievements || { unlocked: [], seen: [] };
+      if (!data.achievements.unlocked.includes('checkin_3')) {
+        data.achievements.unlocked.push('checkin_3');
+      }
+    }
+
+    data.meta.dataFix_20260808 = true;
+  }
+
   return data;
 }
 

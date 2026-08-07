@@ -16,9 +16,9 @@ export function openEnglishQuiz(taskId) {
   const task = getState().tasks.find(t => t.id === taskId);
   if (!task) return;
   // 9个单词 + 1个日常短句（都走 SRS 循环记忆）
-  // 跳过第一天（前9个单词）
+  // 全部单词参与SRS循环记忆调度
   const allWordKeys = ALL_ENGLISH_WORDS.map(w => w.word);
-  const wordKeys = allWordKeys.slice(9);
+  const wordKeys = allWordKeys; // 全部单词参与SRS调度，不再跳过前9个
   const phraseKeys = ENGLISH_PHRASES.map(p => p.word);
   const wordPlan = buildDailyList('english', wordKeys, 10, 2);
   const phrasePlan = buildDailyList('english', phraseKeys, 1, 1);

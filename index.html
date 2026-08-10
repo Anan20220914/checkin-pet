@@ -6,115 +6,115 @@
   <meta name="theme-color" content="#FF8A80">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="打卡岛">
+  <meta name="apple-mobile-web-app-title" content="鎵撳崱宀?>
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/svg+xml" href="icons/favicon.svg">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <title>打卡宠物岛</title>
+  <title>鎵撳崱瀹犵墿宀?/title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <div id="app">
-    <!-- 顶部状态栏 -->
+    <!-- 椤堕儴鐘舵€佹爮 -->
     <header class="topbar">
       <div class="topbar-child">
-        <span class="topbar-avatar" id="topAvatar">🦊</span>
-        <span class="topbar-name" id="topName">小宝</span>
+        <span class="topbar-avatar" id="topAvatar">馃</span>
+        <span class="topbar-name" id="topName">灏忓疂</span>
       </div>
       <div class="topbar-wallet" id="topWallet">
         <span class="coin-ico"></span><span id="topPoints">0</span>
       </div>
     </header>
 
-    <!-- 主内容区：5 个 Tab 页面 -->
+    <!-- 涓诲唴瀹瑰尯锛? 涓?Tab 椤甸潰 -->
     <main id="views">
-      <!-- 首页（决斗主舞台） -->
+      <!-- 棣栭〉锛堝喅鏂椾富鑸炲彴锛?-->
       <section class="view" id="view-home" data-tab="home"></section>
-      <!-- 打卡 -->
+      <!-- 鎵撳崱 -->
       <section class="view" id="view-checkin" data-tab="checkin" hidden></section>
-      <!-- 宠物 -->
+      <!-- 瀹犵墿 -->
       <section class="view" id="view-pets" data-tab="pets" hidden></section>
-      <!-- 商店 -->
+      <!-- 鍟嗗簵 -->
       <section class="view" id="view-shop" data-tab="shop" hidden></section>
-      <!-- 设置 -->
+      <!-- 璁剧疆 -->
       <section class="view" id="view-settings" data-tab="settings" hidden></section>
     </main>
 
-    <!-- 底部导航 -->
+    <!-- 搴曢儴瀵艰埅 -->
     <nav class="tabbar">
-      <button class="tab" data-tab="home" aria-label="首页">
-        <span class="tab-icon">🏠</span>
-        <span class="tab-label">首页</span>
+      <button class="tab" data-tab="home" aria-label="棣栭〉">
+        <span class="tab-icon">馃彔</span>
+        <span class="tab-label">棣栭〉</span>
       </button>
-      <button class="tab" data-tab="checkin" aria-label="打卡">
-        <span class="tab-icon">📋</span>
-        <span class="tab-label">打卡</span>
+      <button class="tab" data-tab="checkin" aria-label="鎵撳崱">
+        <span class="tab-icon">馃搵</span>
+        <span class="tab-label">鎵撳崱</span>
       </button>
-      <button class="tab tab-center" data-tab="pets" aria-label="宠物">
+      <button class="tab tab-center" data-tab="pets" aria-label="瀹犵墿">
         <span class="tab-center-bg">
           <svg viewBox="0 0 100 100" style="width:32px;height:32px;display:block;">
-            <!-- 身体 -->
+            <!-- 韬綋 -->
             <circle cx="50" cy="55" r="30" fill="#E8A86F" stroke="#4A3B2A" stroke-width="2.5"/>
-            <!-- 耳朵 -->
+            <!-- 鑰虫湹 -->
             <ellipse cx="30" cy="30" rx="12" ry="20" fill="#E8A86F" stroke="#4A3B2A" stroke-width="2.5" transform="rotate(-20 30 30)"/>
             <ellipse cx="70" cy="30" rx="12" ry="20" fill="#E8A86F" stroke="#4A3B2A" stroke-width="2.5" transform="rotate(20 70 30)"/>
-            <!-- 眼睛 -->
+            <!-- 鐪肩潧 -->
             <circle cx="40" cy="50" r="8" fill="white" stroke="#4A3B2A" stroke-width="2"/>
             <circle cx="60" cy="50" r="8" fill="white" stroke="#4A3B2A" stroke-width="2"/>
             <circle cx="40" cy="52" r="5" fill="#2a2a2a"/>
             <circle cx="60" cy="52" r="5" fill="#2a2a2a"/>
             <circle cx="38" cy="50" r="2" fill="white"/>
             <circle cx="58" cy="50" r="2" fill="white"/>
-            <!-- 腮红 -->
+            <!-- 鑵孩 -->
             <circle cx="32" cy="60" r="4" fill="#FFAB91" opacity="0.6"/>
             <circle cx="68" cy="60" r="4" fill="#FFAB91" opacity="0.6"/>
-            <!-- 鼻子 -->
+            <!-- 榧诲瓙 -->
             <circle cx="50" cy="62" r="3" fill="#2a2a2a"/>
-            <!-- 嘴巴 -->
+            <!-- 鍢村反 -->
             <path d="M44 68 q6 6 12 0" fill="none" stroke="#4A3B2A" stroke-width="2.5" stroke-linecap="round"/>
           </svg>
         </span>
       </button>
-      <button class="tab" data-tab="shop" aria-label="商店">
-        <span class="tab-icon">🎁</span>
-        <span class="tab-label">商店</span>
+      <button class="tab" data-tab="shop" aria-label="鍟嗗簵">
+        <span class="tab-icon">馃巵</span>
+        <span class="tab-label">鍟嗗簵</span>
       </button>
-      <button class="tab" data-tab="settings" aria-label="设置">
-        <span class="tab-icon">⚙️</span>
-        <span class="tab-label">设置</span>
+      <button class="tab" data-tab="settings" aria-label="璁剧疆">
+        <span class="tab-icon">鈿欙笍</span>
+        <span class="tab-label">璁剧疆</span>
       </button>
     </nav>
 
-    <!-- 全局浮层：战斗动画 / 提示 -->
+    <!-- 鍏ㄥ眬娴眰锛氭垬鏂楀姩鐢?/ 鎻愮ず -->
     <div class="overlay" id="overlay" hidden>
       <div class="overlay-card" id="overlayCard"></div>
     </div>
 
-    <!-- Toast 提示 -->
+    <!-- Toast 鎻愮ず -->
     <div class="toast" id="toast" hidden></div>
   </div>
 
   <script>
-    // 版本升级时强制清缓存刷新一次
+    // 鐗堟湰鍗囩骇鏃跺己鍒舵竻缂撳瓨鍒锋柊涓€娆?
     (function(){
-      var VER = 'v33';
+      var VER = 'v34';
       if (localStorage.getItem('__appver') !== VER) {
         localStorage.setItem('__appver', VER);
         var p = [];
         if ('caches' in window) p.push(caches.keys().then(ks => ks.forEach(k => caches.delete(k))));
         if (navigator.serviceWorker) p.push(navigator.serviceWorker.getRegistrations().then(rs => Promise.all(rs.map(r => r.unregister()))));
         Promise.all(p).then(function(){
-          // SW 注销后强制重新加载页面（走纯网络，拿最新文件）
+          // SW 娉ㄩ攢鍚庡己鍒堕噸鏂板姞杞介〉闈紙璧扮函缃戠粶锛屾嬁鏈€鏂版枃浠讹級
           location.reload();
         });
-        // 防止后续 app.js 用旧缓存执行
+        // 闃叉鍚庣画 app.js 鐢ㄦ棫缂撳瓨鎵ц
         return;
       }
     })();
-    // 如果上面 return 了，这段不执行
+    // 濡傛灉涓婇潰 return 浜嗭紝杩欐涓嶆墽琛?
   </script>
   <script type="module" src="js/app.js?v=31"></script>
 </body>

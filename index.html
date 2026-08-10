@@ -6,99 +6,99 @@
   <meta name="theme-color" content="#FF8A80">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="鎵撳崱宀?>
+  <meta name="apple-mobile-web-app-title" content="打卡岛">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/svg+xml" href="icons/favicon.svg">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <title>鎵撳崱瀹犵墿宀?/title>
+  <title>打卡宠物岛</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <div id="app">
-    <!-- 椤堕儴鐘舵€佹爮 -->
+    <!-- 顶部状态栏 -->
     <header class="topbar">
       <div class="topbar-child">
-        <span class="topbar-avatar" id="topAvatar">馃</span>
-        <span class="topbar-name" id="topName">灏忓疂</span>
+        <span class="topbar-avatar" id="topAvatar">🦊</span>
+        <span class="topbar-name" id="topName">小宝</span>
       </div>
       <div class="topbar-wallet" id="topWallet">
         <span class="coin-ico"></span><span id="topPoints">0</span>
       </div>
     </header>
 
-    <!-- 涓诲唴瀹瑰尯锛? 涓?Tab 椤甸潰 -->
+    <!-- 主内容区：5 个 Tab 页面 -->
     <main id="views">
-      <!-- 棣栭〉锛堝喅鏂椾富鑸炲彴锛?-->
+      <!-- 首页（决斗主舞台） -->
       <section class="view" id="view-home" data-tab="home"></section>
-      <!-- 鎵撳崱 -->
+      <!-- 打卡 -->
       <section class="view" id="view-checkin" data-tab="checkin" hidden></section>
-      <!-- 瀹犵墿 -->
+      <!-- 宠物 -->
       <section class="view" id="view-pets" data-tab="pets" hidden></section>
-      <!-- 鍟嗗簵 -->
+      <!-- 商店 -->
       <section class="view" id="view-shop" data-tab="shop" hidden></section>
-      <!-- 璁剧疆 -->
+      <!-- 设置 -->
       <section class="view" id="view-settings" data-tab="settings" hidden></section>
     </main>
 
-    <!-- 搴曢儴瀵艰埅 -->
+    <!-- 底部导航 -->
     <nav class="tabbar">
-      <button class="tab" data-tab="home" aria-label="棣栭〉">
-        <span class="tab-icon">馃彔</span>
-        <span class="tab-label">棣栭〉</span>
+      <button class="tab" data-tab="home" aria-label="首页">
+        <span class="tab-icon">🏠</span>
+        <span class="tab-label">首页</span>
       </button>
-      <button class="tab" data-tab="checkin" aria-label="鎵撳崱">
-        <span class="tab-icon">馃搵</span>
-        <span class="tab-label">鎵撳崱</span>
+      <button class="tab" data-tab="checkin" aria-label="打卡">
+        <span class="tab-icon">📋</span>
+        <span class="tab-label">打卡</span>
       </button>
-      <button class="tab tab-center" data-tab="pets" aria-label="瀹犵墿">
+      <button class="tab tab-center" data-tab="pets" aria-label="宠物">
         <span class="tab-center-bg">
           <svg viewBox="0 0 100 100" style="width:32px;height:32px;display:block;">
-            <!-- 韬綋 -->
+            <!-- 身体 -->
             <circle cx="50" cy="55" r="30" fill="#E8A86F" stroke="#4A3B2A" stroke-width="2.5"/>
-            <!-- 鑰虫湹 -->
+            <!-- 耳朵 -->
             <ellipse cx="30" cy="30" rx="12" ry="20" fill="#E8A86F" stroke="#4A3B2A" stroke-width="2.5" transform="rotate(-20 30 30)"/>
             <ellipse cx="70" cy="30" rx="12" ry="20" fill="#E8A86F" stroke="#4A3B2A" stroke-width="2.5" transform="rotate(20 70 30)"/>
-            <!-- 鐪肩潧 -->
+            <!-- 眼睛 -->
             <circle cx="40" cy="50" r="8" fill="white" stroke="#4A3B2A" stroke-width="2"/>
             <circle cx="60" cy="50" r="8" fill="white" stroke="#4A3B2A" stroke-width="2"/>
             <circle cx="40" cy="52" r="5" fill="#2a2a2a"/>
             <circle cx="60" cy="52" r="5" fill="#2a2a2a"/>
             <circle cx="38" cy="50" r="2" fill="white"/>
             <circle cx="58" cy="50" r="2" fill="white"/>
-            <!-- 鑵孩 -->
+            <!-- 腮红 -->
             <circle cx="32" cy="60" r="4" fill="#FFAB91" opacity="0.6"/>
             <circle cx="68" cy="60" r="4" fill="#FFAB91" opacity="0.6"/>
-            <!-- 榧诲瓙 -->
+            <!-- 鼻子 -->
             <circle cx="50" cy="62" r="3" fill="#2a2a2a"/>
-            <!-- 鍢村反 -->
+            <!-- 嘴巴 -->
             <path d="M44 68 q6 6 12 0" fill="none" stroke="#4A3B2A" stroke-width="2.5" stroke-linecap="round"/>
           </svg>
         </span>
       </button>
-      <button class="tab" data-tab="shop" aria-label="鍟嗗簵">
-        <span class="tab-icon">馃巵</span>
-        <span class="tab-label">鍟嗗簵</span>
+      <button class="tab" data-tab="shop" aria-label="商店">
+        <span class="tab-icon">🎁</span>
+        <span class="tab-label">商店</span>
       </button>
-      <button class="tab" data-tab="settings" aria-label="璁剧疆">
-        <span class="tab-icon">鈿欙笍</span>
-        <span class="tab-label">璁剧疆</span>
+      <button class="tab" data-tab="settings" aria-label="设置">
+        <span class="tab-icon">⚙️</span>
+        <span class="tab-label">设置</span>
       </button>
     </nav>
 
-    <!-- 鍏ㄥ眬娴眰锛氭垬鏂楀姩鐢?/ 鎻愮ず -->
+    <!-- 全局浮层：战斗动画 / 提示 -->
     <div class="overlay" id="overlay" hidden>
       <div class="overlay-card" id="overlayCard"></div>
     </div>
 
-    <!-- Toast 鎻愮ず -->
+    <!-- Toast 提示 -->
     <div class="toast" id="toast" hidden></div>
   </div>
 
   <script>
-    // 鐗堟湰鍗囩骇鏃跺己鍒舵竻缂撳瓨鍒锋柊涓€娆?
+    // 版本升级时强制清缓存刷新一次
     (function(){
       var VER = 'v34';
       if (localStorage.getItem('__appver') !== VER) {
@@ -107,14 +107,14 @@
         if ('caches' in window) p.push(caches.keys().then(ks => ks.forEach(k => caches.delete(k))));
         if (navigator.serviceWorker) p.push(navigator.serviceWorker.getRegistrations().then(rs => Promise.all(rs.map(r => r.unregister()))));
         Promise.all(p).then(function(){
-          // SW 娉ㄩ攢鍚庡己鍒堕噸鏂板姞杞介〉闈紙璧扮函缃戠粶锛屾嬁鏈€鏂版枃浠讹級
+          // SW 注销后强制重新加载页面（走纯网络，拿最新文件）
           location.reload();
         });
-        // 闃叉鍚庣画 app.js 鐢ㄦ棫缂撳瓨鎵ц
+        // 防止后续 app.js 用旧缓存执行
         return;
       }
     })();
-    // 濡傛灉涓婇潰 return 浜嗭紝杩欐涓嶆墽琛?
+    // 如果上面 return 了，这段不执行
   </script>
   <script type="module" src="js/app.js?v=31"></script>
 </body>

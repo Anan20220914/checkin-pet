@@ -1,24 +1,28 @@
-// sw-register.js 鈥?娉ㄥ唽 service worker锛堜粎鐢熶骇锛屾湰鍦板紑鍙戝彲涓嶇敤锛?
+// sw-register.js — 注册 service worker（仅生产，本地开发可不用）
+
 export function registerSW() {
   if (!('serviceWorker' in navigator)) return;
-  // localhost 璋冭瘯鏃朵笉寮哄埗娉ㄥ唽锛岄伩鍏嶇紦瀛樺共鎵帮紱閮ㄧ讲鍚庢甯告敞鍐?  window.addEventListener('load', () => {
+  // localhost 调试时不强制注册，避免缓存干扰；部署后正常注册
+  window.addEventListener('load', () => {
     navigator.serviceWorker.register('./service-worker.js').then(registration => {
-      // 涓诲姩妫€鏌ユ洿鏂?      registration.update().catch(() => {});
+      // 主动检查更新
+      registration.update().catch(() => {});
 
-      // 妫€娴嬪埌鏂扮増鏈椂鑷姩鍒锋柊椤甸潰
+      // 检测到新版本时自动刷新页面
       registration.addEventListener('updatefound', () => {
         const newWorker = registration.installing;
         if (newWorker) {
           newWorker.addEventListener('statechange', () => {
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              // 鏈夋柊鐗堟湰锛屽己鍒跺埛鏂伴〉闈㈠姞杞芥渶鏂颁唬鐮?              console.log('[SW] 妫€娴嬪埌鏂扮増鏈紝姝ｅ湪鍒锋柊...');
+              // 有新版本，强制刷新页面加载最新代码
+              console.log('[SW] 检测到新版本，正在刷新...');
               window.location.reload();
             }
           });
         }
       });
     }).catch(err => {
-      console.warn('[sw] 娉ㄥ唽澶辫触', err);
+      console.warn('[sw] 注册失败', err);
     });
   });
 }

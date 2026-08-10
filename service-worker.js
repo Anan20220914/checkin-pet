@@ -1,8 +1,8 @@
-// service-worker.js — PWA 离线缓存：app shell 预缓存，api.github.com 不缓存
-// 版本更新时间：2026-08-08（每次更新代码时必须同步修改此时间戳）
-// 当前缓存版本：v33
+// service-worker.js 鈥?PWA 绂荤嚎缂撳瓨锛歛pp shell 棰勭紦瀛橈紝api.github.com 涓嶇紦瀛?
+// 鐗堟湰鏇存柊鏃堕棿锛?026-08-10锛堟瘡娆℃洿鏂颁唬鐮佹椂蹇呴』鍚屾淇敼姝ゆ椂闂存埑锛?
+// 褰撳墠缂撳瓨鐗堟湰锛歷34
 
-const CACHE = 'checkin-pet-v33';
+const CACHE = 'checkin-pet-v34';
 const SHELL = [
   './',
   './index.html',
@@ -63,13 +63,13 @@ self.addEventListener('activate', (e) => {
 
 self.addEventListener('fetch', (e) => {
   const req = e.request;
-  // GitHub API：绝不缓存（避免缓存含 token 的响应）
+  // GitHub API锛氱粷涓嶇紦瀛橈紙閬垮厤缂撳瓨鍚?token 鐨勫搷搴旓級
   if (req.url.includes('api.github.com')) {
-    return; // 直接走网络
+    return; // 鐩存帴璧扮綉缁?
   }
-  // 同源静态资源
+  // 鍚屾簮闈欐€佽祫婧?
   if (req.method === 'GET' && new URL(req.url).origin === self.location.origin) {
-    // JS/CSS 文件：network-first（保证总是最新代码）
+    // JS/CSS 鏂囦欢锛歯etwork-first锛堜繚璇佹€绘槸鏈€鏂颁唬鐮侊級
     if (req.url.endsWith('.js') || req.url.endsWith('.css')) {
       e.respondWith(
         fetch(req, { cache: 'no-cache' }).then(res => {
@@ -82,7 +82,7 @@ self.addEventListener('fetch', (e) => {
       );
       return;
     }
-    // 其它：stale-while-revalidate
+    // 鍏跺畠锛歴tale-while-revalidate
     e.respondWith(
       caches.match(req).then(cached => {
         const fetchPromise = fetch(req, { cache: 'no-cache' }).then(res => {

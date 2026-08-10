@@ -5,6 +5,22 @@ import { b64encode, b64decode } from './utils.js';
 
 const API = 'https://api.github.com';
 
+/** 创建不含敏感 token 的 state 副本（避免推送到 GitHub 触发 Secret Scanning） */
+function stripToken(state) {
+  const clone = JSON.parse(JSON.stringify(state));
+  if (clone.settings) {
+    clone.settings.token = null;
+  }
+  return clone;
+}
+
+/** 恢复本地 token（拉取远端后，保留本机 token 不被覆盖） */
+function restoreLocalToken(targetState, localToken) {
+  if (targetState.settings) {
+    targetState.settings.token = localToken;
+  }
+}
+
 /** 取同步配置 */
 export function getSyncConfig() {
   const s = getState().settings;
@@ -35,9 +51,17 @@ export async function pullRemote() {
   const data = await res.json();
   const sha = data.sha;
   const content = b64decode(data.content.replace(/\n/g, ''));
-  const remote = JSON.parse(content);
+  let remote;
+  try {
+    remote = JSON.parse(content);
+  } catch (e) {
+    // 文件内容为空或格式错误，当作空对象处理
+    remote = {};
+  }
   remote.meta = remote.meta || {};
   remote.meta.lastSyncSha = sha;
+  // 清理远端可能残留的旧 token（旧版本 bug 导致）
+  if (remote.settings) remote.settings.token = null;
   return remote;
 }
 
@@ -47,7 +71,9 @@ export async function pushLocal() {
   if (!isConfigured()) throw new Error('未配置 GitHub 同步信息');
   const [owner, repoName] = parseRepo(c.repo);
   const s = getState();
-  const content = b64encode(JSON.stringify(s));
+  // 推送前移除 token，避免 GitHub Secret Scanning 检测导致推送失败
+  const payload = stripToken(s);
+  const content = b64encode(JSON.stringify(payload));
   // 先 GET 拿 sha（避免 422）
   let sha = s.meta.lastSyncSha;
   const getUrl = `${API}/repos/${owner}/${repoName}/contents/${c.dataPath}?ref=${c.branch}`;
@@ -132,6 +158,7 @@ export async function syncNow({ force = false } = {}) {
   if (!s.meta.localDirty && remote) {
     remote.meta = remote.meta || {};
     remote.meta.lastSyncSha = remoteSha;
+    restoreLocalToken(remote, s.settings.token);
     replaceState(remote);
     persist();
     return { ok: true, msg: '已拉取远端更新' };
@@ -152,6 +179,8 @@ export async function syncNow({ force = false } = {}) {
 export async function pullAndOverwrite() {
   const remote = await pullRemote();
   if (!remote) throw new Error('远端暂无数据文件');
+  const s = getState();
+  restoreLocalToken(remote, s.settings.token);
   replaceState(remote);
   persist();
   return { ok: true };

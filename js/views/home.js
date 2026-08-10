@@ -367,8 +367,9 @@ function openZombieDex() {
     for (const z of MONSTER_TIERS) {
       const has = unlocked.includes(z.tier);
       grid += `<div class="dex-cell ${has?'':'locked'}">
-        <div class="dex-emoji" style="font-size:40px">${has ? z.emoji : '🐺'}</div>
-        <div class="dex-name">${has ? z.name : '？？'}</div>
+        <div class="dex-emoji" style="font-size:40px">${has ? z.emoji : '🔒'}</div>
+        <div class="dex-name">${z.name}</div>
+        <div class="dex-tier">Tier ${z.tier}</div>
       </div>`;
     }
     grid += '</div>';

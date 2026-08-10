@@ -36,6 +36,7 @@ const HABIT_TASKS = [
   { id: 'h_dress', title: '自己穿衣服', icon: '👕', points: 1 },
   { id: 'h_notlate', title: '上学不迟到', icon: '🎒', points: 2 },
   { id: 'h_temper', title: '不发脾气', icon: '😌', points: 2 },
+  { id: 'h_poop', title: '按时拉屎', icon: '💩', points: 2 },
 ];
 
 /** 运动选项（孩子选今天做了哪些） */
@@ -58,6 +59,8 @@ const LIFE_TASKS = [
   { id: 'l_table', title: '摆碗筷', icon: '🥢', points: 1 },
   { id: 'l_laundry', title: '叠衣服', icon: '👕', points: 2 },
   { id: 'l_water', title: '浇花', icon: '🪴', points: 1 },
+  { id: 'l_sweep', title: '扫地', icon: '🧹', points: 2 },
+  { id: 'l_wipe', title: '擦桌子', icon: '🧽', points: 2 },
 ];
 
 /** 学习打卡 8 个互动模块 */

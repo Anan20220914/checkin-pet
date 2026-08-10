@@ -31,6 +31,11 @@ export function ensureToday() {
         // 战斗历史已单独记录，怪物不必重复归档
       }
       st.monsters.today = generateMonsterFor(today, st.stats.streak);
+      // 遇到即解锁怪物图鉴
+      const tier = st.monsters.today.tier;
+      if (tier && !st.pokedex.monsters.includes(tier)) {
+        st.pokedex.monsters.push(tier);
+      }
     });
   }
 }

@@ -505,6 +505,26 @@ export function migrate(data) {
     data.meta.dataFix_20260808 = true;
   }
 
+  // ============================================================
+  // v33 数据修复：确保当前怪物 tier 在图鉴中 + 新任务自动补齐（2026-08-10）
+  // ============================================================
+  if (!data.meta.dataFix_20260810) {
+    // 如果今天有怪物，确保其 tier 在图鉴中（遇到即解锁）
+    if (data.monsters && data.monsters.today) {
+      const tier = data.monsters.today.tier;
+      if (tier && !data.pokedex.monsters.includes(tier)) {
+        data.pokedex.monsters.push(tier);
+      }
+    }
+    // 补充缺失的新任务（扫地/擦桌子/按时拉屎等）
+    const currentIds = (data.tasks || []).map(t => t.id);
+    const newTasks = buildTasks().filter(t => !currentIds.includes(t.id));
+    if (newTasks.length > 0) {
+      data.tasks = [...(data.tasks || []), ...newTasks];
+    }
+    data.meta.dataFix_20260810 = true;
+  }
+
   return data;
 }
 

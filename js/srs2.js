@@ -77,6 +77,11 @@ export function grade(subject, key, gradeStr) {
  * @param perDay 每日总数
  * @param reviewMin 复习占位下限
  * @returns { review: [], fresh: [], all: [] }
+ *
+ * 调度规则（2026-08-13 修订）：
+ *   - 昨天不会/一般的字 → 必出现（强化复习，不属于"学会的"）
+ *   - 学会的内容（昨天熟练 + 到期复习 + 历史学过）→ 仅占 20%
+ *   - 新字/未学过的 → 占 80%，确保持续学习新内容
  */
 export function buildDailyList(subject, allKeys, perDay = 10, reviewMin = 3) {
   const today = todayKey();
@@ -86,7 +91,7 @@ export function buildDailyList(subject, allKeys, perDay = 10, reviewMin = 3) {
   const notLearned = [], dueReview = [], learnedRecent = [], learnedOld = [];
   // 昨天标记为"不会"或"一般"的字（今天必出现）
   const yesterdayWeak = [];
-  // 昨天熟练的字（用于循环记忆：熟练的字次日重复2个）
+  // 昨天熟练的字（用于循环记忆：熟练的字次日重复）
   const yesterdayGood = [];
   for (const key of allKeys) {
     const c = mem[key];
@@ -109,29 +114,28 @@ export function buildDailyList(subject, allKeys, perDay = 10, reviewMin = 3) {
     return { review: [], fresh: [pick], all: [pick], dueCount: yesterdayWeak.length, learnedCount: allKeys.length - notLearned.length };
   }
   const all = [];
-  // 1. 昨天不会或一般的字 → 必出现
+  // 1. 昨天不会或一般的字 → 必出现（强化复习，不属于"学会的"）
   for (const k of yesterdayWeak) { if (all.length < perDay) all.push(k); }
-  // 2. 昨天熟练的字 → 选2个重复复习（循环记忆）
-  const goodReview = shuffleArr(yesterdayGood).slice(0, 2);
-  for (const k of goodReview) { if (all.length < perDay && !all.includes(k)) all.push(k); }
-  // 3. 到期的复习字
-  for (const k of dueReview) { if (all.length < perDay && !all.includes(k)) all.push(k); }
-  // 3.5 新字保底：每天至少包含 min(3, 未学字数) 个新字，确保新添加的字库能轮到
-  const freshGuarantee = Math.min(3, notLearned.length);
-  const shuffledFresh = shuffleArr(notLearned);
-  for (let i = 0; i < freshGuarantee; i++) {
-    if (all.length < perDay && !all.includes(shuffledFresh[i])) all.push(shuffledFresh[i]);
+  // 2. 学会的内容仅占 20%（昨天熟练 + 到期复习 + 历史学过，合并后取 20%）
+  const reviewBudget = Math.max(0, Math.round(perDay * 0.2));
+  const reviewPool = shuffleArr([...yesterdayGood, ...dueReview, ...learnedRecent, ...learnedOld]);
+  for (let i = 0; i < reviewBudget && i < reviewPool.length; i++) {
+    if (all.length < perDay && !all.includes(reviewPool[i])) all.push(reviewPool[i]);
   }
-  // 4. 近期学过的（20%）
-  const rT = Math.max(0, Math.round(perDay * 0.2)), rP = shuffleArr(learnedRecent);
-  for (let i = 0; i < rT && i < rP.length; i++) { if (all.length < perDay && !all.includes(rP[i])) all.push(rP[i]); }
-  // 5. 旧学过的（10%）
-  const oT = Math.max(0, Math.round(perDay * 0.1)), oP = shuffleArr(learnedOld);
-  for (let i = 0; i < oT && i < oP.length; i++) { if (all.length < perDay && !all.includes(oP[i])) all.push(oP[i]); }
-  // 6. 新字补足
-  for (const k of notLearned) { if (all.length >= perDay) break; if (!all.includes(k)) all.push(k); }
-  // 7. 兜底：从已学中随机补足
-  if (all.length < perDay) { const pool = shuffleArr([...learnedRecent, ...learnedOld]); for (const k of pool) { if (all.length >= perDay) break; if (!all.includes(k)) all.push(k); } }
+  // 3. 新字补足剩余 80%（优先未学过的）
+  const shuffledFresh = shuffleArr(notLearned);
+  for (const k of shuffledFresh) {
+    if (all.length >= perDay) break;
+    if (!all.includes(k)) all.push(k);
+  }
+  // 4. 兜底：如果新字不够，从已学中随机补足
+  if (all.length < perDay) {
+    const pool = shuffleArr([...learnedRecent, ...learnedOld, ...dueReview]);
+    for (const k of pool) {
+      if (all.length >= perDay) break;
+      if (!all.includes(k)) all.push(k);
+    }
+  }
   return { review: [], fresh: [], all: all.slice(0, perDay), dueCount: yesterdayWeak.length, learnedCount: allKeys.length - notLearned.length };
 }
 function shuffleArr(a) { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }

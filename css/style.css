@@ -1432,6 +1432,35 @@ textarea.form-control { min-height: 60px; resize: vertical; }
 .brain-choice.correct { border-color: var(--success); background: var(--success-ghost); }
 .brain-choice.wrong { border-color: var(--primary); background: rgba(255,138,128,0.08); }
 
+/* 新题库样式 */
+.brain-screen { font-size: 20px; font-weight: 700; margin: 8px 0; color: var(--text); padding: 8px 12px; background: var(--card); border-radius: var(--radius-md); }
+.brain-hint { font-size: 13px; color: var(--muted); margin: 8px 0; font-style: italic; text-align: center; }
+.brain-choice-text { display: flex; align-items: center; gap: 8px; padding: 10px 12px; text-align: left; }
+.brain-choice-label { font-size: 14px; font-weight: 800; color: var(--accent-dark); background: #FFF8E1; border-radius: var(--radius-full); width: 28px; height: 28px; display: grid; place-items: center; flex-shrink: 0; }
+.brain-choice-content { font-size: 16px; font-weight: 700; }
+.brain-multi-choice.selected { border-color: var(--accent); background: var(--accent-ghost, #FFF8E1); }
+.brain-multi-choice.selected .brain-choice-label { background: var(--accent); color: #fff; }
+.brain-multi-tip { font-size: 13px; color: var(--muted); margin: 6px 0; }
+.brain-confirm-btn { margin: 8px 0; }
+
+/* 配对题翻牌 */
+.brain-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0; }
+.brain-card { aspect-ratio: 1; display: grid; place-items: center; border: 2px solid var(--border); border-radius: var(--radius-md); background: var(--card); cursor: pointer; font-size: 32px; transition: transform 0.2s; }
+.brain-card.flipped { transform: scale(1.05); border-color: var(--accent); }
+.brain-card.matched { border-color: var(--success); background: var(--success-ghost); cursor: default; }
+.brain-card-back { font-size: 28px; }
+.brain-card-front { font-size: 32px; }
+
+/* 顺序题 */
+.brain-seq-display { font-size: 18px; font-weight: 800; margin: 8px 0; color: var(--accent-dark); min-height: 28px; }
+.brain-seq-buttons { display: flex; gap: 12px; justify-content: center; margin: 16px 0; }
+.brain-seq-btn { width: 64px; height: 64px; display: grid; place-items: center; border: 2px solid var(--border); border-radius: var(--radius-md); background: var(--card); cursor: pointer; transition: all 0.2s; }
+.brain-seq-emoji { font-size: 32px; }
+.brain-seq-btn.seq-highlight { border-color: var(--accent); background: #FFF8E1; transform: scale(1.1); box-shadow: 0 0 12px rgba(255,193,7,0.5); }
+.brain-seq-btn.seq-correct { border-color: var(--success); background: var(--success-ghost); }
+.brain-seq-btn.seq-wrong { border-color: var(--primary); background: rgba(255,138,128,0.08); }
+.brain-seq-btn.seq-dim { opacity: 0.4; }
+
 /* ============================================================
  * 31. 捏脸面板
  * ========================================================== */

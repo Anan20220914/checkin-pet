@@ -27,7 +27,7 @@ export const CATEGORIES = {
   life: { name: '家务打卡', emoji: '🏠', color: '#f59e0b' },
 };
 
-/** 习惯养成 7 项（用户指定固定项） */
+/** 习惯养成 9 项（用户指定固定项） */
 const HABIT_TASKS = [
   { id: 'h_wake', title: '按时起床', icon: '⏰', points: 2 },
   { id: 'h_sleep', title: '按时睡觉', icon: '🌙', points: 2 },
@@ -37,6 +37,7 @@ const HABIT_TASKS = [
   { id: 'h_notlate', title: '上学不迟到', icon: '🎒', points: 2 },
   { id: 'h_temper', title: '不发脾气', icon: '😌', points: 2 },
   { id: 'h_poop', title: '按时拉屎', icon: '💩', points: 2 },
+  { id: 'h_toiletlid', title: '冲马桶盖盖子', icon: '🚽', points: 1 },
 ];
 
 /** 运动选项（孩子选今天做了哪些） */
@@ -523,6 +524,91 @@ export function migrate(data) {
       data.tasks = [...(data.tasks || []), ...newTasks];
     }
     data.meta.dataFix_20260810 = true;
+  }
+
+  // ============================================================
+  // v34 数据修复：补充周一至周三打卡+决斗 + 刷新怪物为剑齿虎 + 点亮徽章（2026-08-13）
+  // ============================================================
+  if (!data.meta.dataFix_20260813) {
+    // 1. 补充周一至周三（08-10、08-11、08-12）的打卡记录
+    if (!data.checkins) data.checkins = {};
+    const fillDates = ['2026-08-10', '2026-08-11', '2026-08-12'];
+    for (const d of fillDates) {
+      if (!data.checkins[d]) {
+        data.checkins[d] = {};
+      }
+    }
+
+    // 2. 补充周一至周三的决斗记录（全部胜利）
+    if (!data.battles) data.battles = [];
+    const duelDates = [
+      { date: '2026-08-10', turns: 6 },
+      { date: '2026-08-11', turns: 5 },
+      { date: '2026-08-12', turns: 7 },
+    ];
+    let addedDuels = 0;
+    for (const d of duelDates) {
+      if (!data.battles.some(b => b.date === d.date)) {
+        data.battles.push({
+          id: 'b_fix_' + d.date.replace(/-/g, ''),
+          date: d.date,
+          petId: (data.pets && data.pets[0]) ? data.pets[0].id : 'p_starter',
+          monsterId: 'm_' + d.date + '_456',
+          result: 'win',
+          turns: d.turns,
+          dropEgg: false,
+          earnedPoints: 5,
+        });
+        addedDuels++;
+      }
+    }
+    // 更新统计：连胜设为5（今天遇到剑齿虎 tier 3）
+    if (!data.stats) data.stats = {};
+    data.stats.totalBattles = (data.stats.totalBattles || 0) + addedDuels;
+    data.stats.totalWins = (data.stats.totalWins || 0) + addedDuels;
+    data.stats.streak = 5; // 强制设为5 → tier 3 剑齿虎
+    if ((data.stats.bestStreak || 0) < data.stats.streak) {
+      data.stats.bestStreak = data.stats.streak;
+    }
+    // 重新计算累计打卡天数
+    data.stats.totalCheckinDays = Object.keys(data.checkins).length;
+
+    // 3. 刷新今天的怪物（按更新后的连胜取 tier → 剑齿虎）
+    const todayStr = todayKey();
+    if (!data.monsters) data.monsters = { today: null, history: [] };
+    const streak = (data.stats && data.stats.streak) || 0;
+    let tierCfg = MONSTER_TIERS[0];
+    for (const t of MONSTER_TIERS) { if (streak >= t.streakMin) tierCfg = t; }
+    const hp = Math.floor(Math.random() * (tierCfg.hp[1] - tierCfg.hp[0] + 1)) + tierCfg.hp[0];
+    const atk = Math.floor(Math.random() * (tierCfg.atk[1] - tierCfg.atk[0] + 1)) + tierCfg.atk[0];
+    const def = Math.floor(Math.random() * (tierCfg.def[1] - tierCfg.def[0] + 1)) + tierCfg.def[0];
+    data.monsters.today = {
+      id: 'm_' + todayStr + '_' + Math.floor(Math.random() * 900 + 100),
+      date: todayStr,
+      tier: tierCfg.tier,
+      name: tierCfg.name,
+      emoji: tierCfg.emoji,
+      hp, atk, def, maxHp: hp,
+    };
+
+    // 4. 确保狼(1)、棕熊(2)、剑齿虎(3)都在怪物图鉴里
+    if (!data.pokedex) data.pokedex = { pets: ['小狗'], monsters: [] };
+    if (!data.pokedex.monsters) data.pokedex.monsters = [];
+    for (let t = 1; t <= 3; t++) {
+      if (!data.pokedex.monsters.includes(t)) data.pokedex.monsters.push(t);
+    }
+
+    // 5. 点亮一个徽章（连胜5场 → streak_5）
+    if (!data.achievements) data.achievements = { unlocked: [], seen: [] };
+    if (!data.achievements.unlocked.includes('streak_5') && (data.stats.bestStreak || 0) >= 5) {
+      data.achievements.unlocked.push('streak_5');
+    }
+    // 如果连胜还不到5，至少点亮"坚持初体验"（3天打卡）
+    if (!data.achievements.unlocked.includes('checkin_3') && data.stats.totalCheckinDays >= 3) {
+      data.achievements.unlocked.push('checkin_3');
+    }
+
+    data.meta.dataFix_20260813 = true;
   }
 
   return data;

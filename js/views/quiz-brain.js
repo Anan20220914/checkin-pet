@@ -65,12 +65,7 @@ const BRAIN_QUESTIONS = [
   { id:'K6', dim:'常识与因果', type:'单选', q:'月亮和星星出来了，现在是？', screen:'🌙月亮和⭐星星挂在天上', optA:'白天', optB:'晚上', optC:'中午', answer:'B', interaction:'点击1个选项', time:10, hint:'什么时候能看到星星？' },
   { id:'K7', dim:'常识与因果', type:'单选', q:'火碰到冰会怎样？', screen:'🔥火焰靠近❄️冰块', optA:'变热', optB:'变冷', optC:'融化', answer:'C', interaction:'点击1个选项', time:15, hint:'冰遇热会变成什么？' },
   { id:'K8', dim:'常识与因果', type:'单选', q:'起火了应该用什么灭？', screen:'🔥着火了！旁边有💧水、🛢️油、📄纸', optA:'💧 水', optB:'🛢️ 油', optC:'📄 纸', answer:'A', interaction:'点击1个选项', time:15, hint:'消防员叔叔用什么灭火？' },
-  // 纯记忆游戏 M1-M5
-  { id:'M1', dim:'纯记忆游戏', type:'配对', q:'找出相同的两个！', screen:'4张背面朝上的牌（2对相同图案）', optA:'翻第1张', optB:'翻第2张', optC:'翻第3张', answer:'配对成功', interaction:'逐一点牌翻牌，翻到相同消除', time:40, hint:'记住每次翻到的位置' },
-  { id:'M2', dim:'纯记忆游戏', type:'配对', q:'找出相同的两个！', screen:'6张背面朝上的牌（3对相同图案）', optA:'翻牌1', optB:'翻牌2', optC:'翻牌3', answer:'配对成功', interaction:'逐一点牌翻牌，翻到相同消除', time:50, hint:'记住每张牌的位置' },
-  { id:'M3', dim:'纯记忆游戏', type:'顺序', q:'按刚才的顺序点一遍！', screen:'3个彩色按钮依次亮起（如🔴🟡🔵）', optA:'🔴', optB:'🟡', optC:'🔵', answer:'按原顺序点击', interaction:'按记忆顺序依次点击按钮', time:20, hint:'像跟着灯跳舞一样记住顺序' },
-  { id:'M4', dim:'纯记忆游戏', type:'单选', q:'刚才星星在哪里？', screen:'屏幕闪示1个⭐星星位置1秒后消失', optA:'左上角', optB:'中间', optC:'右下角', answer:'B', interaction:'点击正确位置', time:10, hint:'眼睛盯住星星的位置' },
-  { id:'M5', dim:'纯记忆游戏', type:'多选', q:'刚才星星出现在哪两个位置？（多选）', screen:'屏幕闪示2个⭐星星位置1秒后消失', optA:'左边', optB:'中间', optC:'右边', answer:'AC', interaction:'点击2个正确位置', time:15, hint:'记住两颗星星分别在哪里' },
+  // 纯记忆游戏 M1-M5 已删除（闪示记忆效果无法在静态页面实现）
 ];
 
 /** 将结构化题库题目适配为内部统一格式 */
@@ -80,32 +75,6 @@ function adaptQuestion(raw) {
     { label: 'B', text: raw.optB },
     { label: 'C', text: raw.optC },
   ];
-
-  // 配对题：简化为翻牌记忆游戏
-  if (raw.type === '配对') {
-    return {
-      qType: 'pair',
-      type: raw.dim,
-      q: raw.q,
-      screen: raw.screen,
-      hint: raw.hint,
-      time: raw.time,
-      pairs: raw.id === 'M1' ? 2 : 3, // M1=2对, M2=3对
-    };
-  }
-
-  // 顺序题：展示序列后让用户按顺序点击
-  if (raw.type === '顺序') {
-    return {
-      qType: 'sequence',
-      type: raw.dim,
-      q: raw.q,
-      screen: raw.screen,
-      hint: raw.hint,
-      time: raw.time,
-      seq: ['🔴', '🟡', '🔵'],
-    };
-  }
 
   // 多选题
   if (raw.type === '多选') {
@@ -321,8 +290,6 @@ function renderCard() {
   // 根据题型分发到不同渲染器
   switch (p.qType) {
     case 'multi':   return renderMulti(p, cur, total);
-    case 'pair':    return renderPair(p, cur, total);
-    case 'sequence': return renderSequence(p, cur, total);
     case 'single':  return renderSingleNew(p, cur, total);
     case 'single-old':
     default:        return renderSingleOld(p, cur, total);
@@ -502,186 +469,6 @@ function renderMulti(p, cur, total) {
         confirmBtn.disabled = true;
         setTimeout(() => { state.idx++; renderCard(); }, isRight ? 800 : 1500);
       };
-    },
-  });
-}
-
-/* --- 配对题渲染（翻牌记忆游戏） --- */
-function renderPair(p, cur, total) {
-  const pairCount = p.pairs;
-  // 生成牌组：每对2张相同emoji
-  const emojis = ['🍎','🐶','⭐','🌸','🚗','🐱'];
-  const cards = [];
-  for (let i = 0; i < pairCount; i++) {
-    cards.push({ emoji: emojis[i], id: i });
-    cards.push({ emoji: emojis[i], id: i });
-  }
-  const shuffledCards = shuffle(cards);
-
-  let cardsHtml = '';
-  shuffledCards.forEach((card, i) => {
-    cardsHtml += `<button class="brain-card" data-index="${i}" data-emoji="${card.emoji}" data-id="${card.id}"><span class="brain-card-back">❓</span><span class="brain-card-front" style="display:none">${card.emoji}</span></button>`;
-  });
-
-  const html = `
-    <div class="quiz-head">
-      <span class="quiz-back" id="qbBack">‹</span>
-      <span class="quiz-title">🧠 大脑开发</span>
-      <span class="quiz-count">${cur}/${total}</span>
-    </div>
-    <div class="brain-stage">
-      <div class="brain-type">${esc(p.type)}</div>
-      <div class="brain-q">${esc(p.q)}</div>
-      <div class="brain-screen">${esc(p.screen)}</div>
-      <div class="quiz-feedback" id="qbFeedback"></div>
-    </div>
-    <div class="brain-cards">${cardsHtml}</div>
-    <div class="brain-hint">${esc(p.hint || '')}</div>
-    <div class="quiz-progress"><div class="qp-fill" style="width:${(state.idx / total) * 100}%"></div></div>
-  `;
-  showOverlay(html, {
-    onMount: (card) => {
-      card.querySelector('#qbBack').onclick = () => { closeOverlay(); state = null; };
-      const feedback = card.querySelector('#qbFeedback');
-      let flipped = []; // 当前翻开的牌
-      let matched = 0;
-      let locked = false;
-
-      card.querySelectorAll('.brain-card').forEach(btn => {
-        btn.onclick = () => {
-          if (locked || flipped.length >= 2) return;
-          if (btn.classList.contains('flipped') || btn.classList.contains('matched')) return;
-
-          // 翻牌
-          btn.classList.add('flipped');
-          btn.querySelector('.brain-card-back').style.display = 'none';
-          btn.querySelector('.brain-card-front').style.display = '';
-          flipped.push(btn);
-
-          if (flipped.length === 2) {
-            locked = true;
-            const [a, b] = flipped;
-            if (a.dataset.id === b.dataset.id) {
-              // 配对成功
-              setTimeout(() => {
-                a.classList.add('matched');
-                b.classList.add('matched');
-                flipped = [];
-                locked = false;
-                matched++;
-                feedback.textContent = '✓ 配对成功！';
-                feedback.className = 'quiz-feedback right';
-                if (matched === pairCount) {
-                  state.answers.push({ chosen: '配对成功', answer: '配对成功', right: true });
-                  feedback.textContent = '✓ 全部配对成功！';
-                  setTimeout(() => { state.idx++; renderCard(); }, 1000);
-                }
-              }, 500);
-            } else {
-              // 配对失败，翻回去
-              setTimeout(() => {
-                [a, b].forEach(el => {
-                  el.classList.remove('flipped');
-                  el.querySelector('.brain-card-back').style.display = '';
-                  el.querySelector('.brain-card-front').style.display = 'none';
-                });
-                flipped = [];
-                locked = false;
-                feedback.textContent = '再试试看！';
-                feedback.className = 'quiz-feedback wrong';
-              }, 1000);
-            }
-          }
-        };
-      });
-    },
-  });
-}
-
-/* --- 顺序题渲染（记忆序列后按顺序点击） --- */
-function renderSequence(p, cur, total) {
-  const seq = p.seq;
-  let buttonsHtml = '';
-  seq.forEach((emoji, i) => {
-    buttonsHtml += `<button class="brain-seq-btn" data-index="${i}"><span class="brain-seq-emoji">${emoji}</span></button>`;
-  });
-
-  const html = `
-    <div class="quiz-head">
-      <span class="quiz-back" id="qbBack">‹</span>
-      <span class="quiz-title">🧠 大脑开发</span>
-      <span class="quiz-count">${cur}/${total}</span>
-    </div>
-    <div class="brain-stage">
-      <div class="brain-type">${esc(p.type)}</div>
-      <div class="brain-q">${esc(p.q)}</div>
-      <div class="brain-seq-display" id="qbSeqDisplay">看仔细哦...</div>
-      <div class="quiz-feedback" id="qbFeedback"></div>
-    </div>
-    <div class="brain-seq-buttons">${buttonsHtml}</div>
-    <div class="brain-hint">${esc(p.hint || '')}</div>
-    <div class="quiz-progress"><div class="qp-fill" style="width:${(state.idx / total) * 100}%"></div></div>
-  `;
-  showOverlay(html, {
-    onMount: (card) => {
-      card.querySelector('#qbBack').onclick = () => { closeOverlay(); state = null; };
-      const feedback = card.querySelector('#qbFeedback');
-      const seqDisplay = card.querySelector('#qbSeqDisplay');
-      const buttons = card.querySelectorAll('.brain-seq-btn');
-      let phase = 'show'; // show -> input -> done
-      let inputIdx = 0;
-      let answered = false;
-
-      // 展示阶段：依次高亮按钮
-      let showIdx = 0;
-      function showNext() {
-        if (showIdx >= seq.length) {
-          // 展示完毕，进入输入阶段
-          seqDisplay.textContent = '现在按刚才的顺序点一遍！';
-          phase = 'input';
-          return;
-        }
-        const btn = buttons[showIdx];
-        btn.classList.add('seq-highlight');
-        seqDisplay.textContent = `看：${seq[showIdx]}`;
-        setTimeout(() => {
-          btn.classList.remove('seq-highlight');
-          showIdx++;
-          setTimeout(showNext, 300);
-        }, 600);
-      }
-      setTimeout(showNext, 500);
-
-      // 输入阶段：按顺序点击
-      buttons.forEach(btn => {
-        btn.onclick = () => {
-          if (phase !== 'input' || answered) return;
-          const idx = parseInt(btn.dataset.index);
-          if (idx === inputIdx) {
-            btn.classList.add('seq-correct');
-            inputIdx++;
-            feedback.textContent = '✓';
-            feedback.className = 'quiz-feedback right';
-            if (inputIdx >= seq.length) {
-              answered = true;
-              state.answers.push({ chosen: '按顺序点击', answer: '按原顺序点击', right: true });
-              feedback.textContent = '✓ 全部正确！';
-              setTimeout(() => { state.idx++; renderCard(); }, 800);
-            }
-          } else {
-            answered = true;
-            btn.classList.add('seq-wrong');
-            state.answers.push({ chosen: '顺序错误', answer: '按原顺序点击', right: false });
-            feedback.textContent = '✗ 顺序不对哦！';
-            feedback.className = 'quiz-feedback wrong';
-            // 高亮正确顺序
-            buttons.forEach((b, i) => {
-              if (i < seq.length) b.classList.add(i === inputIdx ? 'seq-correct' : 'seq-dim');
-            });
-            setTimeout(() => { state.idx++; renderCard(); }, 1500);
-          }
-        };
-      });
     },
   });
 }

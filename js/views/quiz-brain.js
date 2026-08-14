@@ -40,15 +40,7 @@ const BRAIN_QUESTIONS = [
   { id:'C6', dim:'分类与配对', type:'多选', q:'哪几个是天气？（多选）', screen:'☀️太阳、🌧️下雨、❄️下雪、🌙月亮', optA:'☀️ 太阳', optB:'🌧️ 下雨', optC:'❄️ 下雪', answer:'ABC', interaction:'点击多个选项', time:20, hint:'天上出现什么是天气？月亮是天体' },
   { id:'C7', dim:'分类与配对', type:'单选', q:'钉子和谁是好朋友？', screen:'🔨锤子、📌钉子、🥄勺子', optA:'🔨 锤子', optB:'🥄 勺子', optC:'📌 钉子', answer:'A', interaction:'点击1个选项', time:15, hint:'爸爸用什么敲钉子？' },
   { id:'C8', dim:'分类与配对', type:'单选', q:'雪人和哪个在一起？', screen:'☃️雪人，选项：❄️雪花/☀️太阳/🍂落叶', optA:'❄️ 雪花', optB:'☀️ 太阳', optC:'🍂 落叶', answer:'A', interaction:'点击1个选项', time:15, hint:'什么时候会有雪人？' },
-  // 注意力与观察 A1-A8
-  { id:'A1', dim:'注意力与观察', type:'单选', q:'哪里不一样？', screen:'两张几乎一样的图，有1处不同', optA:'左上角', optB:'中间', optC:'右下角', answer:'B', interaction:'点击图中不同位置', time:30, hint:'仔细对比两张图的每个地方' },
-  { id:'A2', dim:'注意力与观察', type:'单选', q:'小猫藏在哪里？', screen:'一片🌿草丛里藏着一只🐱猫', optA:'草丛左边', optB:'草丛中间', optC:'草丛右边', answer:'B', interaction:'点击图中猫的位置', time:25, hint:'找找看草丛里露出的猫耳朵或尾巴' },
-  { id:'A3', dim:'注意力与观察', type:'多选', q:'刚才出现了哪些物品？（多选）', screen:'先快速闪示3个物品1秒，然后显示问号', optA:'🍎 苹果', optB:'🚗 汽车', optC:'🎈 气球', answer:'ABC', interaction:'点击多个选项', time:10, hint:'用眼睛拍一张照片记住' },
-  { id:'A4', dim:'注意力与观察', type:'单选', q:'红球在哪个杯子下面？', screen:'3个倒扣杯子动画交换位置', optA:'左边杯子', optB:'中间杯子', optC:'右边杯子', answer:'B', interaction:'点击1个杯子', time:20, hint:'眼睛盯着红球不要看杯子' },
-  { id:'A5', dim:'注意力与观察', type:'单选', q:'图里有几只蝴蝶？', screen:'一幅画里画了5只🦋蝴蝶', optA:'3只', optB:'4只', optC:'5只', answer:'C', interaction:'点击1个选项', time:20, hint:'一只一只指着数一数' },
-  { id:'A6', dim:'注意力与观察', type:'单选', q:'树的影子朝哪边？', screen:'☀️太阳在左边，🌳树在中间', optA:'左边', optB:'右边', optC:'上边', answer:'B', interaction:'点击1个选项', time:25, hint:'太阳在这边，影子在太阳对面' },
-  { id:'A7', dim:'注意力与观察', type:'单选', q:'下一个格子是什么颜色？', screen:'一排格子：🔴🔴🟡🟡🔴🔴？', optA:'🔴 红色', optB:'🟡 黄色', optC:'🔵 蓝色', answer:'B', interaction:'点击1个选项', time:20, hint:'两个红色、两个黄色轮流' },
-  { id:'A8', dim:'注意力与观察', type:'单选', q:'这是谁的尾巴？', screen:'显示一条🐘大象的尾巴局部', optA:'🐘 大象', optB:'🐖 小猪', optC:'🐄 奶牛', answer:'A', interaction:'点击1个选项', time:20, hint:'想想谁的尾巴又粗又长？' },
+  // 注意力与观察 A1-A8 已删除（需要图片对比/动画/闪示等效果，静态页面无法实现）
   // 情绪识别与社交 E1-E6
   { id:'E1', dim:'情绪识别与社交', type:'单选', q:'他是什么心情？', screen:'一个😢哭脸的小朋友', optA:'😄 开心', optB:'😢 难过', optC:'😠 生气', answer:'B', interaction:'点击1个选项', time:10, hint:'看看他的脸是笑还是哭' },
   { id:'E2', dim:'情绪识别与社交', type:'单选', q:'这个表情是什么？', screen:'一张😠生气的脸', optA:'😄 开心', optB:'😢 难过', optC:'😠 生气', answer:'C', interaction:'点击1个选项', time:10, hint:'眉毛皱起来是什么表情？' },

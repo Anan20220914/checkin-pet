@@ -1,7 +1,7 @@
 // views/home.js — 首页：居中单卡片布局（宠物状态栏 + 宠物互动区 + 打卡速览）
 
 import { getState, update } from '../store.js';
-import { isDailyDuelDone, recordDailyDuel, getStudyDoneCount } from '../tasks.js';
+import { isDailyDuelDone, recordDailyDuel, getStudyDoneCount, isDuelRetryAvailable, getDuelRetryState, clearDuelRetryState } from '../tasks.js';
 import { getActivePet, petStats } from '../pets.js';
 import { MONSTER_TIERS, STUDY_MIN_FOR_DUEL, RARITY_NAME, RARITY_COLOR, WEEKLY_GIFTS } from '../db2.js';
 import { esc, relDay, todayKey, dayOffset } from '../utils.js';
@@ -117,6 +117,11 @@ export function renderHome() {
 
   // === 决斗主舞台（简化版）===
   const monsterEmoji = (monster && monster.emoji) || '🐺';
+  const retryState = getDuelRetryState();
+  const retryAvailable = isDuelRetryAvailable();
+  // 重试状态下，怪物用剩余 HP
+  const displayMonster = retryAvailable && retryState ? { ...monster, hp: retryState.monsterHpLeft, maxHp: monster.hp } : monster;
+  const monHpPct = displayMonster ? (displayMonster.hp / displayMonster.maxHp * 100) : 100;
   html += `
     <div class="arena-card">
       <div class="arena-bg"></div>
@@ -132,13 +137,14 @@ export function renderHome() {
         </div>
         <div class="arena-vs">VS</div>
         <div class="arena-monster">
-          ${monster ? `<div class="arena-monster-emoji" style="font-size:80px;line-height:1">${monsterEmoji}</div>
-          <div class="arena-name">${esc(monster.name)}</div>
-          <div class="arena-hp"><div class="fill monster" style="width:100%"></div></div>
-          <div class="arena-hp-text">Tier ${monster.tier}</div>` : '今日怪兽未刷新'}
+          ${displayMonster ? `<div class="arena-monster-emoji" style="font-size:80px;line-height:1">${monsterEmoji}</div>
+          <div class="arena-name">${esc(displayMonster.name)}</div>
+          <div class="arena-hp"><div class="fill monster" style="width:${monHpPct}%"></div></div>
+          <div class="arena-hp-text">${retryAvailable ? `剩余 ${displayMonster.hp}/${displayMonster.maxHp} HP` : `Tier ${displayMonster.tier}`}</div>` : '今日怪兽未刷新'}
         </div>
       </div>
       <div class="arena-ground"></div>
+      ${retryAvailable ? `<div style="text-align:center;padding:4px 0 8px;font-size:12px;color:var(--primary-dark);font-weight:700">⚠️ 上次决斗失败，怪物剩余 ${retryState.monsterHpLeft} HP · 可喂食后二次决斗</div>` : ''}
       <div class="arena-btn-wrap">
         ${duelBtn(dueled, studyDone, pet, monster)}
       </div>
@@ -239,6 +245,13 @@ export function renderHome() {
 
 function duelBtn(dueled, studyDone, pet, monster) {
   if (dueled) return `<button class="btn big block" disabled>今日已对决 ✓</button>`;
+  // 检查是否处于重试状态
+  const retryAvailable = isDuelRetryAvailable();
+  if (retryAvailable) {
+    const retryState = getDuelRetryState();
+    if (!pet || pet.currentHp <= 0) return `<button class="btn big block" disabled>宠物体力不足，请先喂食恢复</button>`;
+    return `<button class="btn big block" id="goDuel" style="background:var(--primary-dark)">⚔️ 二次决斗（怪物剩余 ${retryState.monsterHpLeft} HP）</button>`;
+  }
   if (!monster) return `<button class="btn big block" disabled>怪兽未刷新</button>`;
   if (!pet || pet.currentHp <= 0) return `<button class="btn big block" disabled>宠物体力不足</button>`;
   return `<button class="btn big block" id="goDuel">⚔️ 开始决斗</button>`;
@@ -266,9 +279,28 @@ function startDailyDuel() {
   const pet = getActivePet();
   const monster = s.monsters.today;
   if (!pet || !monster) { toast('数据异常'); return; }
-  if (pet.currentHp <= 0) { toast('宠物体力不足'); return; }
-  const result = runBattle(pet, monster);
-  playBattleAnimation(pet, monster, result, () => settleDailyDuel(pet, monster, result));
+  if (pet.currentHp <= 0) { toast('宠物体力不足，请先喂食恢复'); return; }
+
+  // 检查是否处于重试状态
+  const retryState = getDuelRetryState();
+  const isRetry = isDuelRetryAvailable();
+
+  if (isRetry && retryState) {
+    // 二次决斗：怪物用剩余 HP
+    const weakenedMonster = {
+      ...monster,
+      hp: retryState.monsterHpLeft,
+      maxHp: monster.hp,
+      atk: retryState.monsterAtkLeft,
+      def: retryState.monsterDefLeft,
+    };
+    const result = runBattle(pet, weakenedMonster);
+    playBattleAnimation(pet, weakenedMonster, result, () => settleDailyDuelRetry(pet, weakenedMonster, result));
+  } else {
+    // 首次决斗
+    const result = runBattle(pet, monster);
+    playBattleAnimation(pet, monster, result, () => settleDailyDuel(pet, monster, result));
+  }
 }
 
 function playBattleAnimation(pet, monster, result, onDone) {
@@ -328,7 +360,7 @@ function settleDailyDuel(pet, monster, result) {
   update(st => {
     const p = st.pets.find(pp => pp.id === pet.id);
     if (p) { p.currentHp = Math.max(won ? 1 : 0, result.petHpLeft); p.buffs = []; }
-    st.battles.push({ id: 'b_' + Date.now().toString(36), date: monster.date, petId: pet.id, monsterId: monster.id, result: result.result, turns: result.turns, dropEgg: false, earnedPoints: 0 });
+    st.battles.push({ id: 'b_' + Date.now().toString(36), date: monster.date, petId: pet.id, monsterId: monster.id, result: result.result, turns: result.turns, dropEgg: false, earnedPoints: 0, attempt: 1 });
     st.stats.totalBattles++;
     if (!st.pokedex.monsters.includes(monster.tier)) st.pokedex.monsters.push(monster.tier);
     if (won) {
@@ -342,18 +374,89 @@ function settleDailyDuel(pet, monster, result) {
     st.wallet.points += reward; st.wallet.totalEarned += reward;
   });
   if (dropEgg) addEgg('daily-duel');
-  recordDailyDuel({ result: result.result, dropEgg, reward, monsterId: monster.id });
-  if (won) celebrate('决斗胜利！', dropEgg ? `掉落宠物蛋🥚 +${reward}金币` : `连胜${getState().stats.streak} +${reward}金币`);
 
-  const streakAfter = getState().stats.streak;
   if (won) {
+    recordDailyDuel({ result: result.result, dropEgg, reward, monsterId: monster.id });
+    celebrate('决斗胜利！', dropEgg ? `掉落宠物蛋🥚 +${reward}金币` : `连胜${getState().stats.streak} +${reward}金币`);
+    const streakAfter = getState().stats.streak;
     closeOverlay();
     const sub = dropEgg ? `获得 ${reward} 金币 · 掉落宠物蛋🥚` : `获得 ${reward} 金币 · 连胜 ${streakAfter}`;
     celebrate('决斗胜利', sub);
     setTimeout(()=>switchTab('home'),100);
     return;
   }
-  const html = `<h2>😴 再接再厉</h2><div class="desc">没能击败 ${monster.name}，连胜归零 · 获得 ${reward} 金币</div><button class="btn block" id="duelPet">好的</button>`;
+
+  // 失败：记录怪物剩余状态，允许二次决斗
+  recordDailyDuel({
+    result: 'lose',
+    dropEgg: false,
+    reward,
+    monsterId: monster.id,
+    retryState: {
+      monsterHpLeft: result.monsterHpLeft,
+      monsterAtkLeft: monster.atk,
+      monsterDefLeft: monster.def,
+      attempt: 1,
+    },
+  });
+
+  const html = `<h2>😴 决斗失败</h2>
+    <div class="desc">没能击败 ${monster.name}，连胜归零 · 获得 ${reward} 金币</div>
+    <div style="background:var(--bg-soft);border-radius:12px;padding:12px;margin:12px 0;text-align:center">
+      <div style="font-size:14px;color:var(--text-soft)">怪物剩余状态</div>
+      <div style="font-size:28px;font-weight:800;color:var(--primary-dark);margin:4px 0">${monster.emoji} ${result.monsterHpLeft} HP</div>
+      <div style="font-size:12px;color:var(--text-soft)">冲击力 ${monster.atk} · 防御 ${monster.def}</div>
+    </div>
+    <div style="font-size:13px;color:var(--primary-dark);text-align:center;margin-bottom:12px">
+      💡 可以给宠物喂食恢复体力后，再发起<b>二次决斗</b>！<br>怪物会保留剩余血量。
+    </div>
+    <button class="btn block" id="duelRetry" style="margin-bottom:8px">🍎 去喂食恢复</button>
+    <button class="btn secondary block" id="duelPet">好的</button>`;
+  showOverlay(html, { onMount: c => {
+    c.querySelector('#duelPet').onclick = () => { closeOverlay(); switchTab('home'); };
+    c.querySelector('#duelRetry').onclick = () => { closeOverlay(); switchTab('pets'); };
+  }});
+}
+
+/** 二次决斗结算 */
+function settleDailyDuelRetry(pet, weakenedMonster, result) {
+  const won = result.result === 'win';
+  let reward = 0, dropEgg = false;
+  update(st => {
+    const p = st.pets.find(pp => pp.id === pet.id);
+    if (p) { p.currentHp = Math.max(won ? 1 : 0, result.petHpLeft); p.buffs = []; }
+    st.battles.push({ id: 'b_' + Date.now().toString(36), date: weakenedMonster.date, petId: pet.id, monsterId: weakenedMonster.id, result: result.result, turns: result.turns, dropEgg: false, earnedPoints: 0, attempt: 2 });
+    st.stats.totalBattles++;
+    if (won) {
+      st.stats.streak = (st.stats.streak || 0) + 1;
+      if (st.stats.streak > st.stats.bestStreak) st.stats.bestStreak = st.stats.streak;
+      st.stats.totalWins++;
+      reward = winReward(weakenedMonster.tier);
+      dropEgg = shouldDropEgg(weakenedMonster.tier, st.stats.noDropStreak || 0);
+      st.stats.noDropStreak = dropEgg ? 0 : (st.stats.noDropStreak || 0) + 1;
+    } else { st.stats.streak = 0; reward = 2; }
+    st.wallet.points += reward; st.wallet.totalEarned += reward;
+  });
+  if (dropEgg) addEgg('daily-duel');
+
+  // 二次决斗后清除重试状态（无论胜负，不再有第三次机会）
+  clearDuelRetryState();
+  recordDailyDuel({ result: result.result, dropEgg, reward, monsterId: weakenedMonster.id });
+
+  if (won) {
+    celebrate('二次决斗胜利！', dropEgg ? `掉落宠物蛋🥚 +${reward}金币` : `连胜${getState().stats.streak} +${reward}金币`);
+    const streakAfter = getState().stats.streak;
+    closeOverlay();
+    const sub = dropEgg ? `获得 ${reward} 金币 · 掉落宠物蛋🥚` : `获得 ${reward} 金币 · 连胜 ${streakAfter}`;
+    celebrate('二次决斗胜利', sub);
+    setTimeout(()=>switchTab('home'),100);
+    return;
+  }
+
+  const html = `<h2>😴 二次决斗失败</h2>
+    <div class="desc">没能击败 ${weakenedMonster.name}，连胜归零 · 获得 ${reward} 金币</div>
+    <div style="font-size:13px;color:var(--text-soft);text-align:center;margin:8px 0">今日决斗机会已用完，明天再战！</div>
+    <button class="btn block" id="duelPet">好的</button>`;
   showOverlay(html, { onMount: c => {
     c.querySelector('#duelPet').onclick = () => { closeOverlay(); switchTab('home'); };
   }});

@@ -322,6 +322,14 @@ export function migrate(data) {
   // 始终用最新预设任务覆盖（保留自定义任务）
   const customTasks = (data.tasks || []).filter(t => t.custom);
   data.tasks = [...buildTasks(), ...customTasks];
+
+  // 一次性清理：2026-08-20 短文阅读打卡记录（当天内容有误，需重新打卡）
+  const fixDate = '2026-08-20';
+  if (data.checkins && data.checkins[fixDate]) {
+    if (data.checkins[fixDate].q_xiehouyu) {
+      delete data.checkins[fixDate].q_xiehouyu;
+    }
+  }
   if (data.stats.totalSpeakWins === undefined) data.stats.totalSpeakWins = 0;
   if (data.stats.maxPets === undefined) data.stats.maxPets = (data.pets || []).length || 1;
   if (data.stats.streak === undefined) data.stats.streak = 0;

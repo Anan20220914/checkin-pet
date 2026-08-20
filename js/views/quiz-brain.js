@@ -11,56 +11,56 @@ let state = null; // { task, problems, idx, answers: [] }
 /* ===== 结构化题库 ===== */
 const BRAIN_QUESTIONS = [
   // 图形规律与推理 G1-G51 (51题)
-  { id:'G1', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：红圆 蓝圆 红圆 蓝圆 红圆 ？', optA:'红圆', optB:'蓝圆', optC:'黄圆', answer:'B', interaction:'点击1个选项', time:20, hint:'看看颜色是不是轮流出现？' },
-  { id:'G2', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：红方 黄方 红方 黄方 红方 ？', optA:'红方', optB:'黄方', optC:'绿方', answer:'B', interaction:'点击1个选项', time:20, hint:'方块颜色在轮流变化' },
-  { id:'G3', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：三角 圆 三角 圆 三角 ？', optA:'三角', optB:'圆', optC:'方', answer:'B', interaction:'点击1个选项', time:20, hint:'三角形和圆形轮流出现' },
-  { id:'G4', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：猫 狗 猫 狗 猫 ？', optA:'猫', optB:'狗', optC:'老鼠', answer:'B', interaction:'点击1个选项', time:20, hint:'小猫和小狗轮流出现' },
-  { id:'G5', dim:'图形规律与推理', type:'单选', q:'找出不一样的那个！', screen:'5个圆形：红红红红蓝，哪个颜色不一样？', optA:'第1个红圆', optB:'第3个红圆', optC:'第5个蓝圆', answer:'C', interaction:'点击1个选项', time:15, hint:'看看哪个颜色不一样' },
+  { id:'G1', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：红圆 蓝圆 红圆 蓝圆 红圆 ？', optA:'红圆', optB:'蓝圆', optC:'黄圆', answer:'B', interaction:'点击1个选项', time:20, visual:'红:圆|蓝:圆|红:圆|蓝:圆|红:圆|?', hint:'看看颜色是不是轮流出现？' },
+  { id:'G2', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：红方 黄方 红方 黄方 红方 ？', optA:'红方', optB:'黄方', optC:'绿方', answer:'B', interaction:'点击1个选项', time:20, visual:'红:方|黄:方|红:方|黄:方|红:方|?', hint:'方块颜色在轮流变化' },
+  { id:'G3', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：三角 圆 三角 圆 三角 ？', optA:'三角', optB:'圆', optC:'方', answer:'B', interaction:'点击1个选项', time:20, visual:'黄:三角|蓝:圆|黄:三角|蓝:圆|黄:三角|?', hint:'三角形和圆形轮流出现' },
+  { id:'G4', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：猫 狗 猫 狗 猫 ？', optA:'猫', optB:'狗', optC:'老鼠', answer:'B', interaction:'点击1个选项', time:20, visual:'棕:方:猫|灰:方:狗|棕:方:猫|灰:方:狗|棕:方:猫|?', hint:'小猫和小狗轮流出现' },
+  { id:'G5', dim:'图形规律与推理', type:'单选', q:'找出不一样的那个！', screen:'5个圆形：红红红红蓝，哪个颜色不一样？', optA:'第1个红圆', optB:'第3个红圆', optC:'第5个蓝圆', answer:'C', interaction:'点击1个选项', time:15, visual:'红:圆|红:圆|红:圆|红:圆|蓝:圆', hint:'看看哪个颜色不一样' },
   { id:'G6', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：1个苹果 2个苹果 1个苹果 2个苹果 1个苹果 ？', optA:'1个苹果', optB:'2个苹果', optC:'3个苹果', answer:'B', interaction:'点击1个选项', time:25, hint:'数数每次有几个苹果，1个2个轮流' },
   { id:'G7', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：红 黄 蓝 红 黄 蓝 红 ？', optA:'红', optB:'黄', optC:'蓝', answer:'B', interaction:'点击1个选项', time:25, hint:'红黄蓝三个一组轮流出现' },
   { id:'G8', dim:'图形规律与推理', type:'单选', q:'哪个和其他不一样？', screen:'小狗 小猫 老鼠 花朵', optA:'小狗', optB:'花朵', optC:'老鼠', answer:'B', interaction:'点击1个选项', time:15, hint:'其他三个都是什么？' },
   { id:'G9', dim:'图形规律与推理', type:'单选', q:'哪个和其他不一样？', screen:'太阳 月亮 星星 小鱼', optA:'太阳', optB:'小鱼', optC:'月亮', answer:'B', interaction:'点击1个选项', time:15, hint:'其他三个都在哪里？' },
   { id:'G10', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：1颗星 2颗星 3颗星 4颗星 ？', optA:'5颗星', optB:'3颗星', optC:'1颗星', answer:'A', interaction:'点击1个选项', time:25, hint:'星星数量在变多还是变少？' },
-  { id:'G11', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：大 小 大 小 大 ？', optA:'大', optB:'小', optC:'一样大', answer:'B', interaction:'点击1个选项', time:20, hint:'大小在轮流变化' },
-  { id:'G12', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：上 下 上 下 上 ？', optA:'上', optB:'下', optC:'左', answer:'B', interaction:'点击1个选项', time:20, hint:'上下在轮流变化' },
-  { id:'G13', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：圆 方 圆 方 圆 ？', optA:'圆', optB:'方', optC:'三角', answer:'B', interaction:'点击1个选项', time:20, hint:'圆形和方形轮流出现' },
-  { id:'G14', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：红 蓝 红 蓝 红 蓝 红 ？', optA:'红', optB:'蓝', optC:'绿', answer:'B', interaction:'点击1个选项', time:20, hint:'红蓝轮流出现' },
-  { id:'G15', dim:'图形规律与推理', type:'单选', q:'找出不一样的那个！', screen:'5个方块：蓝蓝蓝蓝红，哪个不一样？', optA:'第1个蓝方', optB:'第3个蓝方', optC:'第5个红方', answer:'C', interaction:'点击1个选项', time:15, hint:'看看哪个颜色不一样' },
-  { id:'G16', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：1 2 1 2 1 ？', optA:'1', optB:'2', optC:'3', answer:'B', interaction:'点击1个选项', time:20, hint:'1和2轮流出现' },
-  { id:'G17', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：苹果 香蕉 苹果 香蕉 苹果 ？', optA:'苹果', optB:'香蕉', optC:'橘子', answer:'B', interaction:'点击1个选项', time:20, hint:'苹果和香蕉轮流出现' },
-  { id:'G18', dim:'图形规律与推理', type:'单选', q:'哪个和其他不一样？', screen:'苹果 香蕉 橘子 积木', optA:'苹果', optB:'积木', optC:'香蕉', answer:'B', interaction:'点击1个选项', time:15, hint:'其他三个都可以吃' },
-  { id:'G19', dim:'图形规律与推理', type:'单选', q:'哪个和其他不一样？', screen:'汽车 巴士 自行车 电视机', optA:'汽车', optB:'电视机', optC:'巴士', answer:'B', interaction:'点击1个选项', time:15, hint:'其他三个都是什么？' },
-  { id:'G20', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：大圆 小圆 大圆 小圆 大圆 ？', optA:'大圆', optB:'小圆', optC:'一样大', answer:'B', interaction:'点击1个选项', time:25, hint:'大小在轮流变化' },
-  { id:'G21', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：红三角 蓝三角 红三角 蓝三角 红三角 ？', optA:'红三角', optB:'蓝三角', optC:'绿三角', answer:'B', interaction:'点击1个选项', time:25, hint:'颜色在轮流变化' },
-  { id:'G22', dim:'图形规律与推理', type:'单选', q:'找出不一样的那个！', screen:'4个图形：圆圆圆圆方，哪个不一样？', optA:'第1个圆', optB:'第3个圆', optC:'第5个方', answer:'C', interaction:'点击1个选项', time:15, hint:'看看哪个形状不一样' },
-  { id:'G23', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：2 4 2 4 2 ？', optA:'2', optB:'4', optC:'6', answer:'B', interaction:'点击1个选项', time:25, hint:'2和4轮流出现' },
-  { id:'G24', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：太阳 月亮 太阳 月亮 太阳 ？', optA:'太阳', optB:'月亮', optC:'星星', answer:'B', interaction:'点击1个选项', time:20, hint:'太阳和月亮轮流出现' },
-  { id:'G25', dim:'图形规律与推理', type:'单选', q:'哪个和其他不一样？', screen:'红花 蓝花 黄花 红球', optA:'红花', optB:'红球', optC:'蓝花', answer:'B', interaction:'点击1个选项', time:15, hint:'其他三个都是什么？' },
-  { id:'G26', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：左 右 左 右 左 ？', optA:'左', optB:'右', optC:'上', answer:'B', interaction:'点击1个选项', time:20, hint:'左右在轮流变化' },
-  { id:'G27', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：大三角 小三角 大三角 小三角 大三角 ？', optA:'大三角', optB:'小三角', optC:'一样大', answer:'B', interaction:'点击1个选项', time:25, hint:'大小在轮流变化' },
-  { id:'G28', dim:'图形规律与推理', type:'单选', q:'找出不一样的那个！', screen:'5个三角形：红红红红蓝，哪个不一样？', optA:'第1个红三角', optB:'第3个红三角', optC:'第5个蓝三角', answer:'C', interaction:'点击1个选项', time:15, hint:'看看哪个颜色不一样' },
-  { id:'G29', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：1个圆 2个圆 3个圆 4个圆 ？', optA:'5个圆', optB:'3个圆', optC:'1个圆', answer:'A', interaction:'点击1个选项', time:25, hint:'圆的数量在变多' },
-  { id:'G30', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：红 黄 红 黄 红 黄 红 ？', optA:'红', optB:'黄', optC:'蓝', answer:'B', interaction:'点击1个选项', time:20, hint:'红黄轮流出现' },
-  { id:'G31', dim:'图形规律与推理', type:'单选', q:'哪个和其他不一样？', screen:'狗 猫 兔子 椅子', optA:'狗', optB:'椅子', optC:'猫', answer:'B', interaction:'点击1个选项', time:15, hint:'其他三个都是动物' },
-  { id:'G32', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：方 圆 三角 方 圆 三角 方 ？', optA:'方', optB:'圆', optC:'三角', answer:'B', interaction:'点击1个选项', time:25, hint:'方圆三角三个一组轮流' },
-  { id:'G33', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：大 大 小 大 大 小 大 大 ？', optA:'大', optB:'小', optC:'一样大', answer:'B', interaction:'点击1个选项', time:30, hint:'两个大一个小轮流' },
-  { id:'G34', dim:'图形规律与推理', type:'单选', q:'找出不一样的那个！', screen:'5个图形：方方方方圆，哪个不一样？', optA:'第1个方', optB:'第3个方', optC:'第5个圆', answer:'C', interaction:'点击1个选项', time:15, hint:'看看哪个形状不一样' },
-  { id:'G35', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：红圆 蓝方 红圆 蓝方 红圆 ？', optA:'红圆', optB:'蓝方', optC:'绿圆', answer:'B', interaction:'点击1个选项', time:25, hint:'红圆和蓝方轮流出现' },
-  { id:'G36', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：3 1 3 1 3 ？', optA:'3', optB:'1', optC:'2', answer:'B', interaction:'点击1个选项', time:20, hint:'3和1轮流出现' },
-  { id:'G37', dim:'图形规律与推理', type:'单选', q:'哪个和其他不一样？', screen:'桌子 椅子 床 苹果', optA:'桌子', optB:'苹果', optC:'椅子', answer:'B', interaction:'点击1个选项', time:15, hint:'其他三个都是家具' },
-  { id:'G38', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：猫 狗 鸟 猫 狗 鸟 猫 ？', optA:'猫', optB:'狗', optC:'鸟', answer:'B', interaction:'点击1个选项', time:30, hint:'猫狗鸟三个一组轮流' },
-  { id:'G39', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：1颗星 3颗星 1颗星 3颗星 1颗星 ？', optA:'1颗星', optB:'3颗星', optC:'2颗星', answer:'B', interaction:'点击1个选项', time:25, hint:'1颗和3颗轮流出现' },
-  { id:'G40', dim:'图形规律与推理', type:'单选', q:'找出不一样的那个！', screen:'5个圆：蓝蓝蓝蓝红，哪个不一样？', optA:'第1个蓝圆', optB:'第3个蓝圆', optC:'第5个红圆', answer:'C', interaction:'点击1个选项', time:15, hint:'看看哪个颜色不一样' },
-  { id:'G41', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：红 绿 红 绿 红 绿 红 ？', optA:'红', optB:'绿', optC:'黄', answer:'B', interaction:'点击1个选项', time:20, hint:'红绿轮流出现' },
-  { id:'G42', dim:'图形规律与推理', type:'单选', q:'哪个和其他不一样？', screen:'铅笔 橡皮 尺子 香蕉', optA:'铅笔', optB:'香蕉', optC:'橡皮', answer:'B', interaction:'点击1个选项', time:15, hint:'其他三个都是学习用品' },
-  { id:'G43', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：大 小 大 小 大 小 大 ？', optA:'大', optB:'小', optC:'一样大', answer:'B', interaction:'点击1个选项', time:20, hint:'大小轮流出现' },
-  { id:'G44', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：圆 三角 圆 三角 圆 ？', optA:'圆', optB:'三角', optC:'方', answer:'B', interaction:'点击1个选项', time:20, hint:'圆和三角轮流出现' },
-  { id:'G45', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：2个苹果 1个苹果 2个苹果 1个苹果 2个苹果 ？', optA:'2个苹果', optB:'1个苹果', optC:'3个苹果', answer:'B', interaction:'点击1个选项', time:25, hint:'2个和1个轮流出现' },
-  { id:'G46', dim:'图形规律与推理', type:'单选', q:'找出不一样的那个！', screen:'4个图形：三角三角三角圆，哪个不一样？', optA:'第1个三角', optB:'第3个三角', optC:'第4个圆', answer:'C', interaction:'点击1个选项', time:15, hint:'看看哪个形状不一样' },
-  { id:'G47', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：红 黄 红 黄 红 ？', optA:'红', optB:'黄', optC:'蓝', answer:'B', interaction:'点击1个选项', time:20, hint:'红黄轮流出现' },
-  { id:'G48', dim:'图形规律与推理', type:'单选', q:'哪个和其他不一样？', screen:'牛奶 果汁 白开水 铅笔', optA:'牛奶', optB:'铅笔', optC:'果汁', answer:'B', interaction:'点击1个选项', time:15, hint:'其他三个都是饮料' },
-  { id:'G49', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：5 3 5 3 5 ？', optA:'5', optB:'3', optC:'4', answer:'B', interaction:'点击1个选项', time:25, hint:'5和3轮流出现' },
-  { id:'G50', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：太阳 云 太阳 云 太阳 云 太阳 ？', optA:'太阳', optB:'云', optC:'月亮', answer:'B', interaction:'点击1个选项', time:25, hint:'太阳和云轮流出现' },
+  { id:'G11', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：大 小 大 小 大 ？', optA:'大', optB:'小', optC:'一样大', answer:'B', interaction:'点击1个选项', time:20, visual:'红:圆:1|红:圆:2|红:圆:1|红:圆:2|红:圆:1|?', hint:'大小在轮流变化' },
+  { id:'G12', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：上 下 上 下 上 ？', optA:'上', optB:'下', optC:'左', answer:'B', interaction:'点击1个选项', time:20, visual:'红:方|黄:方|蓝:方|红:方|黄:方|蓝:方|红:方|?', hint:'上下在轮流变化' },
+  { id:'G13', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：圆 方 圆 方 圆 ？', optA:'圆', optB:'方', optC:'三角', answer:'B', interaction:'点击1个选项', time:20, visual:'棕:方:狗|灰:方:猫|灰:方:鼠|粉:方:花', hint:'圆形和方形轮流出现' },
+  { id:'G14', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：红 蓝 红 蓝 红 蓝 红 ？', optA:'红', optB:'蓝', optC:'绿', answer:'B', interaction:'点击1个选项', time:20, visual:'橙:圆:日|黄:圆:月|黄:方:星|蓝:方:鱼', hint:'红蓝轮流出现' },
+  { id:'G15', dim:'图形规律与推理', type:'单选', q:'找出不一样的那个！', screen:'5个方块：蓝蓝蓝蓝红，哪个不一样？', optA:'第1个蓝方', optB:'第3个蓝方', optC:'第5个红方', answer:'C', interaction:'点击1个选项', time:15, visual:'黄:方:1|黄:方:2|黄:方:3|黄:方:4|?', hint:'看看哪个颜色不一样' },
+  { id:'G16', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：1 2 1 2 1 ？', optA:'1', optB:'2', optC:'3', answer:'B', interaction:'点击1个选项', time:20, visual:'蓝:圆:大|蓝:圆:小|蓝:圆:大|蓝:圆:小|蓝:圆:大|?', hint:'1和2轮流出现' },
+  { id:'G17', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：苹果 香蕉 苹果 香蕉 苹果 ？', optA:'苹果', optB:'香蕉', optC:'橘子', answer:'B', interaction:'点击1个选项', time:20, visual:'绿:方:上|绿:方:下|绿:方:上|绿:方:下|绿:方:上|?', hint:'苹果和香蕉轮流出现' },
+  { id:'G18', dim:'图形规律与推理', type:'单选', q:'哪个和其他不一样？', screen:'苹果 香蕉 橘子 积木', optA:'苹果', optB:'积木', optC:'香蕉', answer:'B', interaction:'点击1个选项', time:15, visual:'蓝:圆|蓝:方|蓝:圆|蓝:方|蓝:圆|?', hint:'其他三个都可以吃' },
+  { id:'G19', dim:'图形规律与推理', type:'单选', q:'哪个和其他不一样？', screen:'汽车 巴士 自行车 电视机', optA:'汽车', optB:'电视机', optC:'巴士', answer:'B', interaction:'点击1个选项', time:15, visual:'红:方|蓝:方|红:方|蓝:方|红:方|蓝:方|红:方|?', hint:'其他三个都是什么？' },
+  { id:'G20', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：大圆 小圆 大圆 小圆 大圆 ？', optA:'大圆', optB:'小圆', optC:'一样大', answer:'B', interaction:'点击1个选项', time:25, visual:'蓝:方|蓝:方|蓝:方|蓝:方|红:方', hint:'大小在轮流变化' },
+  { id:'G21', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：红三角 蓝三角 红三角 蓝三角 红三角 ？', optA:'红三角', optB:'蓝三角', optC:'绿三角', answer:'B', interaction:'点击1个选项', time:25, visual:'紫:圆:1|紫:圆:2|紫:圆:1|紫:圆:2|紫:圆:1|?', hint:'颜色在轮流变化' },
+  { id:'G22', dim:'图形规律与推理', type:'单选', q:'找出不一样的那个！', screen:'4个图形：圆圆圆圆方，哪个不一样？', optA:'第1个圆', optB:'第3个圆', optC:'第5个方', answer:'C', interaction:'点击1个选项', time:15, visual:'红:圆:果|黄:圆:蕉|红:圆:果|黄:圆:蕉|红:圆:果|?', hint:'看看哪个形状不一样' },
+  { id:'G23', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：2 4 2 4 2 ？', optA:'2', optB:'4', optC:'6', answer:'B', interaction:'点击1个选项', time:25, visual:'红:圆:果|黄:圆:蕉|橙:圆:橘|棕:方:木', hint:'2和4轮流出现' },
+  { id:'G24', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：太阳 月亮 太阳 月亮 太阳 ？', optA:'太阳', optB:'月亮', optC:'星星', answer:'B', interaction:'点击1个选项', time:20, visual:'蓝:方:车|黄:方:巴|绿:方:车|黑:方:视', hint:'太阳和月亮轮流出现' },
+  { id:'G25', dim:'图形规律与推理', type:'单选', q:'哪个和其他不一样？', screen:'红花 蓝花 黄花 红球', optA:'红花', optB:'红球', optC:'蓝花', answer:'B', interaction:'点击1个选项', time:15, visual:'红:圆|红:圆|红:圆|红:圆|红:圆|?', hint:'其他三个都是什么？' },
+  { id:'G26', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：左 右 左 右 左 ？', optA:'左', optB:'右', optC:'上', answer:'B', interaction:'点击1个选项', time:20, visual:'红:三角|蓝:三角|红:三角|蓝:三角|红:三角|?', hint:'左右在轮流变化' },
+  { id:'G27', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：大三角 小三角 大三角 小三角 大三角 ？', optA:'大三角', optB:'小三角', optC:'一样大', answer:'B', interaction:'点击1个选项', time:25, visual:'蓝:圆|蓝:圆|蓝:圆|蓝:圆|蓝:方', hint:'大小在轮流变化' },
+  { id:'G28', dim:'图形规律与推理', type:'单选', q:'找出不一样的那个！', screen:'5个三角形：红红红红蓝，哪个不一样？', optA:'第1个红三角', optB:'第3个红三角', optC:'第5个蓝三角', answer:'C', interaction:'点击1个选项', time:15, visual:'绿:方:2|绿:方:4|绿:方:2|绿:方:4|绿:方:2|?', hint:'看看哪个颜色不一样' },
+  { id:'G29', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：1个圆 2个圆 3个圆 4个圆 ？', optA:'5个圆', optB:'3个圆', optC:'1个圆', answer:'A', interaction:'点击1个选项', time:25, visual:'橙:圆:日|黄:圆:月|橙:圆:日|黄:圆:月|橙:圆:日|?', hint:'圆的数量在变多' },
+  { id:'G30', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：红 黄 红 黄 红 黄 红 ？', optA:'红', optB:'黄', optC:'蓝', answer:'B', interaction:'点击1个选项', time:20, visual:'红:圆:花|蓝:圆:花|黄:圆:花|红:圆:球', hint:'红黄轮流出现' },
+  { id:'G31', dim:'图形规律与推理', type:'单选', q:'哪个和其他不一样？', screen:'狗 猫 兔子 椅子', optA:'狗', optB:'椅子', optC:'猫', answer:'B', interaction:'点击1个选项', time:15, visual:'紫:方:左|紫:方:右|紫:方:左|紫:方:右|紫:方:左|?', hint:'其他三个都是动物' },
+  { id:'G32', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：方 圆 三角 方 圆 三角 方 ？', optA:'方', optB:'圆', optC:'三角', answer:'B', interaction:'点击1个选项', time:25, visual:'蓝:三角|蓝:三角|蓝:三角|蓝:三角|蓝:三角|?', hint:'方圆三角三个一组轮流' },
+  { id:'G33', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：大 大 小 大 大 小 大 大 ？', optA:'大', optB:'小', optC:'一样大', answer:'B', interaction:'点击1个选项', time:30, visual:'红:三角|红:三角|红:三角|红:三角|蓝:三角', hint:'两个大一个小轮流' },
+  { id:'G34', dim:'图形规律与推理', type:'单选', q:'找出不一样的那个！', screen:'5个图形：方方方方圆，哪个不一样？', optA:'第1个方', optB:'第3个方', optC:'第5个圆', answer:'C', interaction:'点击1个选项', time:15, visual:'绿:圆:1|绿:圆:2|绿:圆:3|绿:圆:4|?', hint:'看看哪个形状不一样' },
+  { id:'G35', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：红圆 蓝方 红圆 蓝方 红圆 ？', optA:'红圆', optB:'蓝方', optC:'绿圆', answer:'B', interaction:'点击1个选项', time:25, visual:'红:方|黄:方|红:方|黄:方|红:方|黄:方|红:方|?', hint:'红圆和蓝方轮流出现' },
+  { id:'G36', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：3 1 3 1 3 ？', optA:'3', optB:'1', optC:'2', answer:'B', interaction:'点击1个选项', time:20, visual:'棕:方:狗|灰:方:猫|白:方:兔|棕:方:椅', hint:'3和1轮流出现' },
+  { id:'G37', dim:'图形规律与推理', type:'单选', q:'哪个和其他不一样？', screen:'桌子 椅子 床 苹果', optA:'桌子', optB:'苹果', optC:'椅子', answer:'B', interaction:'点击1个选项', time:15, visual:'蓝:方|蓝:圆|蓝:三角|蓝:方|蓝:圆|蓝:三角|蓝:方|?', hint:'其他三个都是家具' },
+  { id:'G38', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：猫 狗 鸟 猫 狗 鸟 猫 ？', optA:'猫', optB:'狗', optC:'鸟', answer:'B', interaction:'点击1个选项', time:30, visual:'红:圆:大|红:圆:大|红:圆:小|红:圆:大|红:圆:大|红:圆:小|红:圆:大|红:圆:大|?', hint:'猫狗鸟三个一组轮流' },
+  { id:'G39', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：1颗星 3颗星 1颗星 3颗星 1颗星 ？', optA:'1颗星', optB:'3颗星', optC:'2颗星', answer:'B', interaction:'点击1个选项', time:25, visual:'绿:方|绿:方|绿:方|绿:方|绿:圆', hint:'1颗和3颗轮流出现' },
+  { id:'G40', dim:'图形规律与推理', type:'单选', q:'找出不一样的那个！', screen:'5个圆：蓝蓝蓝蓝红，哪个不一样？', optA:'第1个蓝圆', optB:'第3个蓝圆', optC:'第5个红圆', answer:'C', interaction:'点击1个选项', time:15, visual:'红:圆|蓝:方|红:圆|蓝:方|红:圆|?', hint:'看看哪个颜色不一样' },
+  { id:'G41', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：红 绿 红 绿 红 绿 红 ？', optA:'红', optB:'绿', optC:'黄', answer:'B', interaction:'点击1个选项', time:20, visual:'橙:圆:3|橙:圆:1|橙:圆:3|橙:圆:1|橙:圆:3|?', hint:'红绿轮流出现' },
+  { id:'G42', dim:'图形规律与推理', type:'单选', q:'哪个和其他不一样？', screen:'铅笔 橡皮 尺子 香蕉', optA:'铅笔', optB:'香蕉', optC:'橡皮', answer:'B', interaction:'点击1个选项', time:15, visual:'棕:方:桌|棕:方:椅|棕:方:床|红:圆:果', hint:'其他三个都是学习用品' },
+  { id:'G43', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：大 小 大 小 大 小 大 ？', optA:'大', optB:'小', optC:'一样大', answer:'B', interaction:'点击1个选项', time:20, visual:'灰:方:猫|棕:方:狗|蓝:方:鸟|灰:方:猫|棕:方:狗|蓝:方:鸟|灰:方:猫|?', hint:'大小轮流出现' },
+  { id:'G44', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：圆 三角 圆 三角 圆 ？', optA:'圆', optB:'三角', optC:'方', answer:'B', interaction:'点击1个选项', time:20, visual:'黄:方:1|黄:方:3|黄:方:1|黄:方:3|黄:方:1|?', hint:'圆和三角轮流出现' },
+  { id:'G45', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：2个苹果 1个苹果 2个苹果 1个苹果 2个苹果 ？', optA:'2个苹果', optB:'1个苹果', optC:'3个苹果', answer:'B', interaction:'点击1个选项', time:25, visual:'蓝:圆|蓝:圆|蓝:圆|蓝:圆|红:圆', hint:'2个和1个轮流出现' },
+  { id:'G46', dim:'图形规律与推理', type:'单选', q:'找出不一样的那个！', screen:'4个图形：三角三角三角圆，哪个不一样？', optA:'第1个三角', optB:'第3个三角', optC:'第4个圆', answer:'C', interaction:'点击1个选项', time:15, visual:'红:方|绿:方|红:方|绿:方|红:方|绿:方|红:方|?', hint:'看看哪个形状不一样' },
+  { id:'G47', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：红 黄 红 黄 红 ？', optA:'红', optB:'黄', optC:'蓝', answer:'B', interaction:'点击1个选项', time:20, visual:'黄:方:笔|粉:方:橡|蓝:方:尺|黄:圆:蕉', hint:'红黄轮流出现' },
+  { id:'G48', dim:'图形规律与推理', type:'单选', q:'哪个和其他不一样？', screen:'牛奶 果汁 白开水 铅笔', optA:'牛奶', optB:'铅笔', optC:'果汁', answer:'B', interaction:'点击1个选项', time:15, visual:'紫:圆:大|紫:圆:小|紫:圆:大|紫:圆:小|紫:圆:大|紫:圆:小|紫:圆:大|?', hint:'其他三个都是饮料' },
+  { id:'G49', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：5 3 5 3 5 ？', optA:'5', optB:'3', optC:'4', answer:'B', interaction:'点击1个选项', time:25, visual:'蓝:圆|蓝:三角|蓝:圆|蓝:三角|蓝:圆|?', hint:'5和3轮流出现' },
+  { id:'G50', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：太阳 云 太阳 云 太阳 云 太阳 ？', optA:'太阳', optB:'云', optC:'月亮', answer:'B', interaction:'点击1个选项', time:25, visual:'红:圆:2|红:圆:1|红:圆:2|红:圆:1|红:圆:2|?', hint:'太阳和云轮流出现' },
   { id:'G51', dim:'图形规律与推理', type:'单选', q:'下一个是什么？', screen:'序列：红蓝红蓝红蓝红蓝红 ？', optA:'红', optB:'蓝', optC:'绿', answer:'B', interaction:'点击1个选项', time:25, hint:'红蓝轮流出现' },
   // 情绪识别与社交 E1-E45 (45题)
   { id:'E1', dim:'情绪识别与社交', type:'单选', q:'他是什么心情？', screen:'一个小朋友在哭', optA:'开心', optB:'难过', optC:'生气', answer:'B', interaction:'点击1个选项', time:10, hint:'看看他在笑还是哭' },
@@ -109,49 +109,49 @@ const BRAIN_QUESTIONS = [
   { id:'E44', dim:'情绪识别与社交', type:'单选', q:'他需要什么？', screen:'小朋友鼻子流血了', optA:'低头', optB:'仰头', optC:'跑步', answer:'A', interaction:'点击1个选项', time:15, hint:'流鼻血要低头' },
   { id:'E45', dim:'情绪识别与社交', type:'单选', q:'哪个行为是对的？', screen:'A：玩具乱扔  B：玩具收整齐', optA:'乱扔', optB:'收整齐', optC:'都可以', answer:'B', interaction:'点击1个选项', time:10, hint:'玩完玩具要收好' },
   // 分类与配对 C1-C50 (51题)
-  { id:'C1', dim:'分类与配对', type:'单选', q:'哪个不是水果？', screen:'苹果、香蕉、汽车、葡萄', optA:'苹果', optB:'汽车', optC:'葡萄', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些是可以吃的水果？' },
+  { id:'C1', dim:'分类与配对', type:'单选', q:'哪个不是水果？', screen:'苹果、香蕉、汽车、葡萄', optA:'苹果', optB:'汽车', optC:'葡萄', answer:'B', interaction:'点击1个选项', time:15, visual:'红:圆:果|黄:圆:蕉|蓝:方:车|紫:圆:葡', hint:'哪些是可以吃的水果？' },
   { id:'C2', dim:'分类与配对', type:'单选', q:'面包和谁是好朋友？', screen:'面包、牛奶、积木', optA:'牛奶', optB:'积木', optC:'面包', answer:'A', interaction:'点击1个选项', time:15, hint:'早餐吃什么配面包？' },
   { id:'C3', dim:'分类与配对', type:'单选', q:'钉子和谁是好朋友？', screen:'锤子、钉子、勺子', optA:'锤子', optB:'勺子', optC:'钉子', answer:'A', interaction:'点击1个选项', time:15, hint:'爸爸用什么敲钉子？' },
   { id:'C4', dim:'分类与配对', type:'单选', q:'雪人和哪个在一起？', screen:'雪人，选项：雪花/太阳/落叶', optA:'雪花', optB:'太阳', optC:'落叶', answer:'A', interaction:'点击1个选项', time:15, hint:'什么时候会有雪人？' },
-  { id:'C5', dim:'分类与配对', type:'单选', q:'哪个不是动物？', screen:'小狗、小猫、花朵、兔子', optA:'小狗', optB:'花朵', optC:'兔子', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些是有生命的动物？' },
+  { id:'C5', dim:'分类与配对', type:'单选', q:'哪个不是动物？', screen:'小狗、小猫、花朵、兔子', optA:'小狗', optB:'花朵', optC:'兔子', answer:'B', interaction:'点击1个选项', time:15, visual:'棕:方:狗|灰:方:猫|粉:方:花|白:方:兔', hint:'哪些是有生命的动物？' },
   { id:'C6', dim:'分类与配对', type:'单选', q:'钥匙和谁是好朋友？', screen:'钥匙、锁、苹果', optA:'锁', optB:'苹果', optC:'钥匙', answer:'A', interaction:'点击1个选项', time:15, hint:'钥匙用来开什么？' },
   { id:'C7', dim:'分类与配对', type:'单选', q:'哪个不是交通工具？', screen:'汽车、巴士、自行车、花朵', optA:'汽车', optB:'花朵', optC:'自行车', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些是路上跑的车？' },
   { id:'C8', dim:'分类与配对', type:'单选', q:'雨伞和谁是好朋友？', screen:'雨伞、太阳、下雨', optA:'太阳', optB:'下雨', optC:'雨伞', answer:'B', interaction:'点击1个选项', time:15, hint:'什么时候需要用雨伞？' },
-  { id:'C9', dim:'分类与配对', type:'单选', q:'哪个不是蔬菜？', screen:'胡萝卜、白菜、番茄、篮球', optA:'胡萝卜', optB:'篮球', optC:'番茄', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些是饭桌上吃的菜？' },
+  { id:'C9', dim:'分类与配对', type:'单选', q:'哪个不是蔬菜？', screen:'胡萝卜、白菜、番茄、篮球', optA:'胡萝卜', optB:'篮球', optC:'番茄', answer:'B', interaction:'点击1个选项', time:15, visual:'红:圆:果|黄:圆:蕉|橙:圆:橘|棕:方:木', hint:'哪些是饭桌上吃的菜？' },
   { id:'C10', dim:'分类与配对', type:'单选', q:'哪个不是文具？', screen:'铅笔、橡皮、尺子、饼干', optA:'铅笔', optB:'饼干', optC:'橡皮', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些是学习用的？' },
-  { id:'C11', dim:'分类与配对', type:'单选', q:'哪个不是家具？', screen:'桌子、椅子、床、苹果', optA:'桌子', optB:'苹果', optC:'椅子', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些是家里的家具？' },
-  { id:'C12', dim:'分类与配对', type:'单选', q:'哪个不是电器？', screen:'电视、冰箱、洗衣机、毛巾', optA:'电视', optB:'毛巾', optC:'冰箱', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些要插电用？' },
-  { id:'C13', dim:'分类与配对', type:'单选', q:'哪个不是颜色？', screen:'红色、蓝色、绿色、苹果', optA:'红色', optB:'苹果', optC:'蓝色', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些是颜色？' },
-  { id:'C14', dim:'分类与配对', type:'单选', q:'哪个不是形状？', screen:'圆形、方形、三角形、香蕉', optA:'圆形', optB:'香蕉', optC:'方形', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些是形状？' },
-  { id:'C15', dim:'分类与配对', type:'单选', q:'哪个不是饮料？', screen:'牛奶、果汁、白开水、面包', optA:'牛奶', optB:'面包', optC:'果汁', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些是可以喝的？' },
-  { id:'C16', dim:'分类与配对', type:'单选', q:'哪个不是乐器？', screen:'钢琴、小提琴、鼓、椅子', optA:'钢琴', optB:'椅子', optC:'鼓', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些能演奏音乐？' },
-  { id:'C17', dim:'分类与配对', type:'单选', q:'哪个不是球类？', screen:'足球、篮球、乒乓球、书本', optA:'足球', optB:'书本', optC:'篮球', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些是球？' },
-  { id:'C18', dim:'分类与配对', type:'单选', q:'哪个不是昆虫？', screen:'蝴蝶、蚂蚁、蜜蜂、小鱼', optA:'蝴蝶', optB:'小鱼', optC:'蚂蚁', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些是小虫子？' },
-  { id:'C19', dim:'分类与配对', type:'单选', q:'哪个不是花？', screen:'玫瑰、向日葵、百合、白菜', optA:'玫瑰', optB:'白菜', optC:'百合', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些是花？' },
-  { id:'C20', dim:'分类与配对', type:'单选', q:'哪个不是树？', screen:'松树、柳树、苹果树、石头', optA:'松树', optB:'石头', optC:'柳树', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些是树？' },
-  { id:'C21', dim:'分类与配对', type:'单选', q:'哪个不是鸟？', screen:'麻雀、燕子、老鹰、小狗', optA:'麻雀', optB:'小狗', optC:'燕子', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些会飞是鸟？' },
-  { id:'C22', dim:'分类与配对', type:'单选', q:'哪个不是鱼？', screen:'金鱼、鲨鱼、鲤鱼、小猫', optA:'金鱼', optB:'小猫', optC:'鲤鱼', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些在水里游是鱼？' },
-  { id:'C23', dim:'分类与配对', type:'单选', q:'哪个不是水果？', screen:'西瓜、菠萝、芒果、毛巾', optA:'西瓜', optB:'毛巾', optC:'菠萝', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些是可以吃的水果？' },
-  { id:'C24', dim:'分类与配对', type:'单选', q:'哪个不是蔬菜？', screen:'黄瓜、茄子、辣椒、糖果', optA:'黄瓜', optB:'糖果', optC:'茄子', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些是饭桌上吃的菜？' },
-  { id:'C25', dim:'分类与配对', type:'单选', q:'哪个不是文具？', screen:'彩笔、剪刀、胶水、玩具车', optA:'彩笔', optB:'玩具车', optC:'剪刀', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些是学习用的？' },
-  { id:'C26', dim:'分类与配对', type:'单选', q:'哪个不是家具？', screen:'沙发、衣柜、书架、小狗', optA:'沙发', optB:'小狗', optC:'衣柜', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些是家里的家具？' },
-  { id:'C27', dim:'分类与配对', type:'单选', q:'哪个不是电器？', screen:'空调、电风扇、台灯、积木', optA:'空调', optB:'积木', optC:'电风扇', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些要插电用？' },
-  { id:'C28', dim:'分类与配对', type:'单选', q:'哪个不是颜色？', screen:'黄色、紫色、橙色、桌子', optA:'黄色', optB:'桌子', optC:'紫色', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些是颜色？' },
-  { id:'C29', dim:'分类与配对', type:'单选', q:'哪个不是形状？', screen:'圆形、方形、三角形、小狗', optA:'圆形', optB:'小狗', optC:'方形', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些是形状？' },
-  { id:'C30', dim:'分类与配对', type:'单选', q:'哪个不是饮料？', screen:'豆浆、酸奶、矿泉水、饼干', optA:'豆浆', optB:'饼干', optC:'酸奶', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些是可以喝的？' },
-  { id:'C31', dim:'分类与配对', type:'单选', q:'哪个不是乐器？', screen:'吉他、笛子、口琴、苹果', optA:'吉他', optB:'苹果', optC:'笛子', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些能演奏音乐？' },
-  { id:'C32', dim:'分类与配对', type:'单选', q:'哪个不是球类？', screen:'排球、网球、羽毛球、椅子', optA:'排球', optB:'椅子', optC:'网球', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些是球？' },
-  { id:'C33', dim:'分类与配对', type:'单选', q:'哪个不是昆虫？', screen:'蜻蜓、瓢虫、蚂蚱、小猫', optA:'蜻蜓', optB:'小猫', optC:'瓢虫', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些是小虫子？' },
-  { id:'C34', dim:'分类与配对', type:'单选', q:'哪个不是花？', screen:'菊花、荷花、茉莉、萝卜', optA:'菊花', optB:'萝卜', optC:'荷花', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些是花？' },
-  { id:'C35', dim:'分类与配对', type:'单选', q:'哪个不是树？', screen:'柏树、杨树、榕树、汽车', optA:'柏树', optB:'汽车', optC:'杨树', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些是树？' },
-  { id:'C36', dim:'分类与配对', type:'单选', q:'哪个不是鸟？', screen:'鸽子、喜鹊、乌鸦、小鱼', optA:'鸽子', optB:'小鱼', optC:'喜鹊', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些会飞是鸟？' },
-  { id:'C37', dim:'分类与配对', type:'单选', q:'哪个不是鱼？', screen:'带鱼、鲫鱼、鲈鱼、小兔', optA:'带鱼', optB:'小兔', optC:'鲫鱼', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些在水里游是鱼？' },
-  { id:'C38', dim:'分类与配对', type:'单选', q:'哪个不是水果？', screen:'樱桃、荔枝、桂圆、橡皮', optA:'樱桃', optB:'橡皮', optC:'荔枝', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些是可以吃的水果？' },
-  { id:'C39', dim:'分类与配对', type:'单选', q:'哪个不是蔬菜？', screen:'菠菜、冬瓜、丝瓜、手机', optA:'菠菜', optB:'手机', optC:'冬瓜', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些是饭桌上吃的菜？' },
-  { id:'C40', dim:'分类与配对', type:'单选', q:'哪个不是文具？', screen:'圆规、订书机、文件夹、蛋糕', optA:'圆规', optB:'蛋糕', optC:'订书机', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些是学习用的？' },
-  { id:'C41', dim:'分类与配对', type:'单选', q:'哪个不是天气？', screen:'晴天、雨天、下雪、苹果', optA:'晴天', optB:'苹果', optC:'雨天', answer:'B', interaction:'点击1个选项', time:15, hint:'哪些是天上的天气？' },
+  { id:'C11', dim:'分类与配对', type:'单选', q:'哪个不是家具？', screen:'桌子、椅子、床、苹果', optA:'桌子', optB:'苹果', optC:'椅子', answer:'B', interaction:'点击1个选项', time:15, visual:'黄:方:笔|粉:方:橡|蓝:方:尺|棕:圆:饼', hint:'哪些是家里的家具？' },
+  { id:'C12', dim:'分类与配对', type:'单选', q:'哪个不是电器？', screen:'电视、冰箱、洗衣机、毛巾', optA:'电视', optB:'毛巾', optC:'冰箱', answer:'B', interaction:'点击1个选项', time:15, visual:'棕:方:桌|棕:方:椅|棕:方:床|红:圆:果', hint:'哪些要插电用？' },
+  { id:'C13', dim:'分类与配对', type:'单选', q:'哪个不是颜色？', screen:'红色、蓝色、绿色、苹果', optA:'红色', optB:'苹果', optC:'蓝色', answer:'B', interaction:'点击1个选项', time:15, visual:'黑:方:视|蓝:方:冰|白:方:洗|粉:方:毛', hint:'哪些是颜色？' },
+  { id:'C14', dim:'分类与配对', type:'单选', q:'哪个不是形状？', screen:'圆形、方形、三角形、香蕉', optA:'圆形', optB:'香蕉', optC:'方形', answer:'B', interaction:'点击1个选项', time:15, visual:'红:方:红|蓝:方:蓝|绿:方:绿|红:圆:果', hint:'哪些是形状？' },
+  { id:'C15', dim:'分类与配对', type:'单选', q:'哪个不是饮料？', screen:'牛奶、果汁、白开水、面包', optA:'牛奶', optB:'面包', optC:'果汁', answer:'B', interaction:'点击1个选项', time:15, visual:'蓝:圆|蓝:方|蓝:三角|黄:圆:蕉', hint:'哪些是可以喝的？' },
+  { id:'C16', dim:'分类与配对', type:'单选', q:'哪个不是乐器？', screen:'钢琴、小提琴、鼓、椅子', optA:'钢琴', optB:'椅子', optC:'鼓', answer:'B', interaction:'点击1个选项', time:15, visual:'白:圆:奶|橙:圆:汁|蓝:圆:水|黄:方:包', hint:'哪些能演奏音乐？' },
+  { id:'C17', dim:'分类与配对', type:'单选', q:'哪个不是球类？', screen:'足球、篮球、乒乓球、书本', optA:'足球', optB:'书本', optC:'篮球', answer:'B', interaction:'点击1个选项', time:15, visual:'棕:方:琴|棕:方:琴|棕:方:鼓|棕:方:椅', hint:'哪些是球？' },
+  { id:'C18', dim:'分类与配对', type:'单选', q:'哪个不是昆虫？', screen:'蝴蝶、蚂蚁、蜜蜂、小鱼', optA:'蝴蝶', optB:'小鱼', optC:'蚂蚁', answer:'B', interaction:'点击1个选项', time:15, visual:'白:圆:球|橙:圆:球|橙:圆:球|棕:方:书', hint:'哪些是小虫子？' },
+  { id:'C19', dim:'分类与配对', type:'单选', q:'哪个不是花？', screen:'玫瑰、向日葵、百合、白菜', optA:'玫瑰', optB:'白菜', optC:'百合', answer:'B', interaction:'点击1个选项', time:15, visual:'橙:方:蝶|黑:方:蚁|黄:方:蜂|蓝:方:鱼', hint:'哪些是花？' },
+  { id:'C20', dim:'分类与配对', type:'单选', q:'哪个不是树？', screen:'松树、柳树、苹果树、石头', optA:'松树', optB:'石头', optC:'柳树', answer:'B', interaction:'点击1个选项', time:15, visual:'红:圆:花|黄:圆:花|白:圆:花|绿:方:菜', hint:'哪些是树？' },
+  { id:'C21', dim:'分类与配对', type:'单选', q:'哪个不是鸟？', screen:'麻雀、燕子、老鹰、小狗', optA:'麻雀', optB:'小狗', optC:'燕子', answer:'B', interaction:'点击1个选项', time:15, visual:'绿:方:树|绿:方:树|绿:方:树|灰:方:石', hint:'哪些会飞是鸟？' },
+  { id:'C22', dim:'分类与配对', type:'单选', q:'哪个不是鱼？', screen:'金鱼、鲨鱼、鲤鱼、小猫', optA:'金鱼', optB:'小猫', optC:'鲤鱼', answer:'B', interaction:'点击1个选项', time:15, visual:'灰:方:鸟|灰:方:鸟|灰:方:鸟|棕:方:狗', hint:'哪些在水里游是鱼？' },
+  { id:'C23', dim:'分类与配对', type:'单选', q:'哪个不是水果？', screen:'西瓜、菠萝、芒果、毛巾', optA:'西瓜', optB:'毛巾', optC:'菠萝', answer:'B', interaction:'点击1个选项', time:15, visual:'橙:圆:鱼|灰:圆:鱼|蓝:圆:鱼|白:方:猫', hint:'哪些是可以吃的水果？' },
+  { id:'C24', dim:'分类与配对', type:'单选', q:'哪个不是蔬菜？', screen:'黄瓜、茄子、辣椒、糖果', optA:'黄瓜', optB:'糖果', optC:'茄子', answer:'B', interaction:'点击1个选项', time:15, visual:'红:圆:果|黄:圆:蕉|橙:圆:芒|粉:方:毛', hint:'哪些是饭桌上吃的菜？' },
+  { id:'C25', dim:'分类与配对', type:'单选', q:'哪个不是文具？', screen:'彩笔、剪刀、胶水、玩具车', optA:'彩笔', optB:'玩具车', optC:'剪刀', answer:'B', interaction:'点击1个选项', time:15, visual:'绿:圆:瓜|紫:圆:茄|红:圆:椒|棕:方:糖', hint:'哪些是学习用的？' },
+  { id:'C26', dim:'分类与配对', type:'单选', q:'哪个不是家具？', screen:'沙发、衣柜、书架、小狗', optA:'沙发', optB:'小狗', optC:'衣柜', answer:'B', interaction:'点击1个选项', time:15, visual:'黄:方:笔|粉:方:橡|蓝:方:尺|蓝:方:车', hint:'哪些是家里的家具？' },
+  { id:'C27', dim:'分类与配对', type:'单选', q:'哪个不是电器？', screen:'空调、电风扇、台灯、积木', optA:'空调', optB:'积木', optC:'电风扇', answer:'B', interaction:'点击1个选项', time:15, visual:'棕:方:发|棕:方:柜|棕:方:架|棕:方:狗', hint:'哪些要插电用？' },
+  { id:'C28', dim:'分类与配对', type:'单选', q:'哪个不是颜色？', screen:'黄色、紫色、橙色、桌子', optA:'黄色', optB:'桌子', optC:'紫色', answer:'B', interaction:'点击1个选项', time:15, visual:'白:方:调|白:方:扇|黄:方:灯|黄:方:木', hint:'哪些是颜色？' },
+  { id:'C29', dim:'分类与配对', type:'单选', q:'哪个不是形状？', screen:'圆形、方形、三角形、小狗', optA:'圆形', optB:'小狗', optC:'方形', answer:'B', interaction:'点击1个选项', time:15, visual:'黄:方:黄|紫:方:紫|橙:方:橙|棕:方:桌', hint:'哪些是形状？' },
+  { id:'C30', dim:'分类与配对', type:'单选', q:'哪个不是饮料？', screen:'豆浆、酸奶、矿泉水、饼干', optA:'豆浆', optB:'饼干', optC:'酸奶', answer:'B', interaction:'点击1个选项', time:15, visual:'蓝:圆|蓝:方|蓝:三角|棕:方:狗', hint:'哪些是可以喝的？' },
+  { id:'C31', dim:'分类与配对', type:'单选', q:'哪个不是乐器？', screen:'吉他、笛子、口琴、苹果', optA:'吉他', optB:'苹果', optC:'笛子', answer:'B', interaction:'点击1个选项', time:15, visual:'白:圆:浆|白:圆:奶|蓝:圆:水|黄:方:饼', hint:'哪些能演奏音乐？' },
+  { id:'C32', dim:'分类与配对', type:'单选', q:'哪个不是球类？', screen:'排球、网球、羽毛球、椅子', optA:'排球', optB:'椅子', optC:'网球', answer:'B', interaction:'点击1个选项', time:15, visual:'棕:方:琴|棕:方:笛|棕:方:琴|红:圆:果', hint:'哪些是球？' },
+  { id:'C33', dim:'分类与配对', type:'单选', q:'哪个不是昆虫？', screen:'蜻蜓、瓢虫、蚂蚱、小猫', optA:'蜻蜓', optB:'小猫', optC:'瓢虫', answer:'B', interaction:'点击1个选项', time:15, visual:'白:圆:球|黄:圆:球|白:圆:球|棕:方:椅', hint:'哪些是小虫子？' },
+  { id:'C34', dim:'分类与配对', type:'单选', q:'哪个不是花？', screen:'菊花、荷花、茉莉、萝卜', optA:'菊花', optB:'萝卜', optC:'荷花', answer:'B', interaction:'点击1个选项', time:15, visual:'蓝:方:蜻|红:方:瓢|绿:方:蝗|白:方:猫', hint:'哪些是花？' },
+  { id:'C35', dim:'分类与配对', type:'单选', q:'哪个不是树？', screen:'柏树、杨树、榕树、汽车', optA:'柏树', optB:'汽车', optC:'杨树', answer:'B', interaction:'点击1个选项', time:15, visual:'黄:圆:花|粉:圆:花|白:圆:花|橙:方:萝', hint:'哪些是树？' },
+  { id:'C36', dim:'分类与配对', type:'单选', q:'哪个不是鸟？', screen:'鸽子、喜鹊、乌鸦、小鱼', optA:'鸽子', optB:'小鱼', optC:'喜鹊', answer:'B', interaction:'点击1个选项', time:15, visual:'绿:方:柏|绿:方:杨|绿:方:榕|蓝:方:车', hint:'哪些会飞是鸟？' },
+  { id:'C37', dim:'分类与配对', type:'单选', q:'哪个不是鱼？', screen:'带鱼、鲫鱼、鲈鱼、小兔', optA:'带鱼', optB:'小兔', optC:'鲫鱼', answer:'B', interaction:'点击1个选项', time:15, visual:'灰:方:鸽|黑:方:鸦|灰:方:鹊|蓝:方:鱼', hint:'哪些在水里游是鱼？' },
+  { id:'C38', dim:'分类与配对', type:'单选', q:'哪个不是水果？', screen:'樱桃、荔枝、桂圆、橡皮', optA:'樱桃', optB:'橡皮', optC:'荔枝', answer:'B', interaction:'点击1个选项', time:15, visual:'银:圆:鱼|灰:圆:鱼|银:圆:鱼|白:方:兔', hint:'哪些是可以吃的水果？' },
+  { id:'C39', dim:'分类与配对', type:'单选', q:'哪个不是蔬菜？', screen:'菠菜、冬瓜、丝瓜、手机', optA:'菠菜', optB:'手机', optC:'冬瓜', answer:'B', interaction:'点击1个选项', time:15, visual:'红:圆:樱|红:圆:荔|红:圆:桂|粉:方:橡', hint:'哪些是饭桌上吃的菜？' },
+  { id:'C40', dim:'分类与配对', type:'单选', q:'哪个不是文具？', screen:'圆规、订书机、文件夹、蛋糕', optA:'圆规', optB:'蛋糕', optC:'订书机', answer:'B', interaction:'点击1个选项', time:15, visual:'绿:圆:菜|白:圆:瓜|绿:圆:瓜|黑:方:机', hint:'哪些是学习用的？' },
+  { id:'C41', dim:'分类与配对', type:'单选', q:'哪个不是天气？', screen:'晴天、雨天、下雪、苹果', optA:'晴天', optB:'苹果', optC:'雨天', answer:'B', interaction:'点击1个选项', time:15, visual:'黄:方:笔|粉:方:橡|蓝:方:尺|棕:圆:糕', hint:'哪些是天上的天气？' },
   { id:'C41', dim:'分类与配对', type:'多选', q:'哪两个是穿在脚上的？', screen:'袜子、手套、鞋子、帽子', optA:'袜子', optB:'手套', optC:'鞋子', answer:'AC', interaction:'点击多个选项', time:20, hint:'想想早上穿鞋子还穿什么？' },
-  { id:'C42', dim:'分类与配对', type:'多选', q:'哪几个是天气？（多选）', screen:'太阳、下雨、下雪、月亮', optA:'太阳', optB:'下雨', optC:'下雪', answer:'ABC', interaction:'点击多个选项', time:20, hint:'天上出现什么是天气？月亮是天体' },
+  { id:'C42', dim:'分类与配对', type:'多选', q:'哪几个是天气？（多选）', screen:'太阳、下雨、下雪、月亮', optA:'太阳', optB:'下雨', optC:'下雪', answer:'ABC', interaction:'点击多个选项', time:20, visual:'黄:方:晴|灰:方:雨|白:方:雪|红:圆:果', hint:'天上出现什么是天气？月亮是天体' },
   { id:'C43', dim:'分类与配对', type:'多选', q:'哪几个是学习用品？（多选）', screen:'铅笔、书本、游戏机、尺子', optA:'铅笔', optB:'书本', optC:'尺子', answer:'ABC', interaction:'点击多个选项', time:20, hint:'上学时书包里装什么？' },
   { id:'C44', dim:'分类与配对', type:'多选', q:'哪几个是水果？（多选）', screen:'苹果、香蕉、面包、橘子', optA:'苹果', optB:'香蕉', optC:'橘子', answer:'ABC', interaction:'点击多个选项', time:20, hint:'哪些是可以吃的水果？' },
   { id:'C45', dim:'分类与配对', type:'多选', q:'哪几个是动物？（多选）', screen:'小狗、小猫、桌子、兔子', optA:'小狗', optB:'小猫', optC:'兔子', answer:'ABC', interaction:'点击多个选项', time:20, hint:'哪些是有生命的动物？' },
@@ -340,6 +340,7 @@ function adaptQuestion(raw) {
       type: raw.dim,
       q: raw.q,
       screen: raw.screen,
+      visual: raw.visual || null,
       hint: raw.hint,
       time: raw.time,
       choices,
@@ -353,11 +354,57 @@ function adaptQuestion(raw) {
     type: raw.dim,
     q: raw.q,
     screen: raw.screen,
+    visual: raw.visual || null,
     hint: raw.hint,
     time: raw.time,
     choices,
     answer: raw.answer, // e.g. "B"
   };
+}
+
+/* ===== 色块可视化渲染 ===== */
+const VISUAL_COLORS = {
+  '红': '#e74c3d', 'red': '#e74c3d',
+  '蓝': '#3498db', 'blue': '#3498db',
+  '黄': '#f1c40f', 'yellow': '#f1c40f',
+  '绿': '#2ecc71', 'green': '#2ecc71',
+  '紫': '#9b59b6', 'purple': '#9b59b6',
+  '橙': '#e67e22', 'orange': '#e67e22',
+  '白': '#ecf0f1', 'white': '#ecf0f1',
+  '黑': '#2c3e50', 'black': '#2c3e50',
+  '棕': '#8b4513', 'brown': '#8b4513',
+  '粉': '#fd79a8', 'pink': '#fd79a8',
+};
+const VISUAL_SHAPES = {
+  '圆': 'brain-block-circle', 'circle': 'brain-block-circle',
+  '方': 'brain-block-square', 'square': 'brain-block-square',
+  '三角': 'brain-block-triangle', 'triangle': 'brain-block-triangle',
+};
+
+/**
+ * 渲染色块可视化
+ * 格式: "红:圆|蓝:圆|红:圆|蓝:圆|红:圆|?"
+ * 每段: color:shape 或 color:shape:text 或 ?
+ */
+function renderVisual(visual) {
+  if (!visual) return '';
+  const items = visual.split('|');
+  let blocksHtml = '';
+  for (const item of items) {
+    if (item === '?' || item === '？') {
+      blocksHtml += '<div class="brain-block brain-block-q">?</div>';
+      continue;
+    }
+    const parts = item.split(':');
+    const colorKey = parts[0] || '';
+    const shapeKey = parts[1] || 'square';
+    const text = parts[2] || '';
+    const bg = VISUAL_COLORS[colorKey] || '#ccc';
+    const shapeClass = VISUAL_SHAPES[shapeKey] || 'brain-block-square';
+    const textClass = text ? `<span class="brain-block-text">${esc(text)}</span>` : '';
+    blocksHtml += `<div class="brain-block ${shapeClass}" style="background:${bg}">${textClass}</div>`;
+  }
+  return `<div class="brain-visual">${blocksHtml}</div>`;
 }
 
 /** 生成10道大脑开发题（全部从纯文字题库随机抽取） */
@@ -513,7 +560,7 @@ function renderSingleNew(p, cur, total) {
     <div class="brain-stage">
       <div class="brain-type">${esc(p.type)}</div>
       <div class="brain-q">${esc(p.q)}</div>
-      ${p.screen ? `<div class="brain-screen">${esc(p.screen)}</div>` : ''}
+      ${p.visual ? renderVisual(p.visual) : (p.screen ? `<div class="brain-screen">${esc(p.screen)}</div>` : '')}
       <div class="quiz-feedback" id="qbFeedback"></div>
     </div>
     <div class="quiz-choices">${choicesHtml}</div>
@@ -563,7 +610,7 @@ function renderMulti(p, cur, total) {
     <div class="brain-stage">
       <div class="brain-type">${esc(p.type)}</div>
       <div class="brain-q">${esc(p.q)}</div>
-      ${p.screen ? `<div class="brain-screen">${esc(p.screen)}</div>` : ''}
+      ${p.visual ? renderVisual(p.visual) : (p.screen ? `<div class="brain-screen">${esc(p.screen)}</div>` : '')}
       <div class="brain-multi-tip">选出所有正确的选项，选好后点确认</div>
       <div class="quiz-feedback" id="qbFeedback"></div>
     </div>

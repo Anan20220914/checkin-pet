@@ -183,8 +183,7 @@ function openEquipMenu() {
   const order = ['common','rare','epic','legendary'];
   let list = '';
   for (const w of weapons) {
-    const can = order.indexOf(pet.rarity) >= order.indexOf(w.rarityReq);
-    list += `<div class="shop-item"><div class="s-icon">${w.emoji}</div><div class="s-body"><div class="s-name">${w.name}</div><div class="s-desc">攻击 +${w.atk} · ${can ? '可装备' : `需${RARITY_NAME[w.rarityReq]}宠物`}</div></div><button class="btn-sm btn-equip" data-w="${w.id}" ${can ? '' : 'disabled'}>${pet.equippedWeapon === w.id ? '已装' : '装备'}</button></div>`;
+    list += `<div class="shop-item"><div class="s-icon">${w.emoji}</div><div class="s-body"><div class="s-name">${w.name}</div><div class="s-desc">攻击 +${w.atk}</div></div><button class="btn-sm btn-equip" data-w="${w.id}">${pet.equippedWeapon === w.id ? '已装' : '装备'}</button></div>`;
   }
   showOverlay(`<h2>⚔️ 给 ${esc(pet.species)} 装备</h2>${list}<button class="btn secondary block" id="close">关闭</button>`, {
     onMount: c => {

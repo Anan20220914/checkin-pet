@@ -18,18 +18,13 @@ export function switchActive(petId) {
   });
 }
 
-/** 给宠物装备武器（要求宠物稀有度 ≥ 武器门槛） */
+/** 给宠物装备武器（只要购买了即可装备，无等级限制） */
 export function equipWeapon(petId, weaponId) {
   const weapon = SHOP_WEAPONS.find(w => w.id === weaponId);
   if (!weapon) return { ok: false, msg: '武器不存在' };
-  // 校验稀有度门槛
-  const order = ['common', 'rare', 'epic', 'legendary'];
   const s = getState();
   const pet = s.pets.find(p => p.id === petId);
   if (!pet) return { ok: false, msg: '宠物不存在' };
-  if (order.indexOf(pet.rarity) < order.indexOf(weapon.rarityReq)) {
-    return { ok: false, msg: `${pet.species} 的等级不足以装备${weapon.name}` };
-  }
   update(st => {
     const p = st.pets.find(pp => pp.id === petId);
     if (p) p.equippedWeapon = weaponId;

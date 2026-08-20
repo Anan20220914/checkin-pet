@@ -134,7 +134,7 @@ function renderStudy() {
     let sub;
     if (isBattle) sub = passed ? '✓ 打败读音小怪' : '读词攻击小怪';
     else if (t.quizType === 'idiom') sub = passed ? `✓ 已学会` : `每日1个`;
-    else if (t.quizType === 'xiehouyu') sub = passed ? `✓ 已记住` : `每日1句`;
+    else if (t.quizType === 'xiehouyu') sub = passed ? `✓ 已读完` : `每日1篇`;
     else sub = passed ? `✓ ${result.correct}/${result.total} 通过` : `每日${t.dailyCount}题`;
     html += `
       <div class="study-tile ${passed ? 'done' : ''} ${isBattle ? 'battle' : ''}" data-task="${t.id}">

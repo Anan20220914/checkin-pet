@@ -20,13 +20,12 @@ export function renderShop() {
 
   // 武器
   html += `<div class="section-title">⚔️ 武器</div>`;
-  const order = ['common','rare','epic','legendary'];
   for (const w of SHOP_WEAPONS) {
     const have = weaponQty(w.id);
     html += `<div class="shop-item">
       <div class="s-icon">${w.emoji}</div>
       <div class="s-body">
-        <div class="s-name">${w.name} <span class="badge" style="background:${RARITY_COLOR[w.rarityReq]}">${RARITY_NAME[w.rarityReq]}+</span></div>
+        <div class="s-name">${w.name}</div>
         <div class="s-desc">攻击 +${w.atk}</div>
       </div>
       <div class="s-actions">

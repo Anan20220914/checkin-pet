@@ -67,13 +67,13 @@ const LIFE_TASKS = [
 /** 学习打卡 8 个互动模块 */
 const STUDY_TASKS = [
   { id: 'q_chinese', title: '识字打卡', icon: '字', points: 8, kind: 'quiz', quizType: 'chinese', dailyCount: 10, passRate: 0.8 },
+  { id: 'q_xiehouyu', title: '短文阅读', icon: '📖', points: 8, kind: 'quiz', quizType: 'xiehouyu', dailyCount: 1, passRate: 1 },
   { id: 'q_english', title: '英语打卡', icon: 'ABC', points: 8, kind: 'quiz', quizType: 'english', dailyCount: 10, passRate: 0.8 },
+  { id: 'q_speak', title: '英语开口', icon: '🗣️', points: 10, kind: 'battle', quizType: 'speak', dailyCount: 10, passRate: 1 },
   { id: 'q_math', title: '数学打卡', icon: '➕', points: 6, kind: 'quiz', quizType: 'math', dailyCount: 10, passRate: 0.8 },
   { id: 'q_brain', title: '大脑开发', icon: '', points: 8, kind: 'quiz', quizType: 'brain', dailyCount: 10, passRate: 0.8 },
   { id: 'q_poem', title: '古诗打卡', icon: '📜', points: 8, kind: 'quiz', quizType: 'poem', dailyCount: 1, passRate: 0.8 },
-  { id: 'q_speak', title: '英语开口', icon: '🗣️', points: 10, kind: 'battle', quizType: 'speak', dailyCount: 10, passRate: 1 },
   { id: 'q_idiom', title: '成语园地', icon: '🏛️', points: 8, kind: 'quiz', quizType: 'idiom', dailyCount: 1, passRate: 1 },
-  { id: 'q_xiehouyu', title: '短文阅读', icon: '📖', points: 8, kind: 'quiz', quizType: 'xiehouyu', dailyCount: 1, passRate: 1 },
 ];
 
 /* ============================================================

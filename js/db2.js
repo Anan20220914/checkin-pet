@@ -73,7 +73,7 @@ const STUDY_TASKS = [
   { id: 'q_poem', title: '古诗打卡', icon: '📜', points: 8, kind: 'quiz', quizType: 'poem', dailyCount: 1, passRate: 0.8 },
   { id: 'q_speak', title: '英语开口', icon: '🗣️', points: 10, kind: 'battle', quizType: 'speak', dailyCount: 10, passRate: 1 },
   { id: 'q_idiom', title: '成语园地', icon: '🏛️', points: 8, kind: 'quiz', quizType: 'idiom', dailyCount: 1, passRate: 1 },
-  { id: 'q_xiehouyu', title: '歇后语天地', icon: '🎭', points: 8, kind: 'quiz', quizType: 'xiehouyu', dailyCount: 1, passRate: 1 },
+  { id: 'q_xiehouyu', title: '短文阅读', icon: '📖', points: 8, kind: 'quiz', quizType: 'xiehouyu', dailyCount: 1, passRate: 1 },
 ];
 
 /* ============================================================

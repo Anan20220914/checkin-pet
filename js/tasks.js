@@ -149,12 +149,33 @@ export function getStudyDoneCount() {
 
 /* ---------- 每日对决记录 ---------- */
 
-/** 今日是否已发起每日对决 */
+/** 今日对决是否已最终结算（胜利，或已用完二次决斗机会） */
 export function isDailyDuelDone() {
   const s = getState();
   const today = todayKey();
   const c = s.checkins[today] || {};
-  return !!c.dailyDuel;
+  if (!c.dailyDuel) return false;
+  // 如果记录了失败但没有 retryState，说明是旧逻辑或已最终结算
+  if (c.dailyDuel.result === 'win') return true;
+  // 失败：如果有 retryState 且 attempt < 2，说明还能重试，不算完成
+  if (c.dailyDuel.result === 'lose' && c.dailyDuel.retryState && c.dailyDuel.retryState.attempt < 2) return false;
+  return true;
+}
+
+/** 今日是否处于"决斗失败可重试"状态 */
+export function isDuelRetryAvailable() {
+  const s = getState();
+  const today = todayKey();
+  const c = s.checkins[today] || {};
+  return !!(c.dailyDuel && c.dailyDuel.result === 'lose' && c.dailyDuel.retryState && c.dailyDuel.retryState.attempt < 2);
+}
+
+/** 取决斗重试状态（怪物剩余 HP/ATK/DEF 等） */
+export function getDuelRetryState() {
+  const s = getState();
+  const today = todayKey();
+  const c = s.checkins[today] || {};
+  return c.dailyDuel?.retryState || null;
 }
 
 /** 记录每日对决结果 */
@@ -162,7 +183,18 @@ export function recordDailyDuel(result) {
   update(s => {
     const today = todayKey();
     if (!s.checkins[today]) s.checkins[today] = {};
-    s.checkins[today].dailyDuel = result; // { result: 'win'|'lose', dropEgg, reward, monsterId }
+    s.checkins[today].dailyDuel = result; // { result: 'win'|'lose', dropEgg, reward, monsterId, retryState? }
+  });
+}
+
+/** 清除重试状态（二次决斗完成后调用） */
+export function clearDuelRetryState() {
+  update(s => {
+    const today = todayKey();
+    const c = s.checkins[today];
+    if (c && c.dailyDuel && c.dailyDuel.retryState) {
+      delete c.dailyDuel.retryState;
+    }
   });
 }
 

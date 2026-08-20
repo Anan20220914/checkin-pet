@@ -1971,21 +1971,18 @@ textarea.form-control { min-height: 60px; resize: vertical; }
 .idiom-meaning { font-size: 15px; line-height: 1.7; color: var(--text); }
 .idiom-example { font-size: 14px; line-height: 1.6; color: var(--text-soft); font-style: italic; }
 
-.xiehouyu-card {
-  background: linear-gradient(135deg, #E3F2FD, #FFF);
-  border: 1px solid rgba(59,130,246,0.15);
+/* 短文阅读 */
+.reading-card {
+  background: linear-gradient(135deg, #E8F5E9, #FFF);
+  border: 1px solid rgba(46,204,113,0.15);
   border-radius: var(--radius-lg);
   padding: var(--space-3) var(--space-2);
   text-align: center;
   margin: 8px 0 var(--space-2);
 }
-
-.xiehouyu-emoji { font-size: 72px; line-height: 1; margin-bottom: 12px; }
-.xiehouyu-first { font-size: 26px; font-weight: 900; color: #1E40AF; margin-bottom: 4px; }
-.xiehouyu-dash { font-size: 18px; color: var(--text-soft); margin: 4px 0; font-weight: 700; }
-.xiehouyu-second { font-size: 22px; font-weight: 800; color: #92400E; margin-bottom: 4px; }
-
-.xiehouyu-section {
+.reading-text { font-size: 22px; font-weight: 700; color: #1B5E20; line-height: 2; letter-spacing: 1px; }
+.reading-meta { font-size: 12px; color: var(--muted); margin-top: 8px; }
+.reading-section {
   background: var(--bg-soft);
   border-radius: var(--radius-md);
   padding: 14px var(--space-2);
@@ -1993,6 +1990,7 @@ textarea.form-control { min-height: 60px; resize: vertical; }
   text-align: left;
   border: 1px solid var(--border-light);
 }
-
-.xiehouyu-label { font-size: 13px; font-weight: 800; color: #3B82F6; margin-bottom: 6px; }
-.xiehouyu-meaning { font-size: 15px; line-height: 1.7; color: var(--text); }
+.reading-label { font-size: 13px; font-weight: 800; color: #2E7D32; margin-bottom: 6px; }
+.reading-words { display: flex; flex-wrap: wrap; gap: 8px; }
+.reading-word { font-size: 16px; font-weight: 700; color: #1B5E20; background: #C8E6C9; padding: 4px 12px; border-radius: var(--radius-full); }
+.reading-tip { font-size: 14px; line-height: 1.7; color: var(--text-soft); }

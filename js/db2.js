@@ -38,6 +38,7 @@ const HABIT_TASKS = [
   { id: 'h_temper', title: '不发脾气', icon: '😌', points: 2 },
   { id: 'h_poop', title: '按时拉屎', icon: '💩', points: 2 },
   { id: 'h_toiletlid', title: '冲马桶盖盖子', icon: '🚽', points: 1 },
+  { id: 'h_toys', title: '收拾玩具', icon: '🧸', points: 2 },
 ];
 
 /** 运动选项（孩子选今天做了哪些） */
@@ -152,6 +153,7 @@ export const SHOP_FOODS = [
   { id: 'f_bread', name: '面包', emoji: '🍞', heal: 30, buff: null, price: 7 },
   { id: 'f_milk', name: '牛奶', emoji: '🥛', heal: 9999, buff: { def: 2 }, price: 12 },
   { id: 'f_meat', name: '烤肉', emoji: '🍖', heal: 40, buff: { atk: 3 }, price: 15 },
+  { id: 'f_watermelon', name: '西瓜汁', emoji: '🍉', heal: 25, buff: { def: 1 }, price: 8 },
   { id: 'f_elixir', name: '神秘药剂', emoji: '🧪', heal: 0, buff: { revive: true }, price: 30 },
 ];
 

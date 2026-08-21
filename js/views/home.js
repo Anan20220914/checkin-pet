@@ -305,12 +305,35 @@ function startDailyDuel() {
 
 function playBattleAnimation(pet, monster, result, onDone) {
   const log = result.log;
-  let i = 0;
   const petMaxHp = pet.hp;
   const monMaxHp = monster.hp;
   const overlay = document.getElementById('overlay');
   const card = document.getElementById('overlayCard');
   const monsterEmoji = monster.emoji || '🐺';
+
+  // 随机选特效
+  const FX_POOL = ['fx-explosion', 'fx-slash', 'fx-shockwave'];
+  const EMOJI_POOL = ['💥', '⚡', '🔥', '⭐', '💢'];
+  let petCombo = 0, monCombo = 0;
+
+  function buildHitFx(isCrit) {
+    const fxClass = FX_POOL[Math.floor(Math.random() * FX_POOL.length)];
+    const emoji = EMOJI_POOL[Math.floor(Math.random() * EMOJI_POOL.length)];
+    let html = `<div class="${fxClass}">${emoji}</div>`;
+    html += '<div class="fx-particles"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>';
+    if (isCrit) html += '<div class="fx-slash"></div>';
+    return html;
+  }
+
+  function buildDmgPop(dmg, isCrit) {
+    if (isCrit) return `<div class="dmg-crit">暴击!-${dmg}</div>`;
+    return `<div class="dmg-pop">-${dmg}</div>`;
+  }
+
+  function buildCombo(side, count) {
+    if (count < 2) return '';
+    return `<div class="combo-text">${count}连击!</div>`;
+  }
 
   const render = (idx) => {
     if (idx >= log.length) { onDone(); return; }
@@ -321,24 +344,78 @@ function playBattleAnimation(pet, monster, result, onDone) {
     const monPct = (monHp / monMaxHp) * 100;
     const logHtml = log.slice(0, idx + 1).map(e => `<div class="line ${e.actor}">${esc(e.text)}</div>`).join('');
 
+    // 判断是否是战斗结束
+    const isLast = idx === log.length - 1;
+    const isWin = isLast && result.result === 'win';
+    const isLose = isLast && result.result === 'lose';
+
+    // 暴击判定：伤害 >= 10 视为暴击
+    const dmgMatch = entry.text.match(/(\d+)/);
+    const dmgVal = dmgMatch ? parseInt(dmgMatch[1]) : 0;
+    const isCrit = (entry.actor === 'pet' || entry.actor === 'monster') && dmgVal >= 10;
+
+    // 连击计数
+    if (entry.actor === 'pet') { petCombo++; monCombo = 0; }
+    else if (entry.actor === 'monster') { monCombo++; petCombo = 0; }
+    else { petCombo = 0; monCombo = 0; }
+
+    // 宠物侧特效
+    let petClass = '';
+    let petFxHtml = '';
+    if (entry.actor === 'pet') {
+      petClass = attackMotion(pet);
+    } else if (entry.actor === 'monster') {
+      petClass = isCrit ? 'hit-shake crit-flash' : 'hit-shake hit-flash';
+      petFxHtml = buildDmgPop(dmgVal, isCrit) + buildCombo('pet', monCombo);
+    } else if (isWin) {
+      petClass = 'victory-glow';
+    } else if (isLose) {
+      petClass = 'defeat-fade';
+    }
+
+    // 怪兽侧特效
+    let monClass = '';
+    let monFxHtml = '';
+    if (entry.actor === 'pet') {
+      monClass = isCrit ? 'hit-shake crit-flash' : 'hit-shake hit-flash';
+      monFxHtml = buildHitFx(isCrit) + buildDmgPop(dmgVal, isCrit) + buildCombo('mon', petCombo);
+    } else if (entry.actor === 'monster') {
+      monClass = '';
+    } else if (isWin) {
+      monClass = 'defeat-fade';
+      monFxHtml = '<div class="fx-explosion">💥</div><div class="fx-particles"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>';
+    } else if (isLose) {
+      monClass = 'victory-glow';
+    }
+
+    // 战斗开始 VS 对撞
+    const vsClass = idx === 0 ? 'vs-clash' : '';
+
+    // 屏幕震动：暴击或战斗结束时
+    const stageShake = (isCrit || isLast) ? 'screen-shake' : '';
+
+    // HP 条低血量闪烁
+    const petHpLow = petPct > 0 && petPct <= 25 ? 'hp-low' : '';
+    const monHpLow = monPct > 0 && monPct <= 25 ? 'hp-low' : '';
+
     card.innerHTML = `
       <div class="quiz-head"><span class="quiz-title">⚔️ 决斗</span><span class="quiz-count">回合 ${Math.min(idx,30)}/30</span></div>
-      <div class="battle-stage">
+      <div class="battle-stage ${stageShake}">
         <div class="bs-vs">
           <div class="bs-side pet">
-            <div style="height:72px;display:flex;align-items:flex-end;justify-content:center;position:relative" class="${entry.actor==='pet'?attackMotion(pet):(entry.actor==='monster'?'hit-shake hit-flash':'')}">${renderPet(pet,'sm')}${entry.actor==='monster'?'<div class="dmg-pop">-'+(entry.text.match(/(\d+)/)?.[1]||'')+'</div>':''}</div>
+            <div style="height:72px;display:flex;align-items:flex-end;justify-content:center;position:relative" class="${petClass}">${renderPet(pet,'sm')}${petFxHtml}</div>
             <div class="bs-name">${esc(pet.species)}</div>
-            <div class="bs-hpbar"><div class="fill" style="width:${petPct}%"></div></div>
+            <div class="bs-hpbar"><div class="fill ${petHpLow}" style="width:${petPct}%"></div></div>
             <div style="font-size:10px">${petHp} HP</div>
           </div>
-          <div class="bs-vs-label">VS</div>
+          <div class="bs-vs-label ${vsClass}">VS</div>
           <div class="bs-side">
-            <div style="height:72px;display:flex;align-items:flex-end;justify-content:center;position:relative" class="${entry.actor==='pet'?'hit-shake hit-flash':''}">
+            <div style="height:72px;display:flex;align-items:flex-end;justify-content:center;position:relative" class="${monClass}">
               <div class="monster-emoji" style="font-size:72px;line-height:1">${monsterEmoji}</div>
-              ${entry.actor==='pet'?'<div class="attack-fx">💥</div><div class="dmg-pop">-'+(entry.text.match(/(\d+)/)?.[1]||'')+'</div>':''}
+              ${monFxHtml}
             </div>
             <div class="bs-name">${esc(monster.name)}</div>
-            <div class="bs-hpbar"><div class="fill" style="width:${monPct}%"></div></div>
+            <div class="bs-hpbar"><div class="fill ${monHpLow}" style="width:${monPct}%"></div></div>
             <div style="font-size:10px">${monHp} HP</div>
           </div>
         </div>
@@ -348,7 +425,8 @@ function playBattleAnimation(pet, monster, result, onDone) {
     overlay.hidden = false;
     const logEl = card.querySelector('#duelLog');
     if (logEl) logEl.scrollTop = logEl.scrollHeight;
-    setTimeout(() => render(idx + 1), idx === 0 ? 700 : 900);
+    const delay = idx === 0 ? 700 : (isCrit ? 1100 : 900);
+    setTimeout(() => render(idx + 1), delay);
   };
   render(0);
 }

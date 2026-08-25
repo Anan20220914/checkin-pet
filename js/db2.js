@@ -332,6 +332,41 @@ export function migrate(data) {
       delete data.checkins[fixDate].q_xiehouyu;
     }
   }
+
+  // 一次性修复：2026-08-25 连胜设为6 → 刷新猛犸象(tier4)，并扩大古诗阶段
+  if (!data.meta.dataFix_20260825) {
+    if (!data.stats) data.stats = {};
+    data.stats.streak = 6;
+    if ((data.stats.bestStreak || 0) < 6) data.stats.bestStreak = 6;
+    // 扩大古诗阶段到1（一年级下：春晓、赠汪伦、静夜思等）
+    if (data.bookProgress) {
+      data.bookProgress.poemStageIdx = Math.max(data.bookProgress.poemStageIdx || 0, 1);
+    } else {
+      data.bookProgress = { chineseStageIdx: 1, poemStageIdx: 1 };
+    }
+    // 刷新今天的怪物为猛犸象
+    const todayStr = todayKey();
+    if (!data.monsters) data.monsters = { today: null, history: [] };
+    const tierCfg4 = MONSTER_TIERS.find(t => t.tier === 4);
+    if (tierCfg4) {
+      const hp = Math.floor(Math.random() * (tierCfg4.hp[1] - tierCfg4.hp[0] + 1)) + tierCfg4.hp[0];
+      const atk = Math.floor(Math.random() * (tierCfg4.atk[1] - tierCfg4.atk[0] + 1)) + tierCfg4.atk[0];
+      const def = Math.floor(Math.random() * (tierCfg4.def[1] - tierCfg4.def[0] + 1)) + tierCfg4.def[0];
+      data.monsters.today = {
+        id: 'm_' + todayStr + '_' + Math.floor(Math.random() * 900 + 100),
+        date: todayStr,
+        tier: 4,
+        name: tierCfg4.name,
+        emoji: tierCfg4.emoji,
+        hp, atk, def, maxHp: hp,
+      };
+    }
+    // 确保猛犸象进图鉴
+    if (!data.pokedex) data.pokedex = { pets: ['小狗'], monsters: [] };
+    if (!data.pokedex.monsters) data.pokedex.monsters = [];
+    if (!data.pokedex.monsters.includes(4)) data.pokedex.monsters.push(4);
+    data.meta.dataFix_20260825 = true;
+  }
   if (data.stats.totalSpeakWins === undefined) data.stats.totalSpeakWins = 0;
   if (data.stats.maxPets === undefined) data.stats.maxPets = (data.pets || []).length || 1;
   if (data.stats.streak === undefined) data.stats.streak = 0;

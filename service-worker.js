@@ -1,8 +1,8 @@
 // service-worker.js — PWA 离线缓存：app shell 预缓存，api.github.com 不缓存
-// 版本更新时间：2026-08-25b（每次更新代码时必须同步修改此时间戳）
-// 当前缓存版本：v48
+// 版本更新时间：2026-08-25c（每次更新代码时必须同步修改此时间戳）
+// 当前缓存版本：v49
 
-const CACHE = 'checkin-pet-v48';
+const CACHE = 'checkin-pet-v49';
 const SHELL = [
   './',
   './index.html',

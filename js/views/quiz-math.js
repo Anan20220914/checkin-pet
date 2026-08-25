@@ -27,35 +27,22 @@ function makePicProblem() {
   if (isAdd) {
     // 加法：a 个 + b 个，总数 ≤ 10
     const a = randInt(1, 5), b = randInt(1, 10 - a);
-    const row1 = item.repeat(a);
-    const row2 = item.repeat(b);
     return {
       type: 'pic',
       op: 'add',
       item,
       a, b,
       answer: a + b,
-      display: row1,
-      display2: row2,
-      text: `${a} 个 ${item}，再加 ${b} 个 ${item}，一共几个？`,
     };
   } else {
     // 减法：从 a 个里拿走 b 个
     const a = randInt(2, 10), b = randInt(1, a);
-    const row1 = item.repeat(a);
-    // 被拿走的用虚线框表示
-    const kept = item.repeat(a - b);
-    const taken = item.repeat(b);
     return {
       type: 'pic',
       op: 'sub',
       item,
       a, b,
       answer: a - b,
-      display: row1,
-      keptDisplay: kept,
-      takenDisplay: taken,
-      text: `有 ${a} 个 ${item}，拿走 ${b} 个，还剩几个？`,
     };
   }
 }
@@ -68,7 +55,7 @@ export function openMathQuiz(taskId) {
   const halfPic = n - halfNum;
   const numProblems = Array.from({ length: halfNum }, () => makeNumProblem());
   const picProblems = Array.from({ length: halfPic }, () => makePicProblem());
-  // 打乱顺序，让数字题和图形题交替出现
+  // 打乱顺序
   const problems = [...numProblems, ...picProblems];
   for (let i = problems.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -88,30 +75,41 @@ function renderCard() {
 
   let stageHtml = '';
   if (p.type === 'pic') {
-    // 图形题
+    // 图形题 — 简洁直观，大 emoji，分组展示
     let itemsHtml = '';
     if (p.op === 'add') {
-      // 加法：展示两组物品
+      // 加法：第一组 + 第二组，用大数字标注数量
+      const group1 = Array.from({ length: p.a }, () => `<span class="pic-item-big">${p.item}</span>`).join('');
+      const group2 = Array.from({ length: p.b }, () => `<span class="pic-item-big">${p.item}</span>`).join('');
       itemsHtml = `
-        <div class="pic-items pic-row">${p.display.split('').map(e => `<span class="pic-item">${e}</span>`).join('')}</div>
-        <div class="pic-op">➕ 再加</div>
-        <div class="pic-items pic-row">${p.display2.split('').map(e => `<span class="pic-item">${e}</span>`).join('')}</div>
-        <div class="pic-op">＝</div>
+        <div class="pic-group">
+          <div class="pic-emoji-row">${group1}</div>
+          <div class="pic-count">${p.a}</div>
+        </div>
+        <div class="pic-op-big">+</div>
+        <div class="pic-group">
+          <div class="pic-emoji-row">${group2}</div>
+          <div class="pic-count">${p.b}</div>
+        </div>
+        <div class="pic-op-big">=</div>
+        <div class="pic-question-big">数一数，一共几个？</div>
       `;
     } else {
-      // 减法：展示全部物品，被拿走的画删除线
-      const allItems = p.display.split('').map((e, i) => {
+      // 减法：展示全部，被拿走的用半透明
+      const allItems = Array.from({ length: p.a }, (_, i) => {
         const isTaken = i >= p.a - p.b;
-        return `<span class="pic-item ${isTaken ? 'pic-taken' : ''}">${e}</span>`;
+        return `<span class="pic-item-big ${isTaken ? 'pic-taken' : ''}">${p.item}</span>`;
       }).join('');
       itemsHtml = `
-        <div class="pic-items pic-row">${allItems}</div>
-        <div class="pic-op">拿走 ${p.b} 个 ${p.item}</div>
-        <div class="pic-op">＝</div>
+        <div class="pic-group">
+          <div class="pic-emoji-row">${allItems}</div>
+          <div class="pic-count">一共 ${p.a} 个</div>
+        </div>
+        <div class="pic-op-big">拿走 ${p.b} 个</div>
+        <div class="pic-question-big">还剩几个？</div>
       `;
     }
     stageHtml = `
-      <div class="pic-question">${esc(p.text)}</div>
       <div class="pic-stage">${itemsHtml}</div>
       <div class="math-answer" id="qmAns">${esc(state.input) || '?'}</div>
       <div class="quiz-feedback" id="qmFeedback"></div>

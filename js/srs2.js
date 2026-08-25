@@ -111,13 +111,10 @@ export function buildDailyList(subject, allKeys, perDay = 10, reviewMin = 3) {
   }
   if (isPoem) {
     // 优先复习昨天"不会/一般"的诗，其次到期复习
-    // 如果都没有，按日期轮换未学过的诗（避免每天都是同一首）
     let pick = yesterdayWeak[0] || dueReview[0] || '';
     if (!pick) {
-      // 按日期种子从未学过的诗中轮换
-      const pool = notLearned.length ? notLearned : allKeys;
-      const dayNum = parseInt(today.replace(/-/g, ''), 10);
-      pick = pool[dayNum % pool.length] || allKeys[0] || '';
+      // 按教材顺序取第一首未学过的诗（严格顺序）
+      pick = (notLearned.length ? notLearned[0] : '') || allKeys[0] || '';
     }
     return { review: [], fresh: [pick], all: [pick], dueCount: yesterdayWeak.length, learnedCount: allKeys.length - notLearned.length };
   }

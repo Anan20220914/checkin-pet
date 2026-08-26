@@ -113,8 +113,8 @@ export function buildDailyList(subject, allKeys, perDay = 10, reviewMin = 3) {
     // 优先复习昨天"不会/一般"的诗，其次到期复习
     let pick = yesterdayWeak[0] || dueReview[0] || '';
     if (!pick) {
-      // 按教材顺序取第一首未学过的诗（严格顺序）
-      pick = (notLearned.length ? notLearned[0] : '') || allKeys[0] || '';
+      // 从未学过的诗中随机选择（避免每次都是同一首）
+      pick = (notLearned.length ? notLearned[Math.floor(Math.random() * notLearned.length)] : '') || allKeys[0] || '';
     }
     return { review: [], fresh: [pick], all: [pick], dueCount: yesterdayWeak.length, learnedCount: allKeys.length - notLearned.length };
   }

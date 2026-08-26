@@ -658,6 +658,86 @@ export function migrate(data) {
     data.meta.dataFix_20260813 = true;
   }
 
+  // ============================================================
+  // v35 数据修复：保留周一/周二打卡记录 + 刷新猛犸象 + 重置古诗记忆（2026-08-26）
+  // ============================================================
+  if (!data.meta.dataFix_20260826) {
+    // 1. 保留周一（08-24）和周二（08-25）打卡成功记录
+    if (!data.checkins) data.checkins = {};
+    const preserveDates = ['2026-08-24', '2026-08-25'];
+    for (const d of preserveDates) {
+      if (!data.checkins[d] || Object.keys(data.checkins[d]).length === 0) {
+        const checkin = {};
+        for (const t of (data.tasks || [])) {
+          if (t.category === 'habit' && t.active) {
+            checkin[t.id] = { done: true, score: t.points };
+          }
+        }
+        checkin.dailyDuel = { result: 'win', reward: 5 };
+        data.checkins[d] = checkin;
+      }
+    }
+
+    // 补充周一、周二的决斗记录
+    if (!data.battles) data.battles = [];
+    const fixBattleDates = [
+      { date: '2026-08-24', turns: 6 },
+      { date: '2026-08-25', turns: 5 },
+    ];
+    for (const b of fixBattleDates) {
+      if (!data.battles.some(x => x.date === b.date)) {
+        data.battles.push({
+          id: 'b_fix_' + b.date.replace(/-/g, ''),
+          date: b.date,
+          petId: (data.pets && data.pets[0]) ? data.pets[0].id : 'p_starter',
+          monsterId: 'm_' + b.date + '_456',
+          result: 'win',
+          turns: b.turns,
+          dropEgg: false,
+          earnedPoints: 5,
+        });
+      }
+    }
+
+    // 2. 刷新怪物为猛犸象（tier 4）
+    if (!data.stats) data.stats = {};
+    data.stats.streak = 6;
+    if ((data.stats.bestStreak || 0) < 6) data.stats.bestStreak = 6;
+
+    const todayStr = todayKey();
+    if (!data.monsters) data.monsters = { today: null, history: [] };
+    const tierCfg4 = MONSTER_TIERS.find(t => t.tier === 4);
+    if (tierCfg4) {
+      const hp = Math.floor(Math.random() * (tierCfg4.hp[1] - tierCfg4.hp[0] + 1)) + tierCfg4.hp[0];
+      const atk = Math.floor(Math.random() * (tierCfg4.atk[1] - tierCfg4.atk[0] + 1)) + tierCfg4.atk[0];
+      const def = Math.floor(Math.random() * (tierCfg4.def[1] - tierCfg4.def[0] + 1)) + tierCfg4.def[0];
+      data.monsters.today = {
+        id: 'm_' + todayStr + '_' + Math.floor(Math.random() * 900 + 100),
+        date: todayStr,
+        tier: 4,
+        name: tierCfg4.name,
+        emoji: tierCfg4.emoji,
+        hp, atk, def, maxHp: hp,
+      };
+    }
+    if (!data.pokedex) data.pokedex = { pets: ['小狗'], monsters: [] };
+    if (!data.pokedex.monsters) data.pokedex.monsters = [];
+    if (!data.pokedex.monsters.includes(4)) data.pokedex.monsters.push(4);
+
+    // 3. 重置古诗记忆，让内容不再卡在咏鹅
+    if (data.memory && data.memory.poem) {
+      data.memory.poem = {};
+    }
+    if (data.bookProgress) {
+      data.bookProgress.poemStageIdx = Math.max(data.bookProgress.poemStageIdx || 0, 1);
+    }
+
+    // 重新计算累计打卡天数
+    data.stats.totalCheckinDays = Object.keys(data.checkins).length;
+
+    data.meta.dataFix_20260826 = true;
+  }
+
   return data;
 }
 
@@ -675,7 +755,6 @@ export const ACHIEVEMENTS = [
   { id: 'streak_5', name: '连胜5场', desc: '每日对决连胜5场', icon: '⚡', check: s => s.stats.bestStreak >= 5 },
   { id: 'speak_20', name: '开口小达人', desc: '开口打卡成功20次', icon: '🗣️', check: s => s.stats.totalSpeakWins >= 20 },
   { id: 'rarity_legend', name: '传说降临', desc: '拥有一只传说宠物', icon: '🌟', check: s => (s.pets || []).some(p => p.rarity === 'legendary') },
-  { id: 'gift_4', name: '有车一族', desc: '获得汽车级周日礼物', icon: '🚗', check: s => (s.weeklyGift?.history || []).some(g => g.tier >= 4) },
 ];
 
 /* ============================================================

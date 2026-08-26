@@ -3,16 +3,14 @@
 import { getState, update } from '../store.js';
 import { isDailyDuelDone, recordDailyDuel, getStudyDoneCount, isDuelRetryAvailable, getDuelRetryState, clearDuelRetryState } from '../tasks.js';
 import { getActivePet, petStats } from '../pets.js';
-import { MONSTER_TIERS, STUDY_MIN_FOR_DUEL, RARITY_NAME, RARITY_COLOR, WEEKLY_GIFTS } from '../db2.js';
+import { MONSTER_TIERS, STUDY_MIN_FOR_DUEL, RARITY_NAME, RARITY_COLOR } from '../db2.js';
 import { esc, relDay, todayKey, dayOffset } from '../utils.js';
 import { showOverlay, closeOverlay, switchTab, toast, celebrate } from '../app.js';
 import { runBattle, winReward, shouldDropEgg } from '../battle.js';
 import { addEgg } from '../daily.js';
 import { renderPet, attackMotion } from '../pet-render.js';
-import { getGiftSvg } from '../gift-svgs.js';
 import { openPetDex } from './pets.js';
 import { getAchievementList, markSeen } from '../achievements.js';
-import { currentGiftPreview, giftHistory } from '../weekly.js';
 
 
 /** 随机宠物互动反馈 */
@@ -182,10 +180,9 @@ export function renderHome() {
   }
   html += `</div>`;
 
-  // === 成就徽章 + 周礼物 入口 ===
+  // === 成就徽章入口 ===
   const achList = getAchievementList();
   const achUnlocked = achList.filter(a => a.unlocked);
-  const g = currentGiftPreview();
   html += `
     <div class="home-row">
       <div class="home-mini ach" id="openAch">
@@ -193,17 +190,12 @@ export function renderHome() {
         <div class="hm-name">成就</div>
         <div class="hm-sub">${achUnlocked.length}/${achList.length} 已解锁</div>
       </div>
-      <div class="home-mini gift" id="openGift">
-        <div class="hm-emoji">🎁</div>
-        <div class="hm-name">周礼物</div>
-        <div class="hm-sub">${g.settled ? g.name : '周日揭晓'}</div>
-      </div>
-    </div>
-    <div class="home-row">
       <div class="home-mini" id="homeDexBtn">
         <div class="hm-emoji">📖</div>
         <div class="hm-name">宠物图鉴</div>
       </div>
+    </div>
+    <div class="home-row">
       <div class="home-mini" id="openZomDex">
         <div class="hm-emoji">🐺</div>
         <div class="hm-name">怪物图鉴</div>
@@ -238,7 +230,6 @@ export function renderHome() {
   const goDuel = document.getElementById('view-home').querySelector('#goDuel');
   if (goDuel && !goDuel.disabled) goDuel.onclick = () => startDailyDuel();
   document.getElementById('view-home').querySelector('#openAch').onclick = openAchievements;
-  document.getElementById('view-home').querySelector('#openGift').onclick = openWeeklyGift;
   document.getElementById('view-home').querySelector('#homeDexBtn').onclick = () => openPetDex();
   document.getElementById('view-home').querySelector('#openZomDex').onclick = openZombieDex;
 }
@@ -574,28 +565,4 @@ function openAchievements() {
   html += `<button class="btn secondary block" id="close" style="margin-top:12px">关闭</button>`;
   showOverlay(html, { onMount: c => { c.querySelector('#close').onclick = closeOverlay; } });
   markSeen();
-}
-
-function openWeeklyGift() {
-  const g = currentGiftPreview();
-  const history = giftHistory();
-  let heroHtml = '';
-  if (g.settled) {
-    const segs = WEEKLY_GIFTS.map(w => `<div class="seg ${g.tier >= w.tier ? 'on' : ''}"></div>`).join('');
-    heroHtml = `<div style="font-weight:800;font-size:18px">${g.name}</div>
-      <div class="gift-svg">${getGiftSvg(g.tier)}</div>
-      <div class="gift-tier">Tier ${g.tier}${g.brand ? ' · '+g.brand : ''}</div>
-      <div class="gift-tier-bar">${segs}</div>
-      <div class="hint">本周已结算 · 胜 ${g.wins} 场</div>`;
-  } else {
-    heroHtml = `<div style="font-size:64px">🎁</div>
-      <div style="font-weight:800;font-size:18px;margin-top:6px">周日决斗后揭晓</div>
-      <div class="hint">本周已胜 ${g.wins} 场<br>胜得越多礼物越好</div>`;
-  }
-  let html = `<h2>🎁 每周日礼物</h2><div class="gift-hero">${heroHtml}</div>
-    <div class="section-title">📜 礼物记录</div>`;
-  if (!history.length) html += `<div class="empty"><span class="emoji">📭</span>还没有收到过礼物</div>`;
-  for (const h of history) html += `<div class="gift-row"><span class="g-emoji">🎁</span><span>${h.name} · 胜${h.wins}场</span></div>`;
-  html += `<button class="btn secondary block" id="close" style="margin-top:12px">关闭</button>`;
-  showOverlay(html, { onMount: c => { c.querySelector('#close').onclick = closeOverlay; } });
 }

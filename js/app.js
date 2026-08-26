@@ -5,7 +5,6 @@ import { ensureToday } from './daily.js';
 import { registerSW } from './sw-register.js';
 import { isConfigured, syncNow } from './sync.js';
 import { checkAchievements, hasUnseen } from './achievements.js';
-import { settleWeeklyGift } from './weekly.js';
 import { renderHome } from './views/home.js';
 import { renderCheckin } from './views/checkin.js';
 import { renderPets } from './views/pets.js';
@@ -125,7 +124,7 @@ export function maybeAutoSync() {
   }, 30000);
 }
 
-// ---------- 成就提示 + 周礼物 ----------
+// ---------- 成就提示 ----------
 export function notifyAchievements() {
   const newly = checkAchievements();
   for (const a of newly) {
@@ -134,16 +133,10 @@ export function notifyAchievements() {
   return newly.length;
 }
 
-function settleWeekly() {
-  const gift = settleWeeklyGift();
-  if (gift) toast(`🎁 本周礼物：${gift.name}！去战斗页查看`, 4000);
-}
-
 // ---------- 初始化 ----------
 function init() {
   load();
   ensureToday();
-  settleWeekly();
   notifyAchievements();
   renderTopbar();
   bindNav();

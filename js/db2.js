@@ -732,10 +732,31 @@ export function migrate(data) {
       data.bookProgress.poemStageIdx = Math.max(data.bookProgress.poemStageIdx || 0, 1);
     }
 
+    // 清除今天的古诗打卡记录，让重新选诗（修复后随机选诗）
+    const todayStr = todayKey();
+    if (data.checkins && data.checkins[todayStr] && data.checkins[todayStr].q_poem) {
+      delete data.checkins[todayStr].q_poem;
+    }
+
     // 重新计算累计打卡天数
     data.stats.totalCheckinDays = Object.keys(data.checkins).length;
 
     data.meta.dataFix_20260826 = true;
+  }
+
+  // ============================================================
+  // v35b 补丁：强制再次清空古诗记忆 + 清除今日古诗打卡（2026-08-26 二次修复）
+  // 原因：第一次推送后旧 SW 缓存导致咏鹅又被写入 memory.poem
+  // ============================================================
+  if (!data.meta.dataFix_20260826b) {
+    if (data.memory && data.memory.poem) {
+      data.memory.poem = {};
+    }
+    const todayStr2 = todayKey();
+    if (data.checkins && data.checkins[todayStr2] && data.checkins[todayStr2].q_poem) {
+      delete data.checkins[todayStr2].q_poem;
+    }
+    data.meta.dataFix_20260826b = true;
   }
 
   return data;

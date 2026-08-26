@@ -8,7 +8,6 @@ import {
 import { CATEGORIES, TASK_KIND } from '../db2.js';
 import { esc } from '../utils.js';
 import { switchTab } from '../app.js';
-import { currentGiftPreview } from '../weekly.js';
 import { openChineseQuiz } from './quiz-chinese.js';
 import { openEnglishQuiz } from './quiz-english.js';
 import { openMathQuiz } from './quiz-math.js';

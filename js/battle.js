@@ -1,6 +1,6 @@
 // battle.js — 怪物生成、回合结算、胜负判定、掉蛋（纯函数为主）
 
-import { MONSTER_TIERS, RARITY_TABLE, SHOP_WEAPONS, SHOP_FOODS } from './db2.js';
+import { MONSTER_TIERS, RARITY_TABLE, SHOP_WEAPONS, SHOP_FOODS, weaponIcon } from './db2.js';
 import { randInt, chance, uid, weightedPick } from './utils.js';
 
 /** 按连胜数取每日对决 tier 配置 */
@@ -79,7 +79,7 @@ export function runBattle(pet, monster) {
     // 宠物先手
     const dmgToMon = attackDamage(petAtk, monster.def);
     monHp -= dmgToMon;
-    log.push({ actor: 'pet', text: `回合${turn}：${pet.species} ${eff.weapon ? eff.weapon.emoji : '👊'} 攻击造成 ${dmgToMon} 伤害`, petHp, monHp: Math.max(0, monHp) });
+    log.push({ actor: 'pet', text: `回合${turn}：${pet.species} ${eff.weapon ? weaponIcon(eff.weapon) : '👊'} 攻击造成 ${dmgToMon} 伤害`, petHp, monHp: Math.max(0, monHp) });
     if (monHp <= 0) {
       log.push({ actor: 'system', text: `🎉 ${monster.emoji} ${monster.name} 被击败！`, petHp: Math.max(0, petHp), monHp: 0 });
       return { log, result: 'win', petHpLeft: Math.max(0, petHp), monsterHpLeft: 0, usedRevive, turns: turn };

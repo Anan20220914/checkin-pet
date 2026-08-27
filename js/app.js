@@ -74,6 +74,45 @@ export function celebrate(msg = '打卡成功', sub = '') {
   setTimeout(() => layer.remove(), 2500);
 }
 
+// ---------- 决斗胜利特效（奖杯 + 宠物吃蛋糕动画） ----------
+export function celebrateWithCake(msg = '决斗胜利', sub = '') {
+  const layer = document.createElement('div');
+  layer.className = 'success-box-overlay';
+  layer.innerHTML = `
+    <div class="success-box" style="padding:24px 32px;">
+      <div class="success-trophy">🏆</div>
+      <div class="success-title">${msg}</div>
+      ${sub ? `<div class="success-sub">${sub}</div>` : ''}
+      <div class="cake-scene">
+        <div class="cake-pet">🐶</div>
+        <div class="cake-emoji">🎂</div>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(layer);
+
+  // 撒花特效
+  const colors = ['#FF8A80', '#FFD54F', '#80CBC4', '#FFAB91', '#FFE082'];
+  for (let i = 0; i < 20; i++) {
+    setTimeout(() => {
+      const star = document.createElement('div');
+      star.textContent = ['⭐', '✨', '🎉', '🌟', '🎊'][Math.floor(Math.random() * 5)];
+      star.style.position = 'fixed';
+      star.style.left = (10 + Math.random() * 80) + '%';
+      star.style.top = '-20px';
+      star.style.fontSize = (16 + Math.random() * 20) + 'px';
+      star.style.pointerEvents = 'none';
+      star.style.zIndex = '201';
+      star.style.animation = `star-fall ${1 + Math.random() * 0.5}s ease-out forwards`;
+      star.style.color = colors[Math.floor(Math.random() * colors.length)];
+      document.body.appendChild(star);
+      setTimeout(() => star.remove(), 2000);
+    }, i * 60);
+  }
+
+  setTimeout(() => layer.remove(), 3500);
+}
+
 // ---------- 路由 ----------
 let currentTab = 'home';
 

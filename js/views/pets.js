@@ -3,7 +3,7 @@
 import { getState } from '../store.js';
 import { getActivePet, petStats, switchActive, feedPet, equipWeapon, buyAccessory, toggleAccessory, setPetBgColor, setPetSticker } from '../pets.js';
 import { foodQty, weaponQty } from '../shop.js';
-import { SHOP_FOODS, SHOP_WEAPONS, ACCESSORIES, RARITY_NAME, RARITY_COLOR, SPECIES_BY_RARITY } from '../db2.js';
+import { SHOP_FOODS, SHOP_WEAPONS, ACCESSORIES, RARITY_NAME, RARITY_COLOR, SPECIES_BY_RARITY, weaponIcon } from '../db2.js';
 import { renderPet, getPalette } from '../pet-render.js';
 import { getPetSvg, petDefaultColor } from '../pet-svgs.js';
 import { esc } from '../utils.js';
@@ -29,7 +29,7 @@ export function renderPets() {
         <div style="text-align:left;margin-top:8px;width:80%;margin-left:auto;margin-right:auto">
           <div class="stat-row"><span class="label">攻击</span><span class="value">${stats.atk}${stats.atkBonus ? ` (+${stats.atkBonus})` : ''}</span></div>
           <div class="stat-row"><span class="label">防御</span><span class="value">${stats.def}${stats.defBonus ? ` (+${stats.defBonus})` : ''}</span></div>
-          <div class="stat-row"><span class="label">武器</span><span class="value">${stats.weapon ? stats.weapon.emoji + ' ' + stats.weapon.name : '无'}</span></div>
+          <div class="stat-row"><span class="label">武器</span><span class="value">${stats.weapon ? weaponIcon(stats.weapon) + ' ' + stats.weapon.name : '无'}</span></div>
         </div>
         <div class="row" style="margin-top:12px;width:90%;margin-left:auto;margin-right:auto">
           <button class="btn secondary" id="petCustomize">🎨 捏脸</button>
@@ -183,7 +183,7 @@ function openEquipMenu() {
   const order = ['common','rare','epic','legendary'];
   let list = '';
   for (const w of weapons) {
-    list += `<div class="shop-item"><div class="s-icon">${w.emoji}</div><div class="s-body"><div class="s-name">${w.name}</div><div class="s-desc">攻击 +${w.atk}</div></div><button class="btn-sm btn-equip" data-w="${w.id}">${pet.equippedWeapon === w.id ? '已装' : '装备'}</button></div>`;
+    list += `<div class="shop-item"><div class="s-icon">${weaponIcon(w)}</div><div class="s-body"><div class="s-name">${w.name}</div><div class="s-desc">攻击 +${w.atk}</div></div><button class="btn-sm btn-equip" data-w="${w.id}">${pet.equippedWeapon === w.id ? '已装' : '装备'}</button></div>`;
   }
   showOverlay(`<h2>⚔️ 给 ${esc(pet.species)} 装备</h2>${list}<button class="btn secondary block" id="close">关闭</button>`, {
     onMount: c => {

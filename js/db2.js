@@ -144,10 +144,16 @@ export const SHOP_WEAPONS = [
   { id: 'w_grenade', name: '手榴弹', emoji: '💣', atk: 16, price: 55, rarityReq: 'rare' },
   { id: 'w_flame', name: '火焰杖', emoji: '🔥', atk: 18, price: 70, rarityReq: 'rare' },
   { id: 'w_smg', name: '冲锋枪', emoji: '🔫', atk: 22, price: 90, rarityReq: 'epic' },
-  { id: 'w_tank', name: '坦克', emoji: '🚜', atk: 25, price: 110, rarityReq: 'epic' },
+  { id: 'w_tank', name: '坦克', emoji: '', svg: '<svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;height:auto"><rect x="15" y="40" width="90" height="25" rx="6" fill="#5a7d3a" stroke="#3a2a1a" stroke-width="3"/><rect x="35" y="22" width="50" height="22" rx="5" fill="#6b8e3f" stroke="#3a2a1a" stroke-width="3"/><rect x="80" y="28" width="35" height="7" rx="3" fill="#4a6b2a" stroke="#3a2a1a" stroke-width="2.5"/><circle cx="30" cy="68" r="10" fill="#2a2a2a" stroke="#3a2a1a" stroke-width="2.5"/><circle cx="55" cy="68" r="10" fill="#2a2a2a" stroke="#3a2a1a" stroke-width="2.5"/><circle cx="80" cy="68" r="10" fill="#2a2a2a" stroke="#3a2a1a" stroke-width="2.5"/><circle cx="30" cy="68" r="4" fill="#666"/><circle cx="55" cy="68" r="4" fill="#666"/><circle cx="80" cy="68" r="4" fill="#666"/><rect x="50" y="26" width="6" height="14" rx="2" fill="#3a2a1a"/><rect x="60" y="26" width="6" height="14" rx="2" fill="#3a2a1a"/></svg>', atk: 25, price: 110, rarityReq: 'epic' },
   { id: 'w_thunder', name: '雷神锤', emoji: '⚡', atk: 28, price: 120, rarityReq: 'epic' },
   { id: 'w_dragon', name: '屠龙刀', emoji: '🐲', atk: 35, price: 130, rarityReq: 'legendary' },
 ];
+
+/** 取武器显示图标：有 svg 用 svg，否则用 emoji */
+export function weaponIcon(w) {
+  if (!w) return '⚔️';
+  return w.svg || w.emoji || '⚔️';
+}
 
 export const SHOP_FOODS = [
   { id: 'f_water', name: '白开水', emoji: '💧', heal: 5, buff: null, price: 1 },

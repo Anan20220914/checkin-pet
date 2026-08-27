@@ -144,7 +144,7 @@ export const SHOP_WEAPONS = [
   { id: 'w_grenade', name: '手榴弹', emoji: '💣', atk: 16, price: 55, rarityReq: 'rare' },
   { id: 'w_flame', name: '火焰杖', emoji: '🔥', atk: 18, price: 70, rarityReq: 'rare' },
   { id: 'w_smg', name: '冲锋枪', emoji: '🔫', atk: 22, price: 90, rarityReq: 'epic' },
-  { id: 'w_tank', name: '坦克', emoji: '🛡️', atk: 25, price: 110, rarityReq: 'epic' },
+  { id: 'w_tank', name: '坦克', emoji: '🚜', atk: 25, price: 110, rarityReq: 'epic' },
   { id: 'w_thunder', name: '雷神锤', emoji: '⚡', atk: 28, price: 120, rarityReq: 'epic' },
   { id: 'w_dragon', name: '屠龙刀', emoji: '🐲', atk: 35, price: 130, rarityReq: 'legendary' },
 ];

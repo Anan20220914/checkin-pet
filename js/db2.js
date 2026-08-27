@@ -140,15 +140,17 @@ export function findSpecies(speciesName) {
 export const SHOP_WEAPONS = [
   { id: 'w_wood', name: '木剑', emoji: '🗡️', atk: 4, price: 10, rarityReq: 'common' },
   { id: 'w_iron', name: '铁剑', emoji: '⚔️', atk: 8, price: 25, rarityReq: 'common' },
-  { id: 'w_bow', name: '弩箭', emoji: '🏹', atk: 12, price: 45, rarityReq: 'rare' },
-  { id: 'w_grenade', name: '手榴弹', emoji: '💣', atk: 16, price: 60, rarityReq: 'rare' },
-  { id: 'w_flame', name: '火焰杖', emoji: '🔥', atk: 18, price: 80, rarityReq: 'rare' },
-  { id: 'w_smg', name: '冲锋枪', emoji: '🔫', atk: 22, price: 110, rarityReq: 'epic' },
-  { id: 'w_thunder', name: '雷神锤', emoji: '⚡', atk: 26, price: 140, rarityReq: 'epic' },
-  { id: 'w_dragon', name: '屠龙刀', emoji: '🐲', atk: 38, price: 240, rarityReq: 'legendary' },
+  { id: 'w_bow', name: '弩箭', emoji: '🏹', atk: 12, price: 40, rarityReq: 'rare' },
+  { id: 'w_grenade', name: '手榴弹', emoji: '💣', atk: 16, price: 55, rarityReq: 'rare' },
+  { id: 'w_flame', name: '火焰杖', emoji: '🔥', atk: 18, price: 70, rarityReq: 'rare' },
+  { id: 'w_smg', name: '冲锋枪', emoji: '🔫', atk: 22, price: 90, rarityReq: 'epic' },
+  { id: 'w_tank', name: '坦克', emoji: '🛡️', atk: 25, price: 110, rarityReq: 'epic' },
+  { id: 'w_thunder', name: '雷神锤', emoji: '⚡', atk: 28, price: 120, rarityReq: 'epic' },
+  { id: 'w_dragon', name: '屠龙刀', emoji: '🐲', atk: 35, price: 130, rarityReq: 'legendary' },
 ];
 
 export const SHOP_FOODS = [
+  { id: 'f_water', name: '白开水', emoji: '💧', heal: 5, buff: null, price: 1 },
   { id: 'f_apple', name: '苹果', emoji: '🍎', heal: 15, buff: null, price: 4 },
   { id: 'f_bread', name: '面包', emoji: '🍞', heal: 30, buff: null, price: 7 },
   { id: 'f_milk', name: '牛奶', emoji: '🥛', heal: 9999, buff: { def: 2 }, price: 12 },
@@ -733,9 +735,9 @@ export function migrate(data) {
     }
 
     // 清除今天的古诗打卡记录，让重新选诗（修复后随机选诗）
-    const todayStr = todayKey();
-    if (data.checkins && data.checkins[todayStr] && data.checkins[todayStr].q_poem) {
-      delete data.checkins[todayStr].q_poem;
+    const todayStr2 = todayKey();
+    if (data.checkins && data.checkins[todayStr2] && data.checkins[todayStr2].q_poem) {
+      delete data.checkins[todayStr2].q_poem;
     }
 
     // 重新计算累计打卡天数

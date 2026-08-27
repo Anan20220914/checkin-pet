@@ -1,6 +1,6 @@
 // pet-render.js — 宠物渲染：SVG + 背景色 + 贴纸 + 配饰 + 装备 + 情绪 + 成长阶段
 
-import { findSpecies } from './db2.js';
+import { findSpecies, SHOP_WEAPONS } from './db2.js';
 import { getPetSvg, growthStageLabel, petDefaultColor } from './pet-svgs.js';
 
 /**
@@ -40,14 +40,12 @@ export function renderPet(pet, size = '', moodOverride = null, showWeapon = fals
     stickerLayer = `<div class="pet-sticker">${pet.sticker}</div>`;
   }
 
-  // 装备武器：显示武器(右手) + 盾牌(左手)
+  // 装备武器：显示对应武器 emoji（右手）
   let weaponLayer = '';
-  if (showWeapon && pet.equippedWeapon) {
-    // 简化为 emoji 显示
-    weaponLayer = `
-      <div class="weapon-layer sword"><span>⚔️</span></div>
-      <div class="weapon-layer shield"><span>🛡️</span></div>
-    `;
+  if (pet.equippedWeapon) {
+    const w = SHOP_WEAPONS.find(x => x.id === pet.equippedWeapon);
+    const wEmoji = w ? w.emoji : '⚔️';
+    weaponLayer = `<div class="weapon-layer sword"><span>${wEmoji}</span></div>`;
   }
 
   // 成长阶段指示器

@@ -2,7 +2,7 @@
 
 import { getState } from '../store.js';
 import { buyWeapon, buyFood, weaponQty, foodQty } from '../shop.js';
-import { SHOP_WEAPONS, SHOP_FOODS, RARITY_NAME, RARITY_COLOR } from '../db2.js';
+import { SHOP_WEAPONS, SHOP_FOODS, RARITY_NAME, RARITY_COLOR, weaponIcon } from '../db2.js';
 import { esc } from '../utils.js';
 import { toast } from '../app.js';
 
@@ -23,7 +23,7 @@ export function renderShop() {
   for (const w of SHOP_WEAPONS) {
     const have = weaponQty(w.id);
     html += `<div class="shop-item">
-      <div class="s-icon">${w.emoji}</div>
+      <div class="s-icon">${weaponIcon(w)}</div>
       <div class="s-body">
         <div class="s-name">${w.name}</div>
         <div class="s-desc">攻击 +${w.atk}</div>

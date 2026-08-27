@@ -874,6 +874,41 @@ textarea.form-control { min-height: 60px; resize: vertical; }
 .success-title { font-size: 22px; font-weight: 900; color: var(--text); margin-top: 8px; }
 .success-sub { font-size: 16px; font-weight: 700; color: var(--primary); margin-top: 4px; }
 
+/* 宠物吃蛋糕动画 */
+.cake-scene {
+  position: relative;
+  width: 120px;
+  height: 80px;
+  margin: 12px auto 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.cake-pet {
+  font-size: 48px;
+  position: relative;
+  z-index: 2;
+  animation: pet-eat-bounce 0.6s ease-in-out infinite alternate;
+}
+.cake-emoji {
+  font-size: 36px;
+  position: absolute;
+  right: 10px;
+  bottom: 0;
+  z-index: 1;
+  animation: cake-shrink 3s ease-in forwards;
+}
+@keyframes pet-eat-bounce {
+  0% { transform: translateX(0) translateY(0); }
+  100% { transform: translateX(8px) translateY(-4px); }
+}
+@keyframes cake-shrink {
+  0% { transform: scale(1); opacity: 1; }
+  60% { transform: scale(0.8); opacity: 1; }
+  80% { transform: scale(0.5); opacity: 0.8; }
+  100% { transform: scale(0.2); opacity: 0; }
+}
+
 /* ============================================================
  * 16. 首页决斗主舞台
  * ========================================================== */
@@ -1188,15 +1223,142 @@ textarea.form-control { min-height: 60px; resize: vertical; }
 .quiz-feedback.right { color: var(--success); }
 .quiz-feedback.wrong { color: var(--primary); }
 
-/* 数学图形题 */
-.pic-stage { text-align: center; margin: 8px 0; }
-.pic-group { display: inline-block; margin: 4px 8px; }
-.pic-emoji-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px; max-width: 200px; }
-.pic-item-big { font-size: 40px; line-height: 1.1; display: inline-block; }
-.pic-taken { filter: grayscale(1); opacity: 0.3; }
-.pic-count { font-size: 20px; font-weight: 800; color: var(--primary-dark); margin-top: 4px; }
-.pic-op-big { font-size: 28px; font-weight: 800; color: var(--text-soft); margin: 8px 0; }
-.pic-question-big { font-size: 16px; font-weight: 700; color: var(--text); margin: 10px 0 4px; }
+/* ============================================================
+ * 数学打卡 — 全图形辅助版
+ * ========================================================== */
+.mp-stage { padding: 8px 4px var(--space-3); }
+
+/* 加法 / 减法 通用布局 */
+.mp-add-layout, .mp-sub-layout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 4px 0 8px;
+}
+
+/* 物品方框 */
+.mp-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 10px 6px;
+  border: 3px solid var(--primary);
+  border-radius: var(--radius-md);
+  background: var(--bg-soft);
+  min-width: 56px;
+}
+.mp-box-full { border-color: var(--primary-dark); background: #FFF8E1; }
+.mp-box-question {
+  border-style: dashed;
+  border-color: var(--primary);
+  background: #E3F2FD;
+}
+
+.mp-emoji-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1px;
+  max-width: 130px;
+}
+.mp-emoji {
+  font-size: 36px;
+  line-height: 1.05;
+  display: inline-block;
+  transition: all 0.3s;
+}
+.mp-emoji-q { font-size: 36px; color: var(--primary); font-weight: 800; }
+.mp-emoji-placeholder { min-height: 40px; align-items: center; }
+
+/* 被拿走的物品 — 划掉效果 */
+.mp-crossed {
+  position: relative;
+  opacity: 0.35;
+  filter: grayscale(0.8);
+}
+.mp-crossed::after {
+  content: '';
+  position: absolute;
+  left: -2px; right: -2px;
+  top: 50%;
+  height: 4px;
+  background: #E53935;
+  border-radius: 2px;
+  transform: translateY(-50%) rotate(-20deg);
+}
+
+/* 方框下方的数字标签 */
+.mp-box-count {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--primary-dark);
+  margin-top: 4px;
+  line-height: 1;
+}
+.mp-answer-display {
+  font-size: 32px;
+  color: var(--primary);
+  border-bottom: 3px dashed var(--primary);
+  min-width: 30px;
+  padding-bottom: 2px;
+}
+
+/* 运算符号 + = */
+.mp-op-sign {
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1;
+}
+
+/* 减法"拿走"提示 */
+.mp-take-away {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #FFEBEE;
+  border: 2px solid #EF5350;
+  border-radius: 20px;
+  padding: 4px 12px;
+}
+.mp-take-icon { font-size: 22px; }
+.mp-take-text { font-size: 16px; font-weight: 700; color: #C62828; }
+
+/* 问题提示文字 */
+.mp-question-text {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+  text-align: center;
+  margin: 6px 0 4px;
+}
+
+/* 纯数字题 */
+.mp-num-layout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 16px 0 12px;
+}
+.mp-num-problem {
+  font-size: 52px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1;
+}
+.mp-num-answer {
+  font-size: 52px;
+  font-weight: 800;
+  color: var(--primary-dark);
+  border-bottom: 4px dashed var(--primary);
+  min-width: 50px;
+  display: inline-block;
+  text-align: center;
+  line-height: 1;
+}
 
 /* ============================================================
  * 22. 开口战斗界面

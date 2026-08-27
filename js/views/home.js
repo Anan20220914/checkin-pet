@@ -5,7 +5,7 @@ import { isDailyDuelDone, recordDailyDuel, getStudyDoneCount, isDuelRetryAvailab
 import { getActivePet, petStats } from '../pets.js';
 import { MONSTER_TIERS, STUDY_MIN_FOR_DUEL, RARITY_NAME, RARITY_COLOR } from '../db2.js';
 import { esc, relDay, todayKey, dayOffset } from '../utils.js';
-import { showOverlay, closeOverlay, switchTab, toast, celebrate } from '../app.js';
+import { showOverlay, closeOverlay, switchTab, toast, celebrate, celebrateWithCake } from '../app.js';
 import { runBattle, winReward, shouldDropEgg } from '../battle.js';
 import { addEgg } from '../daily.js';
 import { renderPet, attackMotion } from '../pet-render.js';
@@ -446,11 +446,10 @@ function settleDailyDuel(pet, monster, result) {
 
   if (won) {
     recordDailyDuel({ result: result.result, dropEgg, reward, monsterId: monster.id });
-    celebrate('决斗胜利！', dropEgg ? `掉落宠物蛋🥚 +${reward}金币` : `连胜${getState().stats.streak} +${reward}金币`);
     const streakAfter = getState().stats.streak;
     closeOverlay();
     const sub = dropEgg ? `获得 ${reward} 金币 · 掉落宠物蛋🥚` : `获得 ${reward} 金币 · 连胜 ${streakAfter}`;
-    celebrate('决斗胜利', sub);
+    celebrateWithCake('决斗胜利', sub);
     setTimeout(()=>switchTab('home'),100);
     return;
   }
@@ -513,11 +512,10 @@ function settleDailyDuelRetry(pet, weakenedMonster, result) {
   recordDailyDuel({ result: result.result, dropEgg, reward, monsterId: weakenedMonster.id });
 
   if (won) {
-    celebrate('二次决斗胜利！', dropEgg ? `掉落宠物蛋🥚 +${reward}金币` : `连胜${getState().stats.streak} +${reward}金币`);
     const streakAfter = getState().stats.streak;
     closeOverlay();
     const sub = dropEgg ? `获得 ${reward} 金币 · 掉落宠物蛋🥚` : `获得 ${reward} 金币 · 连胜 ${streakAfter}`;
-    celebrate('二次决斗胜利', sub);
+    celebrateWithCake('二次决斗胜利', sub);
     setTimeout(()=>switchTab('home'),100);
     return;
   }

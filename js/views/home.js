@@ -370,7 +370,7 @@ function playBattleAnimation(pet, monster, result, onDone) {
   const card = document.getElementById('overlayCard');
   const monsterEmoji = monster.emoji || '🐺';
 
-  // 小伙伴显示
+  // 小伙伴信息
   const companionId = getState().companions?.active || null;
   const companion = companionId ? findCompanion(companionId) : null;
   const companionEmoji = companion ? companion.emoji : '';
@@ -392,6 +392,10 @@ function playBattleAnimation(pet, monster, result, onDone) {
   function buildDmgPop(dmg, isCrit) {
     if (isCrit) return `<div class="dmg-crit">暴击!-${dmg}</div>`;
     return `<div class="dmg-pop">-${dmg}</div>`;
+  }
+
+  function buildHealPop(amt) {
+    return `<div class="heal-pop">+${amt}</div>`;
   }
 
   function buildCombo(side, count) {
@@ -416,7 +420,7 @@ function playBattleAnimation(pet, monster, result, onDone) {
     // 暴击判定：伤害 >= 10 视为暴击
     const dmgMatch = entry.text.match(/(\d+)/);
     const dmgVal = dmgMatch ? parseInt(dmgMatch[1]) : 0;
-    const isCrit = (entry.actor === 'pet' || entry.actor === 'monster') && dmgVal >= 10;
+    const isCrit = (entry.actor === 'pet' || entry.actor === 'monster' || entry.actor === 'companion') && dmgVal >= 10;
 
     // 连击计数
     if (entry.actor === 'pet') { petCombo++; monCombo = 0; }
@@ -437,12 +441,38 @@ function playBattleAnimation(pet, monster, result, onDone) {
       petClass = 'defeat-fade';
     }
 
+    // 小伙伴侧特效和动画
+    let compClass = '';
+    let compFxHtml = '';
+    if (entry.actor === 'companion' && companion) {
+      // 根据技能类型给不同动画
+      if (entry.skill === 'extraDamage') {
+        compClass = 'comp-attack-charge';
+        compFxHtml = buildHitFx(isCrit) + buildDmgPop(dmgVal, isCrit);
+      } else if (entry.skill === 'heal') {
+        compClass = 'comp-attack-heal';
+        compFxHtml = buildHealPop(dmgVal);
+      } else if (entry.skill === 'shield') {
+        compClass = 'comp-attack-shield';
+        compFxHtml = '<div class="shield-fx">🛡️</div>';
+      } else if (entry.skill === 'reduceAtk') {
+        compClass = 'comp-attack-swarm';
+        compFxHtml = '<div class="fx-particles"><span></span><span></span><span></span><span></span><span></span><span></span></div>';
+      }
+    }
+
     // 怪兽侧特效
     let monClass = '';
     let monFxHtml = '';
     if (entry.actor === 'pet') {
       monClass = isCrit ? 'hit-shake crit-flash' : 'hit-shake hit-flash';
       monFxHtml = buildHitFx(isCrit) + buildDmgPop(dmgVal, isCrit) + buildCombo('mon', petCombo);
+    } else if (entry.actor === 'companion' && companion) {
+      // 小伙伴攻击怪兽时，怪兽也受击
+      if (entry.skill === 'extraDamage' || entry.skill === 'reduceAtk') {
+        monClass = isCrit ? 'hit-shake crit-flash' : 'hit-shake hit-flash';
+        monFxHtml = buildHitFx(isCrit) + (dmgVal > 0 ? buildDmgPop(dmgVal, isCrit) : '');
+      }
     } else if (entry.actor === 'monster') {
       monClass = '';
     } else if (isWin) {
@@ -462,13 +492,27 @@ function playBattleAnimation(pet, monster, result, onDone) {
     const petHpLow = petPct > 0 && petPct <= 25 ? 'hp-low' : '';
     const monHpLow = monPct > 0 && monPct <= 25 ? 'hp-low' : '';
 
+    // 小伙伴HTML（独立形象，在宠物旁边）
+    let companionHtml = '';
+    if (companion) {
+      companionHtml = `
+        <div class="bs-companion ${compClass}" style="position:relative">
+          <div style="font-size:36px;line-height:1">${companion.emoji}</div>
+          ${compFxHtml}
+        </div>
+      `;
+    }
+
     card.innerHTML = `
       <div class="quiz-head"><span class="quiz-title">⚔️ 决斗</span><span class="quiz-count">回合 ${Math.min(idx,30)}/30</span></div>
       <div class="battle-stage ${stageShake}">
         <div class="bs-vs">
           <div class="bs-side pet">
-            <div style="height:72px;display:flex;align-items:flex-end;justify-content:center;position:relative" class="${petClass}">${renderPet(pet,'sm')}${petFxHtml}</div>
-            <div class="bs-name">${esc(pet.species)}${companionEmoji ? ` <span style="font-size:16px">${companionEmoji}</span>` : ''}</div>
+            <div style="height:72px;display:flex;align-items:flex-end;justify-content:center;gap:4px;position:relative">
+              <div class="${petClass}" style="position:relative">${renderPet(pet,'sm')}${petFxHtml}</div>
+              ${companionHtml}
+            </div>
+            <div class="bs-name">${esc(pet.species)}${companion ? ` <span style="font-size:14px;color:${companion.color}">${companion.emoji}</span>` : ''}</div>
             <div class="bs-hpbar"><div class="fill ${petHpLow}" style="width:${petPct}%"></div></div>
             <div style="font-size:10px">${petHp} HP</div>
           </div>
@@ -489,7 +533,7 @@ function playBattleAnimation(pet, monster, result, onDone) {
     overlay.hidden = false;
     const logEl = card.querySelector('#duelLog');
     if (logEl) logEl.scrollTop = logEl.scrollHeight;
-    const delay = idx === 0 ? 700 : (isCrit ? 1100 : 900);
+    const delay = idx === 0 ? 700 : (entry.actor === 'companion' ? 1000 : (isCrit ? 1100 : 900));
     setTimeout(() => render(idx + 1), delay);
   };
   render(0);

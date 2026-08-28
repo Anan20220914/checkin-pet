@@ -110,13 +110,26 @@ export function buildDailyList(subject, allKeys, perDay = 10, reviewMin = 3) {
     if (dayDiff(lastSeen, today) <= 7) learnedRecent.push(key); else learnedOld.push(key);
   }
   if (isPoem) {
-    // 优先复习昨天"不会/一般"的诗，其次到期复习
-    let pick = yesterdayWeak[0] || dueReview[0] || '';
+    // 古诗刷新逻辑：只有点"学会了"(good)后才换新诗
+    // 1. 优先返回今天或昨天标记为"不会/一般"的诗（还没学会，继续学同一首）
+    // 2. 其次返回到期复习的诗
+    // 3. 都没有则从未学过的诗中随机选一首新的
+    const todayWeak = [];
+    for (const key of allKeys) {
+      const c = mem[key];
+      if (!c || c.box === 0) continue;
+      // 今天或昨天标记为"不会/一般"的 → 继续学同一首
+      if ((c.lastSeen === today || c.lastSeen === yesterday) &&
+          (c.lastGrade === SRS_GRADE.AGAIN || c.lastGrade === SRS_GRADE.OK)) {
+        todayWeak.push(key);
+      }
+    }
+    let pick = todayWeak[0] || yesterdayWeak[0] || dueReview[0] || '';
     if (!pick) {
       // 从未学过的诗中随机选择（避免每次都是同一首）
       pick = (notLearned.length ? notLearned[Math.floor(Math.random() * notLearned.length)] : '') || allKeys[0] || '';
     }
-    return { review: [], fresh: [pick], all: [pick], dueCount: yesterdayWeak.length, learnedCount: allKeys.length - notLearned.length };
+    return { review: [], fresh: [pick], all: [pick], dueCount: todayWeak.length, learnedCount: allKeys.length - notLearned.length };
   }
   const all = [];
   // 1. 昨天不会或一般的字 → 必出现（强化复习，不属于"学会的"）

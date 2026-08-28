@@ -2347,3 +2347,30 @@ textarea.form-control { min-height: 60px; resize: vertical; }
 .reading-words { display: flex; flex-wrap: wrap; gap: 8px; }
 .reading-word { font-size: 16px; font-weight: 700; color: #1B5E20; background: #C8E6C9; padding: 4px 12px; border-radius: var(--radius-full); }
 .reading-tip { font-size: 14px; line-height: 1.7; color: var(--text-soft); }
+
+/* ---- 小伙伴选择 ---- */
+.companion-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin: 12px 0;
+}
+.companion-card {
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--bg-soft);
+}
+.companion-card:active { transform: scale(0.96); }
+.companion-card.selected {
+  border-color: var(--primary);
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+.companion-card .comp-emoji { font-size: 36px; line-height: 1; margin-bottom: 4px; }
+.companion-card .comp-name { font-size: 14px; font-weight: 700; color: var(--text); }
+.companion-card .comp-skill { font-size: 12px; font-weight: 700; margin: 2px 0; }
+.companion-card .comp-desc { font-size: 11px; color: var(--text-soft); line-height: 1.4; }

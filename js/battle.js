@@ -1,6 +1,6 @@
 // battle.js — 怪物生成、回合结算、胜负判定、掉蛋（纯函数为主）
 
-import { MONSTER_TIERS, RARITY_TABLE, SHOP_WEAPONS, SHOP_FOODS, weaponIcon } from './db2.js';
+import { MONSTER_TIERS, RARITY_TABLE, SHOP_WEAPONS, SHOP_FOODS, weaponIcon, findCompanion } from './db2.js';
 import { randInt, chance, uid, weightedPick } from './utils.js';
 
 /** 按连胜数取每日对决 tier 配置 */
@@ -61,9 +61,12 @@ export function attackDamage(atkTotal, defOpp) {
 /**
  * 每日对决完整回合结算（纯函数）
  * log 每条带 HP 快照 { petHp, monHp }，便于逐回合动画
+ * @param pet 宠物对象
+ * @param monster 怪兽对象
+ * @param companionId 可选，小伙伴id
  * @returns { log, result, petHpLeft, monsterHpLeft, usedRevive, turns }
  */
-export function runBattle(pet, monster) {
+export function runBattle(pet, monster, companionId = null) {
   const eff = petEffectiveStats(pet);
   let petHp = pet.currentHp;
   const petMaxHp = pet.hp;
@@ -73,21 +76,53 @@ export function runBattle(pet, monster) {
   const log = [];
   const MAX_TURNS = 30;
 
+  // 小伙伴技能效果
+  const companion = companionId ? findCompanion(companionId) : null;
+  let monAtk = monster.atk;
+  let companionBonusDmg = 0;
+  let companionHeal = 0;
+  let companionShield = 0;
+  let companionReduceAtk = 0;
+
+  if (companion) {
+    if (companion.skill === 'extraDamage') companionBonusDmg = companion.power;
+    if (companion.skill === 'heal') companionHeal = companion.power;
+    if (companion.skill === 'reduceAtk') { companionReduceAtk = companion.power; monAtk = Math.max(1, monAtk - companion.power); }
+    if (companion.skill === 'shield') companionShield = companion.power;
+    log.push({ actor: 'system', text: `🤝 ${companion.emoji} ${companion.name} 加入了战斗！技能：${companion.skillName}`, petHp, monHp });
+  }
+
   log.push({ actor: 'system', text: `⚔️ 战斗开始！${pet.emoji} ${pet.species} VS ${monster.emoji} ${monster.name}`, petHp, monHp });
 
   for (let turn = 1; turn <= MAX_TURNS; turn++) {
     // 宠物先手
-    const dmgToMon = attackDamage(petAtk, monster.def);
+    let dmgToMon = attackDamage(petAtk, monster.def);
+    // 小伙伴额外伤害
+    if (companionBonusDmg > 0) {
+      dmgToMon += companionBonusDmg;
+      log.push({ actor: 'pet', text: `回合${turn}：${pet.species} ${eff.weapon ? weaponIcon(eff.weapon) : '👊'} 攻击造成 ${dmgToMon - companionBonusDmg} 伤害，${companion.emoji} ${companion.name} 追加 ${companionBonusDmg} 伤害`, petHp, monHp: Math.max(0, monHp - dmgToMon) });
+    } else {
+      log.push({ actor: 'pet', text: `回合${turn}：${pet.species} ${eff.weapon ? weaponIcon(eff.weapon) : '👊'} 攻击造成 ${dmgToMon} 伤害`, petHp, monHp: Math.max(0, monHp - dmgToMon) });
+    }
     monHp -= dmgToMon;
-    log.push({ actor: 'pet', text: `回合${turn}：${pet.species} ${eff.weapon ? weaponIcon(eff.weapon) : '👊'} 攻击造成 ${dmgToMon} 伤害`, petHp, monHp: Math.max(0, monHp) });
     if (monHp <= 0) {
       log.push({ actor: 'system', text: `🎉 ${monster.emoji} ${monster.name} 被击败！`, petHp: Math.max(0, petHp), monHp: 0 });
       return { log, result: 'win', petHpLeft: Math.max(0, petHp), monsterHpLeft: 0, usedRevive, turns: turn };
     }
     // 怪兽反击
-    const dmgToPet = attackDamage(monster.atk, petDef);
+    let dmgToPet = attackDamage(monAtk, petDef);
+    // 小伙伴护盾减伤
+    if (companionShield > 0) {
+      dmgToPet = Math.max(1, dmgToPet - companionShield);
+    }
     petHp -= dmgToPet;
-    log.push({ actor: 'monster', text: `${monster.emoji} ${monster.name} 反击造成 ${dmgToPet} 伤害`, petHp: Math.max(0, petHp), monHp: Math.max(0, monHp) });
+    log.push({ actor: 'monster', text: `${monster.emoji} ${monster.name} 反击造成 ${dmgToPet} 伤害${companionShield > 0 ? `（护盾抵消${companionShield}）` : ''}`, petHp: Math.max(0, petHp), monHp: Math.max(0, monHp) });
+    // 小伙伴治疗
+    if (companionHeal > 0 && petHp > 0 && petHp < petMaxHp) {
+      const healed = Math.min(companionHeal, petMaxHp - petHp);
+      petHp += healed;
+      log.push({ actor: 'system', text: `${companion.emoji} ${companion.name} 治愈恢复 ${healed} HP`, petHp, monHp: Math.max(0, monHp) });
+    }
     if (petHp <= 0) {
       if (eff.revive && !usedRevive) {
         usedRevive = true;

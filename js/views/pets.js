@@ -1,9 +1,9 @@
 // views/pets.js — 宠物页：图渲染、捏脸、配饰、切换、喂食、图鉴
 
-import { getState } from '../store.js';
+import { getState, update } from '../store.js';
 import { getActivePet, petStats, switchActive, feedPet, equipWeapon, buyAccessory, toggleAccessory, setPetBgColor, setPetSticker } from '../pets.js';
 import { foodQty, weaponQty } from '../shop.js';
-import { SHOP_FOODS, SHOP_WEAPONS, ACCESSORIES, RARITY_NAME, RARITY_COLOR, SPECIES_BY_RARITY, weaponIcon } from '../db2.js';
+import { SHOP_FOODS, SHOP_WEAPONS, ACCESSORIES, RARITY_NAME, RARITY_COLOR, SPECIES_BY_RARITY, weaponIcon, COMPANIONS, findCompanion } from '../db2.js';
 import { renderPet, getPalette } from '../pet-render.js';
 import { getPetSvg, petDefaultColor } from '../pet-svgs.js';
 import { esc } from '../utils.js';
@@ -65,6 +65,33 @@ export function renderPets() {
     }
   }
 
+  // 小伙伴模块
+  const companions = s.companions || { owned: COMPANIONS.map(c => c.id), active: null };
+  const activeComp = companions.active ? findCompanion(companions.active) : null;
+  html += `<div class="section-title">🤝 小伙伴（${companions.owned.length} 个）</div>`;
+  html += `<div class="companion-list">`;
+  for (const c of COMPANIONS) {
+    const owned = companions.owned.includes(c.id);
+    if (!owned) continue;
+    const isActive = companions.active === c.id;
+    html += `
+      <div class="companion-mini ${isActive ? 'active' : ''}" data-comp="${c.id}" style="${isActive ? `border-color:${c.color}` : ''}">
+        <div class="comp-emoji" style="font-size:32px">${c.emoji}</div>
+        <div class="cm-body">
+          <div class="cm-name">${c.colorName}${c.name}</div>
+          <div class="cm-skill" style="color:${c.color};font-weight:700">${c.skillName}</div>
+          <div class="cm-desc">${c.skillDesc}</div>
+        </div>
+        <div class="cm-status">${isActive ? '✅ 出战中' : '点击选择'}</div>
+      </div>
+    `;
+  }
+  html += `</div>`;
+  // 不带伙伴选项
+  if (activeComp) {
+    html += `<div style="text-align:center;margin-top:4px"><button class="btn-sm secondary" id="compNone">不带小伙伴</button></div>`;
+  }
+
   // 图鉴入口
   html += `<div style="margin-top:12px"><button class="btn secondary block" id="petDexBtn">📖 宠物图鉴</button></div>`;
 
@@ -78,6 +105,25 @@ export function renderPets() {
   document.getElementById('view-pets').querySelector('#petFeed')?.addEventListener('click', () => openFeedMenu());
   document.getElementById('view-pets').querySelector('#petEquip')?.addEventListener('click', () => openEquipMenu());
   document.getElementById('view-pets').querySelector('#petDexBtn')?.addEventListener('click', () => openPetDex());
+
+  // 小伙伴选择
+  document.getElementById('view-pets').querySelectorAll('.companion-mini').forEach(node => {
+    node.onclick = () => {
+      const compId = node.dataset.comp;
+      update(st => {
+        if (!st.companions) st.companions = { owned: COMPANIONS.map(c => c.id), active: null };
+        st.companions.active = compId;
+      });
+      const c = findCompanion(compId);
+      toast(`已选择 ${c.colorName}${c.emoji} ${c.name} 一起战斗！`);
+      renderPets();
+    };
+  });
+  document.getElementById('view-pets').querySelector('#compNone')?.addEventListener('click', () => {
+    update(st => { if (!st.companions) st.companions = { owned: COMPANIONS.map(c => c.id), active: null }; st.companions.active = null; });
+    toast('已取消小伙伴');
+    renderPets();
+  });
 }
 
 function fmtCountdown(targetMs) {

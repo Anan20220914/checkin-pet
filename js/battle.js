@@ -95,34 +95,51 @@ export function runBattle(pet, monster, companionId = null) {
   log.push({ actor: 'system', text: `⚔️ 战斗开始！${pet.emoji} ${pet.species} VS ${monster.emoji} ${monster.name}`, petHp, monHp });
 
   for (let turn = 1; turn <= MAX_TURNS; turn++) {
-    // 宠物先手
-    let dmgToMon = attackDamage(petAtk, monster.def);
-    // 小伙伴额外伤害
-    if (companionBonusDmg > 0) {
-      dmgToMon += companionBonusDmg;
-      log.push({ actor: 'pet', text: `回合${turn}：${pet.species} ${eff.weapon ? weaponIcon(eff.weapon) : '👊'} 攻击造成 ${dmgToMon - companionBonusDmg} 伤害，${companion.emoji} ${companion.name} 追加 ${companionBonusDmg} 伤害`, petHp, monHp: Math.max(0, monHp - dmgToMon) });
-    } else {
-      log.push({ actor: 'pet', text: `回合${turn}：${pet.species} ${eff.weapon ? weaponIcon(eff.weapon) : '👊'} 攻击造成 ${dmgToMon} 伤害`, petHp, monHp: Math.max(0, monHp - dmgToMon) });
-    }
+    // 宠物先手攻击
+    const dmgToMon = attackDamage(petAtk, monster.def);
     monHp -= dmgToMon;
+    log.push({ actor: 'pet', text: `回合${turn}：${pet.species} ${eff.weapon ? weaponIcon(eff.weapon) : '👊'} 攻击造成 ${dmgToMon} 伤害`, petHp, monHp: Math.max(0, monHp) });
     if (monHp <= 0) {
       log.push({ actor: 'system', text: `🎉 ${monster.emoji} ${monster.name} 被击败！`, petHp: Math.max(0, petHp), monHp: 0 });
       return { log, result: 'win', petHpLeft: Math.max(0, petHp), monsterHpLeft: 0, usedRevive, turns: turn };
     }
+
+    // 小伙伴独立行动（在宠物攻击之后、怪兽反击之前）
+    if (companion) {
+      if (companion.skill === 'extraDamage') {
+        // 大象：独立冲撞攻击
+        const compDmg = companion.power;
+        monHp -= compDmg;
+        log.push({ actor: 'companion', text: `${companion.emoji} ${companion.name} 使用「${companion.skillName}」冲撞怪兽，造成 ${compDmg} 伤害`, petHp, monHp: Math.max(0, monHp), companionEmoji: companion.emoji, companionName: companion.name, skill: companion.skill });
+        if (monHp <= 0) {
+          log.push({ actor: 'system', text: `🎉 ${monster.emoji} ${monster.name} 被击败！`, petHp: Math.max(0, petHp), monHp: 0 });
+          return { log, result: 'win', petHpLeft: Math.max(0, petHp), monsterHpLeft: 0, usedRevive, turns: turn };
+        }
+      } else if (companion.skill === 'heal') {
+        // 马：独立治愈
+        if (petHp > 0 && petHp < petMaxHp) {
+          const healed = Math.min(companion.power, petMaxHp - petHp);
+          petHp += healed;
+          log.push({ actor: 'companion', text: `${companion.emoji} ${companion.name} 使用「${companion.skillName}」恢复 ${healed} HP`, petHp, monHp: Math.max(0, monHp), companionEmoji: companion.emoji, companionName: companion.name, skill: companion.skill });
+        }
+      } else if (companion.skill === 'shield') {
+        // 小猫：独立护盾（每回合显示一次）
+        log.push({ actor: 'companion', text: `${companion.emoji} ${companion.name} 使用「${companion.skillName}」展开护盾，抵消 ${companion.power} 伤害`, petHp, monHp: Math.max(0, monHp), companionEmoji: companion.emoji, companionName: companion.name, skill: companion.skill });
+      } else if (companion.skill === 'reduceAtk') {
+        // 蚂蚁：第一回合显示蚁群围攻
+        if (turn === 1) {
+          log.push({ actor: 'companion', text: `${companion.emoji} ${companion.name} 使用「${companion.skillName}」降低怪兽 ${companion.power} 攻击力`, petHp, monHp: Math.max(0, monHp), companionEmoji: companion.emoji, companionName: companion.name, skill: companion.skill });
+        }
+      }
+    }
+
     // 怪兽反击
     let dmgToPet = attackDamage(monAtk, petDef);
-    // 小伙伴护盾减伤
     if (companionShield > 0) {
       dmgToPet = Math.max(1, dmgToPet - companionShield);
     }
     petHp -= dmgToPet;
     log.push({ actor: 'monster', text: `${monster.emoji} ${monster.name} 反击造成 ${dmgToPet} 伤害${companionShield > 0 ? `（护盾抵消${companionShield}）` : ''}`, petHp: Math.max(0, petHp), monHp: Math.max(0, monHp) });
-    // 小伙伴治疗
-    if (companionHeal > 0 && petHp > 0 && petHp < petMaxHp) {
-      const healed = Math.min(companionHeal, petMaxHp - petHp);
-      petHp += healed;
-      log.push({ actor: 'system', text: `${companion.emoji} ${companion.name} 治愈恢复 ${healed} HP`, petHp, monHp: Math.max(0, monHp) });
-    }
     if (petHp <= 0) {
       if (eff.revive && !usedRevive) {
         usedRevive = true;

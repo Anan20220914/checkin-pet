@@ -204,6 +204,11 @@ export function renderHome() {
         <div class="hm-emoji">🐺</div>
         <div class="hm-name">怪物图鉴</div>
       </div>
+      <div class="home-mini" id="openCompanions">
+        <div class="hm-emoji">🤝</div>
+        <div class="hm-name">小伙伴</div>
+        <div class="hm-sub">${activeCompanion ? `${activeCompanion.emoji} ${activeCompanion.name}` : '未选择'}</div>
+      </div>
     </div>
   `;
 
@@ -236,6 +241,7 @@ export function renderHome() {
   document.getElementById('view-home').querySelector('#openAch').onclick = openAchievements;
   document.getElementById('view-home').querySelector('#homeDexBtn').onclick = () => openPetDex();
   document.getElementById('view-home').querySelector('#openZomDex').onclick = openZombieDex;
+  document.getElementById('view-home').querySelector('#openCompanions').onclick = () => switchTab('pets');
 }
 
 function duelBtn(dueled, studyDone, pet, monster) {

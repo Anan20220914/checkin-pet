@@ -3,7 +3,7 @@
 import { getState, update } from '../store.js';
 import { isDailyDuelDone, recordDailyDuel, getStudyDoneCount, isDuelRetryAvailable, getDuelRetryState, clearDuelRetryState } from '../tasks.js';
 import { getActivePet, petStats } from '../pets.js';
-import { MONSTER_TIERS, STUDY_MIN_FOR_DUEL, RARITY_NAME, RARITY_COLOR } from '../db2.js';
+import { MONSTER_TIERS, STUDY_MIN_FOR_DUEL, RARITY_NAME, RARITY_COLOR, COMPANIONS, findCompanion } from '../db2.js';
 import { esc, relDay, todayKey, dayOffset } from '../utils.js';
 import { showOverlay, closeOverlay, switchTab, toast, celebrate, celebrateWithCake } from '../app.js';
 import { runBattle, winReward, shouldDropEgg } from '../battle.js';
@@ -120,6 +120,9 @@ export function renderHome() {
   // 重试状态下，怪物用剩余 HP
   const displayMonster = retryAvailable && retryState ? { ...monster, hp: retryState.monsterHpLeft, maxHp: monster.hp } : monster;
   const monHpPct = displayMonster ? (displayMonster.hp / displayMonster.maxHp * 100) : 100;
+  // 当前小伙伴
+  const activeCompanionId = s.companions?.active || null;
+  const activeCompanion = activeCompanionId ? findCompanion(activeCompanionId) : null;
   html += `
     <div class="arena-card">
       <div class="arena-bg"></div>
@@ -130,7 +133,7 @@ export function renderHome() {
       <div class="arena-stage">
         <div class="arena-pet">
           ${pet ? renderPet(pet, 'md', null, true) : '<div class="empty-emoji">🐾</div>'}
-          <div class="arena-name">${pet ? esc(pet.species) : '无宠物'}</div>
+          <div class="arena-name">${pet ? esc(pet.species) : '无宠物'}${activeCompanion ? ` <span style="font-size:18px" title="${activeCompanion.colorName}${activeCompanion.name}：${activeCompanion.skillDesc}">${activeCompanion.emoji}</span>` : ''}</div>
           ${pet ? `<div class="arena-hp"><div class="fill" style="width:${(pet.currentHp/pet.hp*100)}%"></div></div><div class="arena-hp-text">HP ${pet.currentHp}/${pet.hp}</div>` : ''}
         </div>
         <div class="arena-vs">VS</div>
@@ -142,6 +145,7 @@ export function renderHome() {
         </div>
       </div>
       <div class="arena-ground"></div>
+      ${activeCompanion ? `<div style="text-align:center;padding:4px 0 8px;font-size:12px;color:var(--primary-dark);font-weight:700">🤝 小伙伴：${activeCompanion.colorName}${activeCompanion.emoji} ${activeCompanion.name} · ${activeCompanion.skillName}</div>` : ''}
       ${retryAvailable ? `<div style="text-align:center;padding:4px 0 8px;font-size:12px;color:var(--primary-dark);font-weight:700">⚠️ 上次决斗失败，怪物剩余 ${retryState.monsterHpLeft} HP · 可喂食后二次决斗</div>` : ''}
       <div class="arena-btn-wrap">
         ${duelBtn(dueled, studyDone, pet, monster)}
@@ -248,6 +252,57 @@ function duelBtn(dueled, studyDone, pet, monster) {
   return `<button class="btn big block" id="goDuel">⚔️ 开始决斗</button>`;
 }
 
+/** 渲染小伙伴选择浮层 */
+function openCompanionSelect(onConfirm) {
+  const s = getState();
+  const companions = s.companions || { owned: COMPANIONS.map(c => c.id), active: null };
+  const activeId = companions.active;
+
+  let gridHtml = '<div class="companion-grid">';
+  // 不带伙伴选项
+  gridHtml += `<div class="companion-card ${!activeId ? 'selected' : ''}" data-comp="">
+    <div class="comp-emoji">🚫</div>
+    <div class="comp-name">不带伙伴</div>
+    <div class="comp-skill">独自战斗</div>
+  </div>`;
+  for (const c of COMPANIONS) {
+    const owned = companions.owned.includes(c.id);
+    if (!owned) continue;
+    const selected = activeId === c.id;
+    gridHtml += `<div class="companion-card ${selected ? 'selected' : ''}" data-comp="${c.id}" style="border-color:${selected ? c.color : ''}">
+      <div class="comp-emoji" style="font-size:36px">${c.emoji}</div>
+      <div class="comp-name">${c.colorName}${c.name}</div>
+      <div class="comp-skill" style="color:${c.color};font-weight:700">${c.skillName}</div>
+      <div class="comp-desc">${c.skillDesc}</div>
+    </div>`;
+  }
+  gridHtml += '</div>';
+
+  showOverlay(`
+    <h2>🤝 选择小伙伴</h2>
+    <div class="desc">每次决斗可以带一个小伙伴帮忙打怪兽（免费）</div>
+    ${gridHtml}
+    <button class="btn big block" id="compConfirm" style="margin-top:12px">确认出发</button>
+  `, {
+    onMount: (card) => {
+      let chosen = activeId;
+      card.querySelectorAll('.companion-card').forEach(el => {
+        el.onclick = () => {
+          chosen = el.dataset.comp || null;
+          card.querySelectorAll('.companion-card').forEach(e => e.classList.remove('selected'));
+          el.classList.add('selected');
+        };
+      });
+      card.querySelector('#compConfirm').onclick = () => {
+        // 保存选择
+        update(st => { if (!st.companions) st.companions = { owned: COMPANIONS.map(c => c.id), active: null }; st.companions.active = chosen; });
+        closeOverlay();
+        onConfirm(chosen);
+      };
+    },
+  });
+}
+
 /** 本周 7 天键+标签 */
 function weekDays() {
   const today = new Date();
@@ -277,7 +332,8 @@ function startDailyDuel() {
   const isRetry = isDuelRetryAvailable();
 
   if (isRetry && retryState) {
-    // 二次决斗：怪物用剩余 HP
+    // 二次决斗：直接开始（保留之前选择的伙伴）
+    const companionId = s.companions?.active || null;
     const weakenedMonster = {
       ...monster,
       hp: retryState.monsterHpLeft,
@@ -285,12 +341,18 @@ function startDailyDuel() {
       atk: retryState.monsterAtkLeft,
       def: retryState.monsterDefLeft,
     };
-    const result = runBattle(pet, weakenedMonster);
+    const result = runBattle(pet, weakenedMonster, companionId);
     playBattleAnimation(pet, weakenedMonster, result, () => settleDailyDuelRetry(pet, weakenedMonster, result));
   } else {
-    // 首次决斗
-    const result = runBattle(pet, monster);
-    playBattleAnimation(pet, monster, result, () => settleDailyDuel(pet, monster, result));
+    // 首次决斗：先选择小伙伴
+    openCompanionSelect((companionId) => {
+      const freshS = getState();
+      const freshPet = getActivePet();
+      const freshMonster = freshS.monsters.today;
+      if (!freshPet || !freshMonster) { toast('数据异常'); return; }
+      const result = runBattle(freshPet, freshMonster, companionId);
+      playBattleAnimation(freshPet, freshMonster, result, () => settleDailyDuel(freshPet, freshMonster, result));
+    });
   }
 }
 
@@ -301,6 +363,11 @@ function playBattleAnimation(pet, monster, result, onDone) {
   const overlay = document.getElementById('overlay');
   const card = document.getElementById('overlayCard');
   const monsterEmoji = monster.emoji || '🐺';
+
+  // 小伙伴显示
+  const companionId = getState().companions?.active || null;
+  const companion = companionId ? findCompanion(companionId) : null;
+  const companionEmoji = companion ? companion.emoji : '';
 
   // 随机选特效
   const FX_POOL = ['fx-explosion', 'fx-slash', 'fx-shockwave'];
@@ -395,7 +462,7 @@ function playBattleAnimation(pet, monster, result, onDone) {
         <div class="bs-vs">
           <div class="bs-side pet">
             <div style="height:72px;display:flex;align-items:flex-end;justify-content:center;position:relative" class="${petClass}">${renderPet(pet,'sm')}${petFxHtml}</div>
-            <div class="bs-name">${esc(pet.species)}</div>
+            <div class="bs-name">${esc(pet.species)}${companionEmoji ? ` <span style="font-size:16px">${companionEmoji}</span>` : ''}</div>
             <div class="bs-hpbar"><div class="fill ${petHpLow}" style="width:${petPct}%"></div></div>
             <div style="font-size:10px">${petHp} HP</div>
           </div>

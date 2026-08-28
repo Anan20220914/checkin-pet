@@ -39,6 +39,7 @@ const HABIT_TASKS = [
   { id: 'h_poop', title: '按时拉屎', icon: '💩', points: 2 },
   { id: 'h_toiletlid', title: '冲马桶盖盖子', icon: '🚽', points: 1 },
   { id: 'h_toys', title: '收拾玩具', icon: '🧸', points: 2 },
+  { id: 'h_read3', title: '看了三本书以上', icon: '📚', points: 3 },
 ];
 
 /** 运动选项（孩子选今天做了哪些） */
@@ -185,6 +186,70 @@ export const EGG_HATCH_HOURS = 24;
 export const DAILY_REGEN_RATIO = 0.1;
 
 /* ============================================================
+ * 小伙伴系统：4个免费伙伴，每个有不同技能
+ * ========================================================== */
+
+/**
+ * 小伙伴定义表
+ * - skill: 技能类型
+ *   'extraDamage'  额外伤害（每回合伙伴追加固定伤害）
+ *   'heal'         治疗回血（每回合恢复宠物HP）
+ *   'reduceAtk'    削弱怪兽（降低怪兽攻击力）
+ *   'shield'       护盾（减少宠物受到的伤害）
+ */
+export const COMPANIONS = [
+  {
+    id: 'c_elephant_red',
+    name: '大象',
+    emoji: '🐘',
+    color: '#ef4444',
+    colorName: '红色',
+    skill: 'extraDamage',
+    skillName: '冲撞',
+    skillDesc: '每回合额外造成 8 点伤害',
+    power: 8,
+  },
+  {
+    id: 'c_ant_blue',
+    name: '蚂蚁',
+    emoji: '🐜',
+    color: '#3b82f6',
+    colorName: '蓝色',
+    skill: 'reduceAtk',
+    skillName: '蚁群围攻',
+    skillDesc: '降低怪兽 5 点攻击力',
+    power: 5,
+  },
+  {
+    id: 'c_horse_green',
+    name: '马',
+    emoji: '🐴',
+    color: '#22c55e',
+    colorName: '绿色',
+    skill: 'heal',
+    skillName: '治愈',
+    skillDesc: '每回合恢复 6 点HP',
+    power: 6,
+  },
+  {
+    id: 'c_cat_white',
+    name: '小猫',
+    emoji: '🐱',
+    color: '#f5f5f5',
+    colorName: '白色',
+    skill: 'shield',
+    skillName: '护盾',
+    skillDesc: '减少 4 点受到的伤害',
+    power: 4,
+  },
+];
+
+/** 按 id 取伙伴定义 */
+export function findCompanion(id) {
+  return COMPANIONS.find(c => c.id === id) || null;
+}
+
+/* ============================================================
  * 间隔重复（SRS）参数
  * ========================================================== */
 
@@ -281,6 +346,11 @@ export function createInitialData() {
     weeklyGift: { history: [] },
     // 配饰库存（拥有的配饰 id）
     accessories: { owned: [], equipped: {} }, // equipped: petId -> [accId]
+    // 小伙伴系统：4个免费伙伴
+    companions: {
+      owned: ['c_elephant_red', 'c_ant_blue', 'c_horse_green', 'c_cat_white'],
+      active: null, // 当前选择的伙伴id，null=不带伙伴
+    },
     meta: { lastSyncAt: null, lastSyncSha: null, localDirty: false },
   };
 }
@@ -325,6 +395,7 @@ export function migrate(data) {
   if (!data.achievements) data.achievements = { unlocked: [], seen: [] };
   if (!data.weeklyGift) data.weeklyGift = { history: [] };
   if (!data.accessories) data.accessories = { owned: [], equipped: {} };
+  if (!data.companions) data.companions = { owned: ['c_elephant_red', 'c_ant_blue', 'c_horse_green', 'c_cat_white'], active: null };
   if (!data.stats) data.stats = {};
   if (!data.monsters) data.monsters = { today: null, history: [] };
   if (!data.battles) data.battles = [];
@@ -765,6 +836,95 @@ export function migrate(data) {
       delete data.checkins[todayStr2].q_poem;
     }
     data.meta.dataFix_20260826b = true;
+  }
+
+  // ============================================================
+  // v36 数据修复：保留周一至周四打卡成功记录 + 补充决斗记录 + 新增"看了三本书以上"任务（2026-08-28）
+  // ============================================================
+  if (!data.meta.dataFix_20260828) {
+    if (!data.checkins) data.checkins = {};
+    // 保留周一（08-24）至周四（08-27）的打卡成功记录
+    const preserveDates = ['2026-08-24', '2026-08-25', '2026-08-26', '2026-08-27'];
+    for (const d of preserveDates) {
+      if (!data.checkins[d] || Object.keys(data.checkins[d]).length === 0) {
+        const checkin = {};
+        for (const t of (data.tasks || [])) {
+          if (t.category === 'habit' && t.active) {
+            checkin[t.id] = { done: true, score: t.points };
+          }
+        }
+        checkin.dailyDuel = { result: 'win', reward: 5 };
+        data.checkins[d] = checkin;
+      }
+    }
+
+    // 补充周一至周四的决斗记录（全部胜利）
+    if (!data.battles) data.battles = [];
+    const fixBattleDates28 = [
+      { date: '2026-08-24', turns: 6 },
+      { date: '2026-08-25', turns: 5 },
+      { date: '2026-08-26', turns: 7 },
+      { date: '2026-08-27', turns: 6 },
+    ];
+    for (const b of fixBattleDates28) {
+      if (!data.battles.some(x => x.date === b.date)) {
+        data.battles.push({
+          id: 'b_fix_' + b.date.replace(/-/g, ''),
+          date: b.date,
+          petId: (data.pets && data.pets[0]) ? data.pets[0].id : 'p_starter',
+          monsterId: 'm_' + b.date + '_456',
+          result: 'win',
+          turns: b.turns,
+          dropEgg: false,
+          earnedPoints: 5,
+        });
+      }
+    }
+
+    // 更新统计：连胜设为8（周一至周四4场胜利 → tier 5 霸王龙）
+    if (!data.stats) data.stats = {};
+    data.stats.streak = 8;
+    if ((data.stats.bestStreak || 0) < 8) data.stats.bestStreak = 8;
+    data.stats.totalBattles = (data.stats.totalBattles || 0) + 4;
+    data.stats.totalWins = (data.stats.totalWins || 0) + 4;
+
+    // 重新计算累计打卡天数
+    data.stats.totalCheckinDays = Object.keys(data.checkins).length;
+
+    // 刷新今天的怪物（按连胜8 → tier 5 霸王龙）
+    const todayStr28 = todayKey();
+    if (!data.monsters) data.monsters = { today: null, history: [] };
+    const streak28 = 8;
+    let tierCfg28 = MONSTER_TIERS[0];
+    for (const t of MONSTER_TIERS) { if (streak28 >= t.streakMin) tierCfg28 = t; }
+    const hp28 = Math.floor(Math.random() * (tierCfg28.hp[1] - tierCfg28.hp[0] + 1)) + tierCfg28.hp[0];
+    const atk28 = Math.floor(Math.random() * (tierCfg28.atk[1] - tierCfg28.atk[0] + 1)) + tierCfg28.atk[0];
+    const def28 = Math.floor(Math.random() * (tierCfg28.def[1] - tierCfg28.def[0] + 1)) + tierCfg28.def[0];
+    data.monsters.today = {
+      id: 'm_' + todayStr28 + '_' + Math.floor(Math.random() * 900 + 100),
+      date: todayStr28,
+      tier: tierCfg28.tier,
+      name: tierCfg28.name,
+      emoji: tierCfg28.emoji,
+      hp: hp28, atk: atk28, def: def28, maxHp: hp28,
+    };
+
+    // 确保怪物图鉴包含 tier 1-5
+    if (!data.pokedex) data.pokedex = { pets: ['小狗'], monsters: [] };
+    if (!data.pokedex.monsters) data.pokedex.monsters = [];
+    for (let t = 1; t <= 5; t++) {
+      if (!data.pokedex.monsters.includes(t)) data.pokedex.monsters.push(t);
+    }
+
+    // 初始化小伙伴系统（4个免费伙伴）
+    if (!data.companions) {
+      data.companions = {
+        owned: ['c_elephant_red', 'c_ant_blue', 'c_horse_green', 'c_cat_white'],
+        active: null, // 当前选择的伙伴id，null=不带伙伴
+      };
+    }
+
+    data.meta.dataFix_20260828 = true;
   }
 
   return data;

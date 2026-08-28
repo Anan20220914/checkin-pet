@@ -2374,3 +2374,33 @@ textarea.form-control { min-height: 60px; resize: vertical; }
 .companion-card .comp-name { font-size: 14px; font-weight: 700; color: var(--text); }
 .companion-card .comp-skill { font-size: 12px; font-weight: 700; margin: 2px 0; }
 .companion-card .comp-desc { font-size: 11px; color: var(--text-soft); line-height: 1.4; }
+
+/* ---- 宠物页小伙伴列表 ---- */
+.companion-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 8px 0;
+}
+.companion-mini {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-soft);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.companion-mini:active { transform: scale(0.98); }
+.companion-mini.active {
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+.companion-mini .comp-emoji { flex-shrink: 0; }
+.companion-mini .cm-body { flex: 1; min-width: 0; }
+.companion-mini .cm-name { font-size: 14px; font-weight: 700; color: var(--text); }
+.companion-mini .cm-skill { font-size: 12px; font-weight: 700; }
+.companion-mini .cm-desc { font-size: 11px; color: var(--text-soft); line-height: 1.4; }
+.companion-mini .cm-status { font-size: 11px; color: var(--text-soft); white-space: nowrap; flex-shrink: 0; }

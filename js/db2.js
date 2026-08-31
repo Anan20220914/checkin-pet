@@ -453,6 +453,14 @@ export function migrate(data) {
   if (data.stats.totalBattles === undefined) data.stats.totalBattles = 0;
   if (data.stats.totalWins === undefined) data.stats.totalWins = 0;
   if (data.stats.noDropStreak === undefined) data.stats.noDropStreak = 0;
+
+  // 一次性设置：2026-08-31 今日指定古诗为"静夜思"
+  if (!data.meta.dataFix_poem_20260831) {
+    const todayStr = todayKey();
+    data.forcedPoem = { title: '静夜思', date: todayStr };
+    data.meta.dataFix_poem_20260831 = true;
+  }
+
   // 始终重新计算累计打卡天数（成就解锁依赖此值）
   data.stats.totalCheckinDays = Object.keys(data.checkins || {}).length;
   // 宠物新增字段

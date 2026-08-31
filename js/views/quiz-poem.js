@@ -48,9 +48,9 @@ function renderCard() {
     </div>
     <div class="quiz-tip">家长判断孩子背诵熟练度</div>
     <div class="quiz-grades">
-      <button class="grade-btn good" data-g="good">👍 熟练</button>
-      <button class="grade-btn ok" data-g="ok">🙂 一般</button>
-      <button class="grade-btn again" data-g="again">🙏 不会</button>
+      <button class="grade-btn good" data-g="good">👍 学会了</button>
+      <button class="grade-btn ok" data-g="ok">🙂 不熟练</button>
+      <button class="grade-btn again" data-g="again">🙏 还不会</button>
     </div>
     <div class="quiz-progress"><div class="qp-fill" style="width:${(state.idx/total)*100}%"></div></div>
   `;

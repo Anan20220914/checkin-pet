@@ -50,8 +50,12 @@ export function grade(subject, key, gradeStr) {
     card.lastSeen = today;
     if (gradeStr === SRS_GRADE.GOOD) {
       card.box = Math.min(7, (card.box || 0) + 1);
-      // 使用 INTERVALS 数组根据 box 设置间隔，实现真正的间隔重复
-      card.interval = INTERVALS[card.box] || 7;
+      // 古诗学会后间隔设为2天（确保次日换新诗，2天后可随机复习）
+      if (subject === 'poem') {
+        card.interval = Math.max(2, INTERVALS[card.box] || 2);
+      } else {
+        card.interval = INTERVALS[card.box] || 7;
+      }
     } else if (gradeStr === SRS_GRADE.OK) {
       card.box = Math.max(1, card.box || 1);
       // "一般"也适当拉长间隔，但比"熟练"短
@@ -110,37 +114,78 @@ export function buildDailyList(subject, allKeys, perDay = 10, reviewMin = 3) {
     if (dayDiff(lastSeen, today) <= 7) learnedRecent.push(key); else learnedOld.push(key);
   }
   if (isPoem) {
-    // 古诗刷新逻辑：只有点"学会了"(good)后才换新诗
-    // 1. 优先返回今天或昨天标记为"不会/一般"的诗（还没学会，继续学同一首）
-    // 2. 其次返回到期复习的诗
-    // 3. 都没有则从未学过的诗中随机选一首新的
-    const todayWeak = [];
+    // 古诗刷新逻辑（2026-08-31 修订）：
+    // 规则：
+    //   1. 今天/昨天标记为"不会/一般"的诗 → 次日继续推送同一首
+    //   2. 学会(good)的诗 → 次日换新诗；学会的那首在一个月内会随机出现几次复习
+    //   3. 排除昨天刚学会的诗（确保"学会了"次日一定换新诗）
+    //   4. 都没有则从未学过的诗中随机选一首新的
+
+    // 0. 指定今日古诗（家长手动指定，优先级最高）
+    const s = getState();
+    const forcedPoem = s.forcedPoem;
+    if (forcedPoem && forcedPoem.title && forcedPoem.date === today) {
+      const key = forcedPoem.title;
+      if (allKeys.includes(key)) {
+        return { review: [], fresh: [key], all: [key], dueCount: 0, learnedCount: allKeys.length - notLearned.length };
+      }
+    }
+
+    // 1. 找出今天或昨天标记为"不会/一般"的诗 → 必须继续学同一首
+    const weakPoems = [];
     for (const key of allKeys) {
       const c = mem[key];
       if (!c || c.box === 0) continue;
-      // 今天或昨天标记为"不会/一般"的 → 继续学同一首
       if ((c.lastSeen === today || c.lastSeen === yesterday) &&
           (c.lastGrade === SRS_GRADE.AGAIN || c.lastGrade === SRS_GRADE.OK)) {
-        todayWeak.push(key);
+        weakPoems.push(key);
       }
     }
-    let pick = todayWeak[0] || yesterdayWeak[0] || dueReview[0] || '';
-    if (!pick) {
-      // 从未学过的诗中随机选择（避免每次都是同一首）
-      pick = (notLearned.length ? notLearned[Math.floor(Math.random() * notLearned.length)] : '') || allKeys[0] || '';
+
+    // 2. 找出到期可复习的诗（学会的，且距今超过2天，排除昨天/今天刚学的）
+    const reviewablePoems = [];
+    for (const key of allKeys) {
+      const c = mem[key];
+      if (!c || c.box === 0) continue;
+      if (c.lastGrade === SRS_GRADE.GOOD && c.due && dayDiff(c.due, today) >= 0) {
+        // 排除昨天和今天刚学会的（确保学会次日换新诗）
+        if (c.lastSeen !== yesterday && c.lastSeen !== today) {
+          reviewablePoems.push(key);
+        }
+      }
     }
-    return { review: [], fresh: [pick], all: [pick], dueCount: todayWeak.length, learnedCount: allKeys.length - notLearned.length };
+
+    let pick = '';
+    // 优先：不会/一般的诗继续学同一首
+    if (weakPoems.length > 0) {
+      pick = weakPoems[0];
+    }
+    // 其次：50% 概率随机复习一首学过的诗（一个月内随机出现几次）
+    else if (reviewablePoems.length > 0 && Math.random() < 0.5) {
+      pick = reviewablePoems[Math.floor(Math.random() * reviewablePoems.length)];
+    }
+    // 最后：从未学过的诗中随机选一首新的
+    if (!pick) {
+      pick = notLearned.length
+        ? notLearned[Math.floor(Math.random() * notLearned.length)]
+        : (reviewablePoems.length
+            ? reviewablePoems[Math.floor(Math.random() * reviewablePoems.length)]
+            : (allKeys[0] || ''));
+    }
+    return { review: [], fresh: [pick], all: [pick], dueCount: weakPoems.length, learnedCount: allKeys.length - notLearned.length };
   }
   const all = [];
-  // 1. 昨天不会或一般的字 → 必出现（强化复习，不属于"学会的"）
-  for (const k of yesterdayWeak) { if (all.length < perDay) all.push(k); }
+  // 1. 昨天不会或一般的字 → 最多占 50%（强化复习，但不挤占新词名额）
+  const weakBudget = Math.min(yesterdayWeak.length, Math.ceil(perDay * 0.5));
+  const shuffledWeak = shuffleArr(yesterdayWeak);
+  for (let i = 0; i < weakBudget; i++) { if (all.length < perDay) all.push(shuffledWeak[i]); }
   // 2. 学会的内容仅占 20%（昨天熟练 + 到期复习 + 历史学过，合并后取 20%）
   const reviewBudget = Math.max(0, Math.round(perDay * 0.2));
   const reviewPool = shuffleArr([...yesterdayGood, ...dueReview, ...learnedRecent, ...learnedOld]);
   for (let i = 0; i < reviewBudget && i < reviewPool.length; i++) {
     if (all.length < perDay && !all.includes(reviewPool[i])) all.push(reviewPool[i]);
   }
-  // 3. 新字补足剩余 80%（优先未学过的）
+  // 3. 新字补足剩余（优先未学过的，保证每天有新词）
   const shuffledFresh = shuffleArr(notLearned);
   for (const k of shuffledFresh) {
     if (all.length >= perDay) break;

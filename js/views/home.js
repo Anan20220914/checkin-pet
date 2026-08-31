@@ -13,6 +13,21 @@ import { openPetDex } from './pets.js';
 import { getAchievementList, markSeen } from '../achievements.js';
 
 
+/** 计算连胜进度文案：还需击败几场才能刷新成下一个怪物 */
+function streakProgressText(streak, currentTier) {
+  // 找到当前 tier 和下一个 tier
+  const currentIdx = MONSTER_TIERS.findIndex(t => t.tier === currentTier);
+  if (currentIdx < 0 || currentIdx >= MONSTER_TIERS.length - 1) {
+    return `Tier ${currentTier} · 已是最高级怪兽`;
+  }
+  const nextTier = MONSTER_TIERS[currentIdx + 1];
+  const winsNeeded = nextTier.streakMin - streak;
+  if (winsNeeded <= 0) {
+    return `Tier ${currentTier} · 下场刷新成${nextTier.name}`;
+  }
+  return `Tier ${currentTier} · 再赢 ${winsNeeded} 场→${nextTier.emoji}${nextTier.name}`;
+}
+
 /** 随机宠物互动反馈 */
 function triggerPetInteraction(petEl) {
   const effects = ['pet-interact-wag', 'pet-interact-spin', 'pet-interact-jump'];
@@ -141,7 +156,7 @@ export function renderHome() {
           ${displayMonster ? `<div class="arena-monster-emoji" style="font-size:80px;line-height:1">${monsterEmoji}</div>
           <div class="arena-name">${esc(displayMonster.name)}</div>
           <div class="arena-hp"><div class="fill monster" style="width:${monHpPct}%"></div></div>
-          <div class="arena-hp-text">${retryAvailable ? `剩余 ${displayMonster.hp}/${displayMonster.maxHp} HP` : `Tier ${displayMonster.tier}`}</div>` : '今日怪兽未刷新'}
+          <div class="arena-hp-text">${retryAvailable ? `剩余 ${displayMonster.hp}/${displayMonster.maxHp} HP` : `${streakProgressText(s.stats.streak || 0, displayMonster.tier)}`}</div>` : '今日怪兽未刷新'}
         </div>
       </div>
       <div class="arena-ground"></div>

@@ -81,11 +81,10 @@ function renderHome() {
     </div>
   `;
 
-  // 其他分类
+  // 其他分类（家务打卡暂时关闭 2026-09-23）
   const cats = [
     { key: 'habit', icon: '🌱', name: '习惯养成', theme: 'habit' },
     { key: 'sport', icon: '⚽', name: '运动打卡', theme: 'sport' },
-    { key: 'life', icon: '🏠', name: '家务打卡', theme: 'life' },
   ];
 
   for (const cat of cats) {

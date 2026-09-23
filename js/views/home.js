@@ -13,6 +13,12 @@ import { openPetDex } from './pets.js';
 import { getAchievementList, markSeen } from '../achievements.js';
 
 
+/** 连胜火焰图标：2-4连胜1个🔥，5-7连胜2个，8+连胜3个 */
+function flameIcons(streak) {
+  const count = streak >= 8 ? 3 : streak >= 5 ? 2 : 1;
+  return Array.from({ length: count }, () => '<span class="flame-icon">🔥</span>').join('');
+}
+
 /** 计算连胜进度文案：还需击败几场才能刷新成下一个怪物 */
 function streakProgressText(streak, currentTier) {
   // 找到当前 tier 和下一个 tier
@@ -151,7 +157,10 @@ export function renderHome() {
           <div class="arena-name">${pet ? esc(pet.species) : '无宠物'}${activeCompanion ? ` <span style="font-size:18px" title="${activeCompanion.colorName}${activeCompanion.name}：${activeCompanion.skillDesc}">${activeCompanion.emoji}</span>` : ''}</div>
           ${pet ? `<div class="arena-hp"><div class="fill" style="width:${(pet.currentHp/pet.hp*100)}%"></div></div><div class="arena-hp-text">HP ${pet.currentHp}/${pet.hp}</div>` : ''}
         </div>
-        <div class="arena-vs">VS</div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div class="arena-vs">VS</div>
+          ${(s.stats.streak || 0) >= 2 ? `<div class="streak-badge"><span class="streak-flame">${flameIcons(s.stats.streak)}</span><span style="font-size:12px;font-weight:900;color:#E65100;">${s.stats.streak}连胜</span></div>` : ''}
+        </div>
         <div class="arena-monster">
           ${displayMonster ? `<div class="arena-monster-emoji" style="font-size:80px;line-height:1">${monsterEmoji}</div>
           <div class="arena-name">${esc(displayMonster.name)}</div>
@@ -198,6 +207,41 @@ export function renderHome() {
     `;
   }
   html += `</div>`;
+
+  // 本周战果：连胜火焰行 + 周日礼物倒计时
+  const weekWins = week.filter(d => {
+    const b = (s.battles || []).find(x => x.date === d.key);
+    return b && b.result === 'win';
+  }).length;
+  const weekCheckedDays = week.filter(d => {
+    const c = s.checkins[d.key];
+    return c && Object.keys(c).some(k => c[k] && c[k].done);
+  }).length;
+  const streak = s.stats.streak || 0;
+  const todayDow = new Date().getDay(); // 0=周日
+
+  if (streak >= 2) {
+    html += `<div class="week-streak-row"><div class="streak-badge"><span class="streak-flame">${flameIcons(streak)}</span><span style="font-size:13px;font-weight:900;color:#E65100;">当前 ${streak} 连胜</span>${s.stats.bestStreak ? `<span style="font-size:11px;color:var(--text-soft);margin-left:6px;">最佳 ${s.stats.bestStreak}</span>` : ''}</div></div>`;
+  }
+
+  // 周日礼物提示（非周日时显示倒计时）
+  if (todayDow !== 0) {
+    const daysToSunday = 7 - todayDow;
+    const giftPct = Math.min(100, Math.round((weekCheckedDays / 5) * 100));
+    html += `
+      <div class="week-gift-hint">
+        🎁 周日礼物 · 本周已打卡 ${weekCheckedDays} 天（5天可开启）
+        <div class="week-gift-bar"><div class="fill" style="width:${giftPct}%"></div></div>
+        <div style="margin-top:4px;font-size:11px;">还有 ${daysToSunday} 天到周日${weekWins > 0 ? ` · 本周已胜 ${weekWins} 场 🏆` : ''}</div>
+      </div>
+    `;
+  } else {
+    html += `
+      <div class="week-gift-hint" style="background:linear-gradient(135deg,#FFF9C4,#FFF176);border-color:#F9A825;color:#F57F17;">
+        🎁 今天是周日！记得开礼物哦${weekWins > 0 ? ` · 本周已胜 ${weekWins} 场 🏆` : ''}
+      </div>
+    `;
+  }
 
   // === 成就徽章入口 ===
   const achList = getAchievementList();

@@ -323,6 +323,22 @@ const BRAIN_QUESTIONS = [
   { id:'M39', dim:'记忆与注意力', type:'单选', q:'请记住：苹果、香蕉、橘子。一共有几样？', screen:'刚才记了3样水果', optA:'2样', optB:'3样', optC:'4样', answer:'B', interaction:'点击1个选项', time:15, hint:'数数有几样' },
   { id:'M40', dim:'记忆与注意力', type:'单选', q:'请记住：2、4、6、8。一共有几个数字？', screen:'刚才记了4个数字', optA:'3个', optB:'4个', optC:'5个', answer:'B', interaction:'点击1个选项', time:20, hint:'数数有几个' },
   { id:'M41', dim:'记忆与注意力', type:'单选', q:'请记住：红色、蓝色、绿色。一共有几种颜色？', screen:'刚才记了3种颜色', optA:'2种', optB:'3种', optC:'4种', answer:'B', interaction:'点击1个选项', time:15, hint:'数数有几种' },
+  // 空间方位与位置 P1-P15 (15题)
+  { id:'P1', dim:'空间方位与位置', type:'单选', q:'你前面有3个人，后面有2个人，队伍里一共有几个人？', screen:'排队买冰淇淋', optA:'5个', optB:'6个', optC:'7个', answer:'B', interaction:'点击1个选项', time:25, hint:'前面的 + 后面的 + 你自己' },
+  { id:'P2', dim:'空间方位与位置', type:'单选', q:'你前面有4个人，后面有1个人，队伍里一共有几个人？', screen:'排队上车', optA:'5个', optB:'6个', optC:'4个', answer:'B', interaction:'点击1个选项', time:25, hint:'别忘了数上你自己' },
+  { id:'P3', dim:'空间方位与位置', type:'单选', q:'你前面有2个人，后面有2个人，队伍里一共有几个人？', screen:'排队滑滑梯', optA:'4个', optB:'5个', optC:'6个', answer:'B', interaction:'点击1个选项', time:25, hint:'2 + 2 + 你自己' },
+  { id:'P4', dim:'空间方位与位置', type:'单选', q:'从前往后数你排第3，从后往前数你也排第3，队伍里一共有几个人？', screen:'排队做游戏', optA:'5个', optB:'6个', optC:'7个', answer:'A', interaction:'点击1个选项', time:30, hint:'前面2个 + 你 + 后面2个' },
+  { id:'P5', dim:'空间方位与位置', type:'单选', q:'从前往后数你排第4，从后往前数你排第2，队伍里一共有几个人？', screen:'排队领点心', optA:'5个', optB:'6个', optC:'7个', answer:'A', interaction:'点击1个选项', time:30, hint:'前面3个 + 你 + 后面1个' },
+  { id:'P6', dim:'空间方位与位置', type:'单选', q:'从前往后数你排第2，从后往前数你排第3，队伍里一共有几个人？', screen:'排队洗手', optA:'4个', optB:'5个', optC:'6个', answer:'A', interaction:'点击1个选项', time:30, hint:'前面1个 + 你 + 后面2个' },
+  { id:'P7', dim:'空间方位与位置', type:'单选', q:'小狗前面有3只小动物，小狗排在第几？', screen:'小动物排队', optA:'第2', optB:'第3', optC:'第4', answer:'C', interaction:'点击1个选项', time:20, hint:'前面3只，小狗在它们后面' },
+  { id:'P8', dim:'空间方位与位置', type:'单选', q:'小猫后面有4只小动物，小猫排在第几？', screen:'小动物排队', optA:'第1', optB:'第4', optC:'第5', answer:'A', interaction:'点击1个选项', time:20, hint:'后面有4只，说明小猫在最前面' },
+  { id:'P9', dim:'空间方位与位置', type:'单选', q:'你排在第5，你前面有几个人？', screen:'排队坐小火车', optA:'4个', optB:'5个', optC:'6个', answer:'A', interaction:'点击1个选项', time:20, hint:'第5名前面比5少1' },
+  { id:'P10', dim:'空间方位与位置', type:'单选', q:'你排在第3，你后面有4个人，一共有几个人？', screen:'排队荡秋千', optA:'6个', optB:'7个', optC:'8个', answer:'B', interaction:'点击1个选项', time:25, hint:'第3 + 后面4个' },
+  { id:'P11', dim:'空间方位与位置', type:'单选', q:'书架从上往下数，小红书在第2层；从下往上数，它也在第2层。书架一共有几层？', screen:'书架上的书', optA:'3层', optB:'4层', optC:'5层', answer:'A', interaction:'点击1个选项', time:30, hint:'上面1层 + 小红这层 + 下面1层' },
+  { id:'P12', dim:'空间方位与位置', type:'单选', q:'从左往右数，苹果排第2；从右往左数，苹果排第3。一共有几个水果？', screen:'水果排一排', optA:'4个', optB:'5个', optC:'6个', answer:'A', interaction:'点击1个选项', time:30, hint:'左边1个 + 苹果 + 右边2个' },
+  { id:'P13', dim:'空间方位与位置', type:'单选', q:'小朋友围成一圈，你左边有3个人，右边有4个人，加上你一共有几个人？', screen:'围圈做游戏', optA:'7个', optB:'8个', optC:'9个', answer:'B', interaction:'点击1个选项', time:25, hint:'左边 + 右边 + 你自己' },
+  { id:'P14', dim:'空间方位与位置', type:'单选', q:'小兔前面有2只动物，后面有3只动物，一共有几只动物？', screen:'森林动物排队', optA:'5只', optB:'6只', optC:'7只', answer:'B', interaction:'点击1个选项', time:25, hint:'前面 + 后面 + 小兔自己' },
+  { id:'P15', dim:'空间方位与位置', type:'单选', q:'你前面的人数和后面的人数一样多，都是3个，一共有几个人？', screen:'排队放学', optA:'6个', optB:'7个', optC:'8个', answer:'B', interaction:'点击1个选项', time:25, hint:'前面3个 + 你 + 后面3个' },
 ];
 
 /** 将结构化题库题目适配为内部统一格式 */

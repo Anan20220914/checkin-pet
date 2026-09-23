@@ -148,55 +148,117 @@ function vehicleArt(key) {
   const stroke = '#3a2a1a';
   switch (key) {
     case 'car':
-      return svg(`<path d="M16 64 Q16 56 24 56 L40 56 L50 40 H82 L92 56 Q104 56 104 64 V82 Q104 86 100 86 H88 Q86 94 78 94 Q70 94 68 86 H52 Q50 94 42 94 Q34 94 32 86 H20 Q16 86 16 82 Z" fill="#ef4444" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>
-        <circle cx="42" cy="86" r="9" fill="#1f2937"/><circle cx="78" cy="86" r="9" fill="#1f2937"/>
-        <path d="M50 44 H80 L86 56 H44 Z" fill="#bae6fd" stroke="${stroke}" stroke-width="2"/>`);
+      // 小汽车：侧视，圆润车身 + 两个车窗 + 两个轮子
+      return svg(`<path d="M20 78 Q18 66 28 62 L42 58 Q50 42 62 42 Q78 42 84 56 L98 60 Q104 62 104 70 L104 78 Q104 82 100 82 L92 82 Q90 92 82 92 Q74 92 72 82 L50 82 Q48 92 40 92 Q32 92 30 82 L24 82 Q20 82 20 78 Z" fill="#ef4444" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M52 48 L62 48 L62 60 L46 60 Q48 52 52 48 Z" fill="#bae6fd" stroke="${stroke}" stroke-width="2"/>
+        <path d="M66 48 L76 48 Q80 52 82 60 L66 60 Z" fill="#bae6fd" stroke="${stroke}" stroke-width="2"/>
+        <circle cx="40" cy="82" r="9" fill="#1f2937"/><circle cx="40" cy="82" r="4" fill="#9ca3af"/>
+        <circle cx="82" cy="82" r="9" fill="#1f2937"/><circle cx="82" cy="82" r="4" fill="#9ca3af"/>`);
     case 'bus':
-      return svg(`<rect x="16" y="34" width="88" height="52" rx="8" fill="#fbbf24" stroke="${stroke}" stroke-width="3"/>
-        ${[26,46,66,86].map(x => `<rect x="${x}" y="44" width="14" height="14" fill="#bae6fd" stroke="${stroke}" stroke-width="2"/>`).join('')}
-        <circle cx="38" cy="86" r="9" fill="#1f2937"/><circle cx="82" cy="86" r="9" fill="#1f2937"/>`);
+      // 公交车：长方形车身 + 一排车窗 + 车门 + 两个轮子
+      return svg(`<rect x="14" y="36" width="92" height="48" rx="10" fill="#fbbf24" stroke="${stroke}" stroke-width="3"/>
+        <rect x="22" y="46" width="16" height="14" rx="2" fill="#bae6fd" stroke="${stroke}" stroke-width="2"/>
+        <rect x="42" y="46" width="16" height="14" rx="2" fill="#bae6fd" stroke="${stroke}" stroke-width="2"/>
+        <rect x="62" y="46" width="16" height="14" rx="2" fill="#bae6fd" stroke="${stroke}" stroke-width="2"/>
+        <rect x="84" y="46" width="14" height="30" rx="2" fill="#bae6fd" stroke="${stroke}" stroke-width="2"/>
+        <circle cx="34" cy="84" r="9" fill="#1f2937"/><circle cx="34" cy="84" r="4" fill="#9ca3af"/>
+        <circle cx="78" cy="84" r="9" fill="#1f2937"/><circle cx="78" cy="84" r="4" fill="#9ca3af"/>`);
     case 'bike':
-      return svg(`<circle cx="34" cy="80" r="16" fill="none" stroke="${stroke}" stroke-width="4"/>
-        <circle cx="86" cy="80" r="16" fill="none" stroke="${stroke}" stroke-width="4"/>
-        <path d="M34 80 L58 48 H82 L86 80 M58 48 L34 80 M58 48 L48 80" stroke="${stroke}" stroke-width="4" fill="none" stroke-linecap="round"/>
-        <line x1="52" y1="40" x2="64" y2="40" stroke="${stroke}" stroke-width="4" stroke-linecap="round"/>`);
+      // 自行车：两个大轮 + 三角车架 + 车把 + 车座
+      return svg(`<circle cx="32" cy="80" r="18" fill="none" stroke="${stroke}" stroke-width="4"/>
+        <circle cx="88" cy="80" r="18" fill="none" stroke="${stroke}" stroke-width="4"/>
+        <circle cx="32" cy="80" r="3" fill="${stroke}"/><circle cx="88" cy="80" r="3" fill="${stroke}"/>
+        <path d="M32 80 L54 52 L66 80 M54 52 L88 80 M54 52 L48 40 M48 40 L60 40" stroke="${stroke}" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M66 80 L60 58 L50 58" stroke="${stroke}" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="82" y1="34" x2="94" y2="40" stroke="${stroke}" stroke-width="4" stroke-linecap="round"/>
+        <line x1="44" y1="38" x2="56" y2="38" stroke="${stroke}" stroke-width="5" stroke-linecap="round"/>`);
     case 'train':
-      return svg(`<rect x="12" y="40" width="96" height="44" rx="8" fill="#3b82f6" stroke="${stroke}" stroke-width="3"/>
-        ${[24,44,64,84].map(x => `<rect x="${x}" y="48" width="14" height="14" rx="2" fill="#bae6fd" stroke="${stroke}" stroke-width="2"/>`).join('')}
-        <rect x="16" y="84" width="20" height="8" fill="#1f2937"/><rect x="84" y="84" width="20" height="8" fill="#1f2937"/>
-        <polygon points="60,40 50,28 70,28" fill="#fbbf24" stroke="${stroke}" stroke-width="2"/>`);
+      // 火车：车头烟囱冒汽 + 车厢 + 车轮
+      return svg(`<rect x="14" y="46" width="92" height="34" rx="8" fill="#3b82f6" stroke="${stroke}" stroke-width="3"/>
+        <rect x="22" y="54" width="14" height="12" rx="2" fill="#bae6fd" stroke="${stroke}" stroke-width="2"/>
+        <rect x="42" y="54" width="14" height="12" rx="2" fill="#bae6fd" stroke="${stroke}" stroke-width="2"/>
+        <rect x="62" y="54" width="14" height="12" rx="2" fill="#bae6fd" stroke="${stroke}" stroke-width="2"/>
+        <rect x="82" y="54" width="14" height="12" rx="2" fill="#bae6fd" stroke="${stroke}" stroke-width="2"/>
+        <rect x="14" y="34" width="18" height="12" rx="2" fill="#1f2937"/>
+        <circle cx="23" cy="26" r="5" fill="#d1d5db"/><circle cx="28" cy="18" r="6" fill="#e5e7eb"/><circle cx="20" cy="12" r="4" fill="#f3f4f6"/>
+        <circle cx="32" cy="82" r="7" fill="#1f2937"/><circle cx="52" cy="82" r="7" fill="#1f2937"/><circle cx="72" cy="82" r="7" fill="#1f2937"/><circle cx="92" cy="82" r="7" fill="#1f2937"/>`);
     case 'plane':
-      return svg(`<path d="M60 18 L70 56 L104 70 L70 78 L66 96 L56 92 L54 78 L20 70 L54 56 Z" fill="#e2e8f0" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>`);
+      // 飞机：侧视机身 + 大机翼 + 尾翼 + 舷窗（一眼可辨）
+      return svg(`<path d="M14 62 Q14 56 22 56 L78 56 Q94 56 100 50 L106 44 L110 48 L104 60 Q102 66 92 66 L22 66 Q14 66 14 62 Z" fill="#e2e8f0" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M48 56 L66 30 L76 30 L62 56 Z" fill="#60a5fa" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M56 66 L70 88 L62 90 L48 66 Z" fill="#60a5fa" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M96 52 L104 38 L110 38 L104 54 Z" fill="#60a5fa" stroke="${stroke}" stroke-width="2" stroke-linejoin="round"/>
+        <circle cx="34" cy="60" r="3" fill="#3b82f6"/><circle cx="46" cy="60" r="3" fill="#3b82f6"/><circle cx="58" cy="60" r="3" fill="#3b82f6"/>
+        <path d="M20 56 Q16 50 18 46" stroke="${stroke}" stroke-width="2" fill="none"/>`);
     case 'ship':
-      return svg(`<path d="M14 64 H106 L96 92 Q96 96 90 96 H30 Q24 96 24 92 Z" fill="#3b82f6" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>
-        <rect x="44" y="30" width="6" height="34" fill="#92400e"/>
-        <path d="M50 30 L78 44 L50 58 Z" fill="#ef4444" stroke="${stroke}" stroke-width="2"/>`);
+      // 轮船：大船身 + 船舱楼 + 烟囱冒烟 + 波浪
+      return svg(`<path d="M12 66 L108 66 L98 88 Q96 92 88 92 L32 92 Q24 92 22 88 Z" fill="#3b82f6" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>
+        <rect x="36" y="46" width="48" height="20" rx="3" fill="#f8fafc" stroke="${stroke}" stroke-width="3"/>
+        <rect x="42" y="52" width="8" height="8" fill="#3b82f6"/><rect x="56" y="52" width="8" height="8" fill="#3b82f6"/><rect x="70" y="52" width="8" height="8" fill="#3b82f6"/>
+        <rect x="52" y="30" width="16" height="16" rx="2" fill="#ef4444" stroke="${stroke}" stroke-width="3"/>
+        <circle cx="60" cy="22" r="4" fill="#d1d5db"/><circle cx="66" cy="16" r="5" fill="#e5e7eb"/>
+        <path d="M8 100 Q20 96 32 100 Q44 104 56 100 Q68 96 80 100 Q92 104 104 100" stroke="#60a5fa" stroke-width="3" fill="none" stroke-linecap="round"/>`);
     case 'boat':
-      return svg(`<path d="M22 58 L98 58 L88 84 Q88 88 82 88 H38 Q32 88 32 84 Z" fill="#a78bfa" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>
-        <line x1="60" y1="58" x2="60" y2="20" stroke="#92400e" stroke-width="4"/>
-        <path d="M60 22 L88 52 L60 52 Z" fill="#fbbf24" stroke="${stroke}" stroke-width="2"/>`);
+      // 小船：小木船 + 一面三角帆
+      return svg(`<path d="M24 70 L96 70 L86 88 Q84 92 76 92 L44 92 Q36 92 34 88 Z" fill="#a78bfa" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>
+        <line x1="60" y1="70" x2="60" y2="24" stroke="#92400e" stroke-width="4" stroke-linecap="round"/>
+        <path d="M60 26 L88 66 L60 66 Z" fill="#fbbf24" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M58 34 L58 66 L38 66 Z" fill="#fde68a" stroke="${stroke}" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M16 100 Q28 96 40 100 Q52 104 64 100 Q76 96 88 100" stroke="#60a5fa" stroke-width="3" fill="none" stroke-linecap="round"/>`);
     case 'subway':
-      return svg(`<rect x="18" y="30" width="84" height="50" rx="14" fill="#10b981" stroke="${stroke}" stroke-width="3"/>
-        ${[30,58].map(x => `<rect x="${x}" y="40" width="24" height="14" rx="3" fill="#d1fae5" stroke="${stroke}" stroke-width="2"/>`).join('')}
-        <circle cx="34" cy="84" r="6" fill="#1f2937"/><circle cx="86" cy="84" r="6" fill="#1f2937"/>`);
+      // 地铁：车头正面 + 前窗 + 车灯 + 轨道
+      return svg(`<rect x="26" y="22" width="68" height="66" rx="16" fill="#10b981" stroke="${stroke}" stroke-width="3"/>
+        <rect x="34" y="32" width="52" height="26" rx="6" fill="#bae6fd" stroke="${stroke}" stroke-width="2"/>
+        <rect x="34" y="64" width="22" height="14" rx="3" fill="#fbbf24" stroke="${stroke}" stroke-width="2"/>
+        <rect x="64" y="64" width="22" height="14" rx="3" fill="#fbbf24" stroke="${stroke}" stroke-width="2"/>
+        <circle cx="44" cy="71" r="4" fill="#1f2937"/><circle cx="76" cy="71" r="4" fill="#1f2937"/>
+        <line x1="34" y1="92" x2="30" y2="102" stroke="${stroke}" stroke-width="4" stroke-linecap="round"/>
+        <line x1="86" y1="92" x2="90" y2="102" stroke="${stroke}" stroke-width="4" stroke-linecap="round"/>
+        <line x1="50" y1="92" x2="50" y2="102" stroke="${stroke}" stroke-width="4" stroke-linecap="round"/>
+        <line x1="70" y1="92" x2="70" y2="102" stroke="${stroke}" stroke-width="4" stroke-linecap="round"/>`);
     case 'taxi':
-      return svg(`<path d="M16 60 Q16 52 24 52 L40 52 L48 38 H84 L92 52 Q104 52 104 60 V80 Q104 84 100 84 H86 Q84 92 76 92 Q68 92 66 84 H54 Q52 92 44 92 Q36 92 34 84 H20 Q16 84 16 80 Z" fill="#fbbf24" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>
-        <rect x="56" y="34" width="20" height="8" rx="2" fill="#1f2937"/>
-        <circle cx="44" cy="84" r="8" fill="#1f2937"/><circle cx="76" cy="84" r="8" fill="#1f2937"/>`);
+      // 出租车：黄色车身 + 车顶TAXI灯牌 + 格纹
+      return svg(`<path d="M20 78 Q18 66 28 62 L42 58 Q50 44 62 44 Q78 44 84 56 L98 60 Q104 62 104 70 L104 78 Q104 82 100 82 L92 82 Q90 92 82 92 Q74 92 72 82 L50 82 Q48 92 40 92 Q32 92 30 82 L24 82 Q20 82 20 78 Z" fill="#fbbf24" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>
+        <rect x="54" y="34" width="18" height="10" rx="2" fill="#fff" stroke="${stroke}" stroke-width="2"/>
+        <text x="63" y="42" text-anchor="middle" font-size="8" fill="#1f2937" font-family="sans-serif" font-weight="bold">TAXI</text>
+        <path d="M50 48 L62 48 L62 60 L44 60 Q46 52 50 48 Z" fill="#bae6fd" stroke="${stroke}" stroke-width="2"/>
+        <path d="M66 48 L78 48 Q82 52 84 60 L66 60 Z" fill="#bae6fd" stroke="${stroke}" stroke-width="2"/>
+        <rect x="24" y="72" width="8" height="6" fill="#1f2937"/><rect x="36" y="72" width="8" height="6" fill="#1f2937"/><rect x="48" y="72" width="8" height="6" fill="#1f2937"/><rect x="60" y="72" width="8" height="6" fill="#1f2937"/><rect x="72" y="72" width="8" height="6" fill="#1f2937"/><rect x="84" y="72" width="8" height="6" fill="#1f2937"/>
+        <circle cx="40" cy="82" r="9" fill="#1f2937"/><circle cx="40" cy="82" r="4" fill="#9ca3af"/>
+        <circle cx="82" cy="82" r="9" fill="#1f2937"/><circle cx="82" cy="82" r="4" fill="#9ca3af"/>`);
     case 'truck':
-      return svg(`<rect x="12" y="46" width="56" height="36" rx="4" fill="#60a5fa" stroke="${stroke}" stroke-width="3"/>
-        <path d="M68 54 H92 L104 66 V84 H68 Z" fill="#fbbf24" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>
-        <circle cx="34" cy="86" r="8" fill="#1f2937"/><circle cx="86" cy="86" r="8" fill="#1f2937"/>`);
+      // 卡车：车头 + 大货车厢 + 多个轮子
+      return svg(`<rect x="12" y="42" width="58" height="38" rx="4" fill="#60a5fa" stroke="${stroke}" stroke-width="3"/>
+        <path d="M70 52 L90 52 Q96 52 98 58 L104 70 L104 80 L70 80 Z" fill="#fbbf24" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>
+        <rect x="74" y="56" width="14" height="12" rx="2" fill="#bae6fd" stroke="${stroke}" stroke-width="2"/>
+        <circle cx="30" cy="82" r="8" fill="#1f2937"/><circle cx="30" cy="82" r="4" fill="#9ca3af"/>
+        <circle cx="54" cy="82" r="8" fill="#1f2937"/><circle cx="54" cy="82" r="4" fill="#9ca3af"/>
+        <circle cx="88" cy="82" r="8" fill="#1f2937"/><circle cx="88" cy="82" r="4" fill="#9ca3af"/>`);
     case 'ambulance':
-      return svg(`<rect x="12" y="44" width="60" height="38" rx="4" fill="#fff" stroke="${stroke}" stroke-width="3"/>
-        <path d="M72 52 H94 L104 64 V82 H72 Z" fill="#ef4444" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>
-        <rect x="34" y="54" width="14" height="14" fill="#ef4444"/><polygon points="41,54 38,60 44,60 36,68 40,62 44,62" fill="#fff"/>
-        <circle cx="32" cy="84" r="7" fill="#1f2937"/><circle cx="88" cy="84" r="7" fill="#1f2937"/>`);
+      // 救护车：白色车身 + 红色十字 + 车头顶灯
+      return svg(`<rect x="12" y="44" width="60" height="38" rx="6" fill="#fff" stroke="${stroke}" stroke-width="3"/>
+        <path d="M72 52 L92 52 Q98 52 100 58 L106 70 L106 82 L72 82 Z" fill="#fff" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>
+        <rect x="76" y="56" width="12" height="10" rx="2" fill="#bae6fd" stroke="${stroke}" stroke-width="2"/>
+        <rect x="30" y="52" width="20" height="20" fill="#ef4444"/>
+        <rect x="36" y="46" width="8" height="32" fill="#ef4444"/>
+        <rect x="30" y="52" width="20" height="20" fill="#ef4444" stroke="${stroke}" stroke-width="2"/>
+        <rect x="52" y="36" width="16" height="8" rx="2" fill="#ef4444" stroke="${stroke}" stroke-width="2"/>
+        <circle cx="30" cy="84" r="8" fill="#1f2937"/><circle cx="30" cy="84" r="4" fill="#9ca3af"/>
+        <circle cx="88" cy="84" r="8" fill="#1f2937"/><circle cx="88" cy="84" r="4" fill="#9ca3af"/>`);
     case 'fire':
-      return svg(`<rect x="12" y="42" width="64" height="40" rx="4" fill="#ef4444" stroke="${stroke}" stroke-width="3"/>
-        <path d="M76 50 H98 L104 60 V82 H76 Z" fill="#fff" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>
-        <rect x="20" y="20" width="20" height="22" rx="2" fill="#fbbf24" stroke="${stroke}" stroke-width="2"/>
-        <circle cx="34" cy="84" r="7" fill="#1f2937"/><circle cx="90" cy="84" r="7" fill="#1f2937"/>`);
+      // 消防车：红色车身 + 车顶云梯 + 车轮
+      return svg(`<rect x="12" y="46" width="62" height="36" rx="4" fill="#ef4444" stroke="${stroke}" stroke-width="3"/>
+        <path d="M74 54 L94 54 Q100 54 102 60 L106 70 L106 82 L74 82 Z" fill="#dc2626" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>
+        <rect x="78" y="58" width="12" height="10" rx="2" fill="#bae6fd" stroke="${stroke}" stroke-width="2"/>
+        <rect x="14" y="26" width="56" height="10" rx="3" fill="#fbbf24" stroke="${stroke}" stroke-width="2"/>
+        <line x1="20" y1="26" x2="20" y2="36" stroke="${stroke}" stroke-width="2"/>
+        <line x1="32" y1="26" x2="32" y2="36" stroke="${stroke}" stroke-width="2"/>
+        <line x1="44" y1="26" x2="44" y2="36" stroke="${stroke}" stroke-width="2"/>
+        <line x1="56" y1="26" x2="56" y2="36" stroke="${stroke}" stroke-width="2"/>
+        <line x1="68" y1="26" x2="68" y2="36" stroke="${stroke}" stroke-width="2"/>
+        <circle cx="30" cy="84" r="8" fill="#1f2937"/><circle cx="30" cy="84" r="4" fill="#9ca3af"/>
+        <circle cx="56" cy="84" r="8" fill="#1f2937"/><circle cx="56" cy="84" r="4" fill="#9ca3af"/>
+        <circle cx="88" cy="84" r="8" fill="#1f2937"/><circle cx="88" cy="84" r="4" fill="#9ca3af"/>`);
     default: return svg(`<text x="60" y="68" text-anchor="middle" font-size="40">?</text>`);
   }
 }

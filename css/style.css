@@ -2333,7 +2333,8 @@ textarea.form-control { min-height: 60px; resize: vertical; }
   text-align: center;
   margin: 8px 0 var(--space-2);
 }
-.reading-text { font-size: 22px; font-weight: 700; color: #1B5E20; line-height: 2; letter-spacing: 1px; }
+.reading-text { font-size: 22px; font-weight: 700; color: #1B5E20; line-height: 2; letter-spacing: 1px; text-align: left; }
+.reading-text + .reading-text { margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(46,204,113,0.35); }
 .reading-meta { font-size: 12px; color: var(--muted); margin-top: 8px; }
 .reading-section {
   background: var(--bg-soft);

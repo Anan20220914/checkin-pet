@@ -118,15 +118,23 @@ const PALETTES = {
 };
 
 /**
- * 自然界动物宠物表 — 仅保留小狗
+ * 自然界动物宠物表 — 5种狗（不同稀有度）
  */
 export const SPECIES_BY_RARITY = {
   common: [
+    { species: '中华田园犬', emoji: '🐕', img: 'pets/chinese-rural-dog.png', attack: '扑咬', motion: 'lunge', palette: PALETTES.dog },
     { species: '小狗', emoji: '🐶', img: 'pets/dog.png', attack: '扑咬', motion: 'lunge', palette: PALETTES.dog },
   ],
-  rare: [],
-  epic: [],
-  legendary: [],
+  rare: [
+    { species: '西高地', emoji: '🐩', img: 'pets/westie.png', attack: '撕咬', motion: 'bite', palette: PALETTES.dog },
+  ],
+  epic: [
+    { species: '边牧', emoji: '🐕‍🦺', img: 'pets/border-collie.png', attack: '猛冲', motion: 'charge', palette: PALETTES.dog },
+    { species: '德牧', emoji: '🦮', img: 'pets/german-shepherd.png', attack: '重击', motion: 'slam', palette: PALETTES.dog },
+  ],
+  legendary: [
+    { species: '萨摩耶', emoji: '🤍', img: 'pets/samoyed.png', attack: '微笑冲击', motion: 'smile', palette: PALETTES.dog },
+  ],
 };
 
 /** 按物种取完整动物定义（含 img/attack/motion/palette） */
@@ -933,6 +941,37 @@ export function migrate(data) {
     }
 
     data.meta.dataFix_20260828 = true;
+  }
+
+  // ============================================================
+  // v61 数据修复：给现有用户送 4 只新狗（边牧/西高地/德牧/萨摩耶）
+  // ============================================================
+  if (!data.meta.dataFix_20260924_dogs) {
+    const todayStr61 = todayKey();
+    const newDogs = [
+      { species: '中华田园犬', rarity: 'common', base: RARITY_TABLE.common },
+      { species: '西高地', rarity: 'rare', base: RARITY_TABLE.rare },
+      { species: '边牧', rarity: 'epic', base: RARITY_TABLE.epic },
+      { species: '萨摩耶', rarity: 'legendary', base: RARITY_TABLE.legendary },
+    ];
+    if (!data.pets) data.pets = [];
+    for (const d of newDogs) {
+      // 如果已经有这个物种的宠物，跳过
+      if (data.pets.some(p => p.species === d.species)) continue;
+      data.pets.push({
+        id: uid('p'), species: d.species, emoji: findSpecies(d.species)?.emoji || '🐕', rarity: d.rarity,
+        hp: d.base.hp, atk: d.base.atk, def: d.base.def,
+        active: false, currentHp: d.base.hp, buffs: [], equippedWeapon: null,
+        obtainedAt: todayStr61, colorIdx: 0, accessories: [], bgColor: '#fff8e7', sticker: null,
+        mood: 'happy', feedCount: 15, growthStage: 'mature',
+      });
+      // 加入图鉴
+      if (!data.pokedex) data.pokedex = { pets: [], monsters: [] };
+      if (!data.pokedex.pets) data.pokedex.pets = [];
+      if (!data.pokedex.pets.includes(d.species)) data.pokedex.pets.push(d.species);
+    }
+    data.stats.maxPets = Math.max(data.stats.maxPets || 1, data.pets.length);
+    data.meta.dataFix_20260924_dogs = true;
   }
 
   return data;

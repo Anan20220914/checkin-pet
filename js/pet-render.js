@@ -16,9 +16,13 @@ export function renderPet(pet, size = '', moodOverride = null, showWeapon = fals
   const mood = moodOverride || pet.mood || 'happy';
   const growthStage = pet.growthStage || 'mature';
 
-  // 获取宠物 SVG
+  // 获取宠物 SVG 或 PNG
   let svgContent = '';
-  if (sp && sp.species === '小狗') {
+  let useImg = false;
+  if (sp && sp.img && sp.species !== '小狗') {
+    // 新PNG宠物（5种狗）
+    useImg = true;
+  } else if (sp && sp.species === '小狗') {
     svgContent = getPetSvg(pet.species, pet.bgColor, mood, growthStage);
   } else {
     svgContent = getPetSvg(pet.species, pet.bgColor);
@@ -48,7 +52,7 @@ export function renderPet(pet, size = '', moodOverride = null, showWeapon = fals
     weaponLayer = `<div class="weapon-layer sword"><span>${wIcon}</span></div>`;
   }
 
-  // 成长阶段指示器
+  // 成长阶段指示器（仅旧版SVG小狗显示）
   let growthIndicator = '';
   if (pet.species === '小狗') {
     const stages = [
@@ -63,8 +67,13 @@ export function renderPet(pet, size = '', moodOverride = null, showWeapon = fals
     </div>`;
   }
 
+  // 宠物主体内容：PNG 或 SVG
+  const petMainContent = useImg
+    ? `<img src="${sp.img}" class="pet-png-img" alt="${pet.species}" style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none'">`
+    : svgContent;
+
   return `<div class="pet-img-wrap pet-armed">
-    <div class="pet-svg ${sizeCls}" style="background:${pet.bgColor || '#fff8e7'}">${svgContent}</div>
+    <div class="pet-svg ${sizeCls}" style="background:${pet.bgColor || '#fff8e7'}">${petMainContent}</div>
     ${stickerLayer}
     ${layers}
     ${weaponLayer}

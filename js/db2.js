@@ -118,22 +118,26 @@ const PALETTES = {
 };
 
 /**
- * 自然界动物宠物表 — 5种狗（不同稀有度）
+ * 自然界动物宠物表 — 5种狗（不同稀有度+能力）
  */
 export const SPECIES_BY_RARITY = {
   common: [
-    { species: '中华田园犬', emoji: '🐕', img: 'pets/chinese-rural-dog.png', attack: '扑咬', motion: 'lunge', palette: PALETTES.dog },
-    { species: '小狗', emoji: '🐶', img: 'pets/dog.png', attack: '扑咬', motion: 'lunge', palette: PALETTES.dog },
+    { species: '中华田园犬', emoji: '🐕', img: 'pets/chinese-rural-dog.png', attack: '扑咬', motion: 'lunge', palette: PALETTES.dog,
+      ability: '忠诚守护：每回合自动回复 2 点 HP' },
   ],
   rare: [
-    { species: '西高地', emoji: '🐩', img: 'pets/westie.png', attack: '撕咬', motion: 'bite', palette: PALETTES.dog },
+    { species: '西高地', emoji: '🐩', img: 'pets/westie.png', attack: '撕咬', motion: 'bite', palette: PALETTES.dog,
+      ability: '警觉：受到攻击时 20% 概率闪避' },
   ],
   epic: [
-    { species: '边牧', emoji: '🐕‍🦺', img: 'pets/border-collie.png', attack: '猛冲', motion: 'charge', palette: PALETTES.dog },
-    { species: '德牧', emoji: '🦮', img: 'pets/german-shepherd.png', attack: '重击', motion: 'slam', palette: PALETTES.dog },
+    { species: '边牧', emoji: '🐕‍🦺', img: 'pets/border-collie.png', attack: '猛冲', motion: 'charge', palette: PALETTES.dog,
+      ability: '敏捷：每回合先攻，攻击 +2' },
+    { species: '德牧', emoji: '🦮', img: 'pets/german-shepherd.png', attack: '重击', motion: 'slam', palette: PALETTES.dog,
+      ability: '威猛：攻击时 25% 概率造成双倍伤害' },
   ],
   legendary: [
-    { species: '萨摩耶', emoji: '🤍', img: 'pets/samoyed.png', attack: '微笑冲击', motion: 'smile', palette: PALETTES.dog },
+    { species: '萨摩耶', emoji: '🤍', img: 'pets/samoyed.png', attack: '微笑冲击', motion: 'smile', palette: PALETTES.dog,
+      ability: '微笑治愈：每回合结束自动回复 5 点 HP，免疫负面状态' },
   ],
 };
 
@@ -972,6 +976,23 @@ export function migrate(data) {
     }
     data.stats.maxPets = Math.max(data.stats.maxPets || 1, data.pets.length);
     data.meta.dataFix_20260924_dogs = true;
+  }
+
+  // v62 数据修复：把现有"小狗"替换为"中华田园犬"（去掉默认小狗）
+  if (!data.meta.dataFix_20260924_replace) {
+    for (const p of (data.pets || [])) {
+      if (p.species === '小狗') {
+        p.species = '中华田园犬';
+        p.emoji = '🐕';
+        // 更新图鉴
+        if (data.pokedex && data.pokedex.pets) {
+          const idx = data.pokedex.pets.indexOf('小狗');
+          if (idx >= 0) data.pokedex.pets[idx] = '中华田园犬';
+          if (!data.pokedex.pets.includes('中华田园犬')) data.pokedex.pets.push('中华田园犬');
+        }
+      }
+    }
+    data.meta.dataFix_20260924_replace = true;
   }
 
   return data;

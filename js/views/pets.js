@@ -56,15 +56,6 @@ export function renderPets() {
     `;
   }
 
-  // 蛋
-  if (s.inventory.eggs.length) {
-    html += `<div class="section-title">🥚 待孵化（${s.inventory.eggs.length}）</div>`;
-    for (const egg of s.inventory.eggs) {
-      const left = fmtCountdown(egg.hatchAt);
-      html += `<div class="egg-card"><div class="egg-emoji">🥚</div><div class="pm-body"><div class="pm-name">神秘蛋</div><div class="pm-sub">${left}</div></div></div>`;
-    }
-  }
-
   // 小伙伴模块
   const companions = s.companions || { owned: COMPANIONS.map(c => c.id), active: null };
   const activeComp = companions.active ? findCompanion(companions.active) : null;
@@ -124,14 +115,6 @@ export function renderPets() {
     toast('已取消小伙伴');
     renderPets();
   });
-}
-
-function fmtCountdown(targetMs) {
-  const diff = targetMs - Date.now();
-  if (diff <= 0) return '可孵化';
-  const h = Math.floor(diff / 3600000);
-  const m = Math.floor((diff % 3600000) / 60000);
-  return h > 0 ? `${h}小时${m}分钟后` : `${m}分钟后`;
 }
 
 function openCustomize() {

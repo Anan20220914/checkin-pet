@@ -1,6 +1,6 @@
 // db.js — 默认数据、商店物品表、宠物物种表、词库常量、初始数据构造
 
-import { todayKey } from './utils.js';
+import { todayKey, uid } from './utils.js';
 import { CHINESE_STAGES, ALL_ENGLISH_WORDS } from './vocab-data.js';
 
 /* ============================================================
@@ -949,7 +949,7 @@ export function migrate(data) {
   // ============================================================
   // v61 数据修复：给现有用户送 4 只新狗（边牧/西高地/德牧/萨摩耶）
   // ============================================================
-  if (!data.meta.dataFix_20260924_dogs) {
+  if (!data.meta.dataFix_20260924_dogs_v2) {
     const todayStr61 = todayKey();
     const newDogs = [
       { species: '中华田园犬', rarity: 'common', base: RARITY_TABLE.common },
@@ -974,11 +974,11 @@ export function migrate(data) {
       if (!data.pokedex.pets.includes(d.species)) data.pokedex.pets.push(d.species);
     }
     data.stats.maxPets = Math.max(data.stats.maxPets || 1, data.pets.length);
-    data.meta.dataFix_20260924_dogs = true;
+    data.meta.dataFix_20260924_dogs_v2 = true;
   }
 
   // v62 数据修复：把现有"小狗"替换为"中华田园犬"（去掉默认小狗）
-  if (!data.meta.dataFix_20260924_replace) {
+  if (!data.meta.dataFix_20260924_replace_v2) {
     for (const p of (data.pets || [])) {
       if (p.species === '小狗') {
         p.species = '中华田园犬';
@@ -991,7 +991,7 @@ export function migrate(data) {
         }
       }
     }
-    data.meta.dataFix_20260924_replace = true;
+    data.meta.dataFix_20260924_replace_v2 = true;
   }
 
   return data;

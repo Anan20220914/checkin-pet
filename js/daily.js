@@ -12,9 +12,6 @@ export function ensureToday() {
   const s = getState();
   const today = todayKey();
 
-  // 蛋孵化检查（无论是否换天都可能到期）
-  tryHatch();
-
   // 今日 checkin 不存在则建空
   update(st => {
     if (!st.checkins[today]) {
@@ -49,58 +46,6 @@ export function dailyRegen() {
         pet.currentHp = Math.min(pet.hp, pet.currentHp + regen);
       }
     }
-  });
-}
-
-/** 蛋孵化检查：hatchAt <= now 的蛋移到 pets[] */
-/** 孵化稀有度根据"最近决斗情况"定：连胜越高孵出越稀有 */
-export function tryHatch() {
-  // 先读当前决斗连胜，决定本次孵化稀有度
-  const s0 = getState();
-  const streak = s0.stats.streak || 0;
-  const lastBattle = (s0.battles || []).slice(-1)[0];
-  const lastWin = lastBattle ? lastBattle.result === 'win' : false;
-  const rarity = rarityByDuel(streak, lastWin);
-
-  update(st => {
-    const now = Date.now();
-    const remaining = [];
-    for (const egg of st.inventory.eggs) {
-      if (egg.hatchAt <= now) {
-        const species = weightedPick(SPECIES_BY_RARITY[rarity].map((sp, i) => ({ ...sp, weight: 1 })));
-        const base = RARITY_TABLE[rarity];
-        st.pets.push({
-          id: uid('p'), species: species.species, emoji: species.emoji, rarity,
-          hp: base.hp, atk: base.atk, def: base.def,
-          active: false, currentHp: base.hp, buffs: [], equippedWeapon: null,
-          obtainedAt: todayKey(), colorIdx: 0, accessories: [], bgColor: '#fff8e7', sticker: null,
-        });
-        if (!st.pokedex.pets.includes(species.species)) st.pokedex.pets.push(species.species);
-      } else {
-        remaining.push(egg);
-      }
-    }
-    st.inventory.eggs = remaining;
-    st.stats.maxPets = Math.max(st.stats.maxPets || 1, st.pets.length);
-  });
-}
-
-/** 根据决斗连胜+最近胜负定孵化稀有度 */
-function rarityByDuel(streak, lastWin) {
-  if (!lastWin) return 'common'; // 最近没赢 → 只孵普通
-  if (streak >= 10) return 'legendary'; // 连胜10+ → 传说
-  if (streak >= 6) return 'epic';       // 连胜6-9 → 史诗
-  if (streak >= 3) return 'rare';       // 连胜3-5 → 稀有
-  return 'common';                       // 连胜1-2 → 普通
-}
-
-/** 加新蛋（战斗掉落用） */
-export function addEgg(source = 'battle') {
-  update(st => {
-    st.inventory.eggs.push({
-      eggId: uid('e'), source,
-      hatchAt: Date.now() + EGG_HATCH_HOURS * 3600000,
-    });
   });
 }
 

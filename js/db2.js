@@ -949,12 +949,13 @@ export function migrate(data) {
   // ============================================================
   // v61 数据修复：给现有用户送 4 只新狗（边牧/西高地/德牧/萨摩耶）
   // ============================================================
-  if (!data.meta.dataFix_20260924_dogs_v2) {
+  if (!data.meta.dataFix_20260924_dogs_v3) {
     const todayStr61 = todayKey();
     const newDogs = [
       { species: '中华田园犬', rarity: 'common', base: RARITY_TABLE.common },
       { species: '西高地', rarity: 'rare', base: RARITY_TABLE.rare },
       { species: '边牧', rarity: 'epic', base: RARITY_TABLE.epic },
+      { species: '德牧', rarity: 'epic', base: RARITY_TABLE.epic },
       { species: '萨摩耶', rarity: 'legendary', base: RARITY_TABLE.legendary },
     ];
     if (!data.pets) data.pets = [];
@@ -974,11 +975,11 @@ export function migrate(data) {
       if (!data.pokedex.pets.includes(d.species)) data.pokedex.pets.push(d.species);
     }
     data.stats.maxPets = Math.max(data.stats.maxPets || 1, data.pets.length);
-    data.meta.dataFix_20260924_dogs_v2 = true;
+    data.meta.dataFix_20260924_dogs_v3 = true;
   }
 
   // v62 数据修复：把现有"小狗"替换为"中华田园犬"（去掉默认小狗）
-  if (!data.meta.dataFix_20260924_replace_v2) {
+  if (!data.meta.dataFix_20260924_replace_v3) {
     for (const p of (data.pets || [])) {
       if (p.species === '小狗') {
         p.species = '中华田园犬';
@@ -991,7 +992,7 @@ export function migrate(data) {
         }
       }
     }
-    data.meta.dataFix_20260924_replace_v2 = true;
+    data.meta.dataFix_20260924_replace_v3 = true;
   }
 
   return data;

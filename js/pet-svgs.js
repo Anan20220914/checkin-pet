@@ -88,128 +88,107 @@ ${tip}`;
 }
 
 /* =====================================================
- * 小狗：小宝 — 植物大战僵尸画风（粗线条+平涂+夸张呆萌）
+ * 小狗：小宝 — 纯PvZ僵尸画风（粗黑线+平涂+大眼白小瞳孔+呆傻）
  * =================================================== */
 
-function puppyBody(color = '#D4A05A') {
+function puppyBody(color = '#C8956C') {
   return `
-    <!-- 蓬松大尾巴（右上方翘起，粗线条） -->
-    <path d="M125 85 Q140 55 160 70 Q150 85 155 105 Q140 95 135 110 Q130 95 125 85 Z" fill="${color}" stroke="${STROKE}" stroke-width="4" stroke-linejoin="round"/>
-    <circle cx="160" cy="72" r="8" fill="#FFF8E7" stroke="${STROKE}" stroke-width="3"/>
+    <!-- 尾巴（粗黑线，简单翘起） -->
+    <path d="M125 90 L155 70 L150 100 Z" fill="${color}" stroke="#1a1a1a" stroke-width="5" stroke-linejoin="round"/>
+    <circle cx="155" cy="72" r="8" fill="#FFF8E7" stroke="#1a1a1a" stroke-width="3"/>
 
-    <!-- 左耳（僵尸风折耳：粗线条三角形，下垂贴头） -->
-    <path d="M45 60 L30 40 L35 75 L45 85 Z" fill="${color}" stroke="${STROKE}" stroke-width="4" stroke-linejoin="round"/>
-    <path d="M40 62 L34 52 L38 72 Z" fill="#E8C8A0" stroke="${STROKE}" stroke-width="2"/>
-    <!-- 右耳（僵尸风折耳：粗线条三角形，下垂贴头） -->
-    <path d="M155 60 L170 40 L165 75 L155 85 Z" fill="${color}" stroke="${STROKE}" stroke-width="4" stroke-linejoin="round"/>
-    <path d="M160 62 L166 52 L162 72 Z" fill="#E8C8A0" stroke="${STROKE}" stroke-width="2"/>
+    <!-- 左耳（PvZ风：粗黑线三角形，下垂） -->
+    <path d="M50 55 L35 35 L40 70 L50 80 Z" fill="${color}" stroke="#1a1a1a" stroke-width="5" stroke-linejoin="round"/>
+    <!-- 右耳 -->
+    <path d="M150 55 L165 35 L160 70 L150 80 Z" fill="${color}" stroke="#1a1a1a" stroke-width="5" stroke-linejoin="round"/>
 
-    <!-- 身体（圆头+短身，粗线条） -->
-    <ellipse cx="100" cy="115" rx="60" ry="52" fill="${color}" stroke="${STROKE}" stroke-width="4"/>
-    <!-- 肚皮浅色 -->
-    <ellipse cx="100" cy="128" rx="35" ry="28" fill="#FFF8E7" stroke="${STROKE}" stroke-width="3"/>
+    <!-- 身体（椭圆，粗黑线） -->
+    <ellipse cx="100" cy="120" rx="55" ry="50" fill="${color}" stroke="#1a1a1a" stroke-width="5"/>
+    <!-- 肚皮 -->
+    <ellipse cx="100" cy="132" rx="32" ry="26" fill="#FFF8E7" stroke="#1a1a1a" stroke-width="3"/>
 
-    <!-- 口鼻部（白色吻部，粗线条，突出） -->
-    <ellipse cx="100" cy="120" rx="26" ry="22" fill="#FFF8E7" stroke="${STROKE}" stroke-width="3"/>
-    <!-- 鼻头和鼻梁（粗） -->
-    <ellipse cx="100" cy="112" rx="8" ry="7" fill="#2a2a2a"/>
-    <line x1="100" y1="119" x2="100" y2="126" stroke="#2a2a2a" stroke-width="3" stroke-linecap="round"/>
+    <!-- 口鼻部（白色吻部，粗黑线） -->
+    <ellipse cx="100" cy="122" rx="24" ry="20" fill="#FFF8E7" stroke="#1a1a1a" stroke-width="4"/>
+    <!-- 鼻头和鼻梁 -->
+    <ellipse cx="100" cy="114" rx="7" ry="6" fill="#1a1a1a"/>
+    <line x1="100" y1="121" x2="100" y2="128" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"/>
 
-    <!-- 前爪（粗线条） -->
-    <ellipse cx="70" cy="160" rx="12" ry="9" fill="${color}" stroke="${STROKE}" stroke-width="4"/>
-    <ellipse cx="130" cy="160" rx="12" ry="9" fill="${color}" stroke="${STROKE}" stroke-width="4"/>
+    <!-- 前爪（粗黑线） -->
+    <ellipse cx="72" cy="162" rx="12" ry="9" fill="${color}" stroke="#1a1a1a" stroke-width="4"/>
+    <ellipse cx="128" cy="162" rx="12" ry="9" fill="${color}" stroke="#1a1a1a" stroke-width="4"/>
   `;
 }
 
-/* ---- 开心（僵尸风：大嘴歪牙吐舌） ---- */
-export function puppyHappySvg(color = '#D4A05A') {
+/* ---- 开心（PvZ风：大眼白小瞳孔，歪嘴笑，吐舌） ---- */
+export function puppyHappySvg(color = '#C8956C') {
   return svg(
     `${puppyBody(color)}
-    <!-- 腮红（粗线条） -->
-    <circle cx="62" cy="115" r="10" fill="#FFAB91" opacity="0.6" stroke="${STROKE}" stroke-width="2"/>
-    <circle cx="138" cy="115" r="10" fill="#FFAB91" opacity="0.6" stroke="${STROKE}" stroke-width="2"/>
-    <!-- 大眼睛（眼白多，瞳孔小，呆萌） -->
-    <circle cx="76" cy="92" r="16" fill="#fff" stroke="${STROKE}" stroke-width="4"/>
-    <circle cx="124" cy="92" r="16" fill="#fff" stroke="${STROKE}" stroke-width="4"/>
-    <circle cx="78" cy="94" r="7" fill="#2a2a2a"/>
-    <circle cx="126" cy="94" r="7" fill="#2a2a2a"/>
-    <circle cx="74" cy="90" r="4" fill="#fff"/>
-    <circle cx="122" cy="90" r="4" fill="#fff"/>
-    <!-- 开心大嘴（歪牙） -->
-    <path d="M82 132 Q100 145 118 132" fill="none" stroke="${STROKE}" stroke-width="4" stroke-linecap="round"/>
-    <path d="M88 136 L90 142 L94 138 Z" fill="#fff" stroke="${STROKE}" stroke-width="2"/>
-    <path d="M106 138 L110 144 L114 138 Z" fill="#fff" stroke="${STROKE}" stroke-width="2"/>
+    <!-- 大眼白小瞳孔（PvZ标志） -->
+    <circle cx="76" cy="95" r="18" fill="#fff" stroke="#1a1a1a" stroke-width="5"/>
+    <circle cx="124" cy="95" r="18" fill="#fff" stroke="#1a1a1a" stroke-width="5"/>
+    <circle cx="78" cy="97" r="6" fill="#1a1a1a"/>
+    <circle cx="126" cy="97" r="6" fill="#1a1a1a"/>
+    <!-- 歪嘴笑（一边高一边低） -->
+    <path d="M82 135 Q100 148 118 132" fill="none" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round"/>
     <!-- 吐舌头 -->
-    <ellipse cx="100" cy="146" rx="10" ry="12" fill="#FF7A9C" stroke="${STROKE}" stroke-width="3"/>
-    <line x1="100" y1="140" x2="100" y2="152" stroke="${STROKE}" stroke-width="2" stroke-linecap="round"/>`
+    <ellipse cx="100" cy="150" rx="10" ry="12" fill="#FF7A9C" stroke="#1a1a1a" stroke-width="3"/>
+    <line x1="100" y1="144" x2="100" y2="156" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>`
   );
 }
 
-/* ---- 困倦（僵尸风：半闭眼+大哈欠） ---- */
-export function puppySleepySvg(color = '#D4A05A') {
+/* ---- 困倦（PvZ风：半闭眼，大哈欠） ---- */
+export function puppySleepySvg(color = '#C8956C') {
   return svg(
     `${puppyBody(color)}
-    <circle cx="62" cy="115" r="10" fill="#FFAB91" opacity="0.4" stroke="${STROKE}" stroke-width="2"/>
-    <circle cx="138" cy="115" r="10" fill="#FFAB91" opacity="0.4" stroke="${STROKE}" stroke-width="2"/>
-    <!-- 半闭眼（僵尸风下垂眼） -->
-    <path d="M62 92 Q76 98 90 92" fill="none" stroke="${STROKE}" stroke-width="4" stroke-linecap="round"/>
-    <path d="M110 92 Q124 98 138 92" fill="none" stroke="${STROKE}" stroke-width="4" stroke-linecap="round"/>
-    <circle cx="76" cy="96" r="5" fill="#2a2a2a" opacity="0.5"/>
-    <circle cx="124" cy="96" r="5" fill="#2a2a2a" opacity="0.5"/>
+    <!-- 半闭眼（PvZ风下垂线） -->
+    <path d="M60 95 Q76 102 92 95" fill="none" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round"/>
+    <path d="M108 95 Q124 102 140 95" fill="none" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="76" cy="99" r="4" fill="#1a1a1a" opacity="0.4"/>
+    <circle cx="124" cy="99" r="4" fill="#1a1a1a" opacity="0.4"/>
     <!-- 大哈欠嘴 -->
-    <ellipse cx="100" cy="138" rx="14" ry="16" fill="#FF7A9C" stroke="${STROKE}" stroke-width="4"/>
-    <ellipse cx="100" cy="142" rx="8" ry="6" fill="#C62828"/>
+    <ellipse cx="100" cy="142" rx="14" ry="16" fill="#FF7A9C" stroke="#1a1a1a" stroke-width="4"/>
+    <ellipse cx="100" cy="146" rx="8" ry="6" fill="#C62828"/>
     <!-- Zzz -->
-    <text x="150" y="50" font-size="24" font-weight="bold" fill="${STROKE}" opacity="0.6">Zzz</text>`
+    <text x="150" y="50" font-size="24" font-weight="bold" fill="#1a1a1a" opacity="0.5">Zzz</text>`
   );
 }
 
-/* ---- 鼓励（僵尸风：握拳+坚定眼神） ---- */
-export function puppyCheerSvg(color = '#D4A05A') {
+/* ---- 鼓励（PvZ风：坚定大眼，握拳） ---- */
+export function puppyCheerSvg(color = '#C8956C') {
   return svg(
     `${puppyBody(color)}
-    <circle cx="62" cy="115" r="10" fill="#FFAB91" opacity="0.6" stroke="${STROKE}" stroke-width="2"/>
-    <circle cx="138" cy="115" r="10" fill="#FFAB91" opacity="0.6" stroke="${STROKE}" stroke-width="2"/>
-    <!-- 握拳的小手（粗线条） -->
-    <circle cx="38" cy="105" r="12" fill="${color}" stroke="${STROKE}" stroke-width="4"/>
-    <circle cx="162" cy="105" r="12" fill="${color}" stroke="${STROKE}" stroke-width="4"/>
-    <!-- 坚定大眼（瞳孔集中） -->
-    <circle cx="76" cy="92" r="16" fill="#fff" stroke="${STROKE}" stroke-width="4"/>
-    <circle cx="124" cy="92" r="16" fill="#fff" stroke="${STROKE}" stroke-width="4"/>
-    <circle cx="78" cy="94" r="8" fill="#2a2a2a"/>
-    <circle cx="126" cy="94" r="8" fill="#2a2a2a"/>
-    <circle cx="74" cy="90" r="4" fill="#fff"/>
-    <circle cx="122" cy="90" r="4" fill="#fff"/>
+    <!-- 握拳的小手 -->
+    <circle cx="36" cy="105" r="12" fill="${color}" stroke="#1a1a1a" stroke-width="4"/>
+    <circle cx="164" cy="105" r="12" fill="${color}" stroke="#1a1a1a" stroke-width="4"/>
+    <!-- 坚定大眼（眼白多，瞳孔集中） -->
+    <circle cx="76" cy="95" r="18" fill="#fff" stroke="#1a1a1a" stroke-width="5"/>
+    <circle cx="124" cy="95" r="18" fill="#fff" stroke="#1a1a1a" stroke-width="5"/>
+    <circle cx="78" cy="97" r="7" fill="#1a1a1a"/>
+    <circle cx="126" cy="97" r="7" fill="#1a1a1a"/>
     <!-- 坚定咧嘴 -->
-    <path d="M84 132 Q100 140 116 132" fill="none" stroke="${STROKE}" stroke-width="4" stroke-linecap="round"/>
+    <path d="M84 135 Q100 142 116 135" fill="none" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round"/>
     <!-- 闪光 -->
-    <path d="M45 40 L48 48 L56 50 L48 52 L45 60 L42 52 L34 50 L42 48 Z" fill="#FFD700" stroke="${STROKE}" stroke-width="2"/>`
+    <path d="M45 40 L48 48 L56 50 L48 52 L45 60 L42 52 L34 50 L42 48 Z" fill="#FFD700" stroke="#1a1a1a" stroke-width="2"/>`
   );
 }
 
-/* ---- 庆祝（僵尸风：星星眼+撒花） ---- */
-export function puppyCelebrateSvg(color = '#D4A05A') {
+/* ---- 庆祝（PvZ风：星星眼，撒花） ---- */
+export function puppyCelebrateSvg(color = '#C8956C') {
   return svg(
     `${puppyBody(color)}
-    <circle cx="62" cy="115" r="10" fill="#FFAB91" opacity="0.6" stroke="${STROKE}" stroke-width="2"/>
-    <circle cx="138" cy="115" r="10" fill="#FFAB91" opacity="0.6" stroke="${STROKE}" stroke-width="2"/>
     <!-- 星星眼 -->
-    <circle cx="76" cy="92" r="16" fill="#fff" stroke="${STROKE}" stroke-width="4"/>
-    <circle cx="124" cy="92" r="16" fill="#fff" stroke="${STROKE}" stroke-width="4"/>
-    <circle cx="76" cy="92" r="8" fill="#FFD700"/>
-    <circle cx="124" cy="92" r="8" fill="#FFD700"/>
-    <path d="M76 84 L78 90 L84 90 L79 94 L81 100 L76 96 L71 100 L73 94 L68 90 L74 90 Z" fill="#FFD700" stroke="${STROKE}" stroke-width="1.5"/>
-    <path d="M124 84 L126 90 L132 90 L127 94 L129 100 L124 96 L119 100 L121 94 L116 90 L122 90 Z" fill="#FFD700" stroke="${STROKE}" stroke-width="1.5"/>
+    <circle cx="76" cy="95" r="18" fill="#fff" stroke="#1a1a1a" stroke-width="5"/>
+    <circle cx="124" cy="95" r="18" fill="#fff" stroke="#1a1a1a" stroke-width="5"/>
+    <path d="M76 87 L78 93 L84 93 L79 97 L81 103 L76 99 L71 103 L73 97 L68 93 L74 93 Z" fill="#FFD700" stroke="#1a1a1a" stroke-width="2"/>
+    <path d="M124 87 L126 93 L132 93 L127 97 L129 103 L124 99 L119 103 L121 97 L116 93 L122 93 Z" fill="#FFD700" stroke="#1a1a1a" stroke-width="2"/>
     <!-- 开心大嘴 -->
-    <path d="M82 132 Q100 148 118 132" fill="none" stroke="${STROKE}" stroke-width="4" stroke-linecap="round"/>
-    <path d="M90 138 L92 144 L96 140 Z" fill="#fff" stroke="${STROKE}" stroke-width="2"/>
-    <path d="M104 140 L108 146 L112 140 Z" fill="#fff" stroke="${STROKE}" stroke-width="2"/>
+    <path d="M82 135 Q100 150 118 135" fill="none" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round"/>
     <!-- 撒花 -->
-    <circle cx="25" cy="50" r="5" fill="#FF8A80" stroke="${STROKE}" stroke-width="2"/>
-    <circle cx="175" cy="40" r="4" fill="#80CBC4" stroke="${STROKE}" stroke-width="2"/>
-    <circle cx="35" cy="30" r="6" fill="#FFD54F" stroke="${STROKE}" stroke-width="2"/>
-    <path d="M20 55 L22 61 L28 62 L23 66 L25 72 L20 68 L15 72 L17 66 L12 62 L18 61 Z" fill="#FF8A80" stroke="${STROKE}" stroke-width="1.5"/>
-    <path d="M170 45 L172 51 L178 52 L173 56 L175 62 L170 58 L165 62 L167 56 L162 52 L168 51 Z" fill="#80CBC4" stroke="${STROKE}" stroke-width="1.5"/>`
+    <circle cx="25" cy="50" r="5" fill="#FF8A80" stroke="#1a1a1a" stroke-width="2"/>
+    <circle cx="175" cy="40" r="4" fill="#80CBC4" stroke="#1a1a1a" stroke-width="2"/>
+    <circle cx="35" cy="30" r="6" fill="#FFD54F" stroke="#1a1a1a" stroke-width="2"/>
+    <path d="M20 55 L22 61 L28 62 L23 66 L25 72 L20 68 L15 72 L17 66 L12 62 L18 61 Z" fill="#FF8A80" stroke="#1a1a1a" stroke-width="1.5"/>
+    <path d="M170 45 L172 51 L178 52 L173 56 L175 62 L170 58 L165 62 L167 56 L162 52 L168 51 Z" fill="#80CBC4" stroke="#1a1a1a" stroke-width="1.5"/>`
   );
 }
 
@@ -217,86 +196,70 @@ export function puppyCelebrateSvg(color = '#D4A05A') {
  * 成长阶段 SVG（小狗不同体型）
  * =================================================== */
 
-/* 幼崽版（更小更圆，大眼，小折耳） */
-export function puppyBabySvg(color = '#D4A05A') {
+/* 幼崽版（更小更圆，大眼白小瞳孔） */
+export function puppyBabySvg(color = '#C8956C') {
   return svg(
-    `<!-- 幼崽身体（更圆更小，粗线条） -->
-    <ellipse cx="100" cy="120" rx="46" ry="44" fill="${color}" stroke="${STROKE}" stroke-width="4"/>
-    <ellipse cx="100" cy="130" rx="28" ry="24" fill="#FFF8E7" stroke="${STROKE}" stroke-width="3"/>
+    `<!-- 幼崽身体（粗黑线） -->
+    <ellipse cx="100" cy="122" rx="44" ry="42" fill="${color}" stroke="#1a1a1a" stroke-width="5"/>
+    <ellipse cx="100" cy="132" rx="26" ry="22" fill="#FFF8E7" stroke="#1a1a1a" stroke-width="3"/>
     <!-- 小折耳 -->
-    <path d="M55 72 L42 55 L48 85 L58 92 Z" fill="${color}" stroke="${STROKE}" stroke-width="4" stroke-linejoin="round"/>
-    <path d="M50 74 L46 66 L50 82 Z" fill="#E8C8A0" stroke="${STROKE}" stroke-width="2"/>
-    <path d="M145 72 L158 55 L152 85 L142 92 Z" fill="${color}" stroke="${STROKE}" stroke-width="4" stroke-linejoin="round"/>
-    <path d="M150 74 L154 66 L150 82 Z" fill="#E8C8A0" stroke="${STROKE}" stroke-width="2"/>
+    <path d="M55 70 L42 50 L48 82 L58 90 Z" fill="${color}" stroke="#1a1a1a" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M145 70 L158 50 L152 82 L142 90 Z" fill="${color}" stroke="#1a1a1a" stroke-width="5" stroke-linejoin="round"/>
     <!-- 口鼻部 -->
-    <ellipse cx="100" cy="124" rx="20" ry="17" fill="#FFF8E7" stroke="${STROKE}" stroke-width="3"/>
-    <ellipse cx="100" cy="117" rx="6" ry="5" fill="#2a2a2a"/>
-    <line x1="100" y1="123" x2="100" y2="129" stroke="#2a2a2a" stroke-width="2.5" stroke-linecap="round"/>
-    <!-- 超大眼（眼白多瞳孔小，呆萌） -->
-    <circle cx="76" cy="100" r="18" fill="#fff" stroke="${STROKE}" stroke-width="4"/>
-    <circle cx="124" cy="100" r="18" fill="#fff" stroke="${STROKE}" stroke-width="4"/>
-    <circle cx="78" cy="102" r="8" fill="#2a2a2a"/>
-    <circle cx="126" cy="102" r="8" fill="#2a2a2a"/>
-    <circle cx="74" cy="98" r="5" fill="#fff"/>
-    <circle cx="122" cy="98" r="5" fill="#fff"/>
-    <circle cx="62" cy="118" r="9" fill="#FFAB91" opacity="0.5" stroke="${STROKE}" stroke-width="2"/>
-    <circle cx="138" cy="118" r="9" fill="#FFAB91" opacity="0.5" stroke="${STROKE}" stroke-width="2"/>
+    <ellipse cx="100" cy="126" rx="20" ry="16" fill="#FFF8E7" stroke="#1a1a1a" stroke-width="4"/>
+    <ellipse cx="100" cy="119" rx="5" ry="4.5" fill="#1a1a1a"/>
+    <line x1="100" y1="125" x2="100" y2="131" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- 超大眼白小瞳孔（PvZ标志） -->
+    <circle cx="76" cy="100" r="20" fill="#fff" stroke="#1a1a1a" stroke-width="5"/>
+    <circle cx="124" cy="100" r="20" fill="#fff" stroke="#1a1a1a" stroke-width="5"/>
+    <circle cx="78" cy="102" r="7" fill="#1a1a1a"/>
+    <circle cx="126" cy="102" r="7" fill="#1a1a1a"/>
     <!-- 开心嘴 -->
-    <path d="M86 136 Q100 145 114 136" fill="none" stroke="${STROKE}" stroke-width="4" stroke-linecap="round"/>
+    <path d="M86 138 Q100 146 114 138" fill="none" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round"/>
     <!-- 小短尾巴 -->
-    <circle cx="148" cy="140" r="8" fill="${color}" stroke="${STROKE}" stroke-width="3"/>
-    <circle cx="151" cy="138" r="4" fill="#FFF8E7"/>`
+    <circle cx="148" cy="142" r="8" fill="${color}" stroke="#1a1a1a" stroke-width="3"/>
+    <circle cx="151" cy="140" r="4" fill="#FFF8E7"/>`
   );
 }
 
 /* 少年版（介于幼崽和成熟之间） */
-export function puppyTeenSvg(color = '#D4A05A') {
+export function puppyTeenSvg(color = '#C8956C') {
   return svg(
-    `<!-- 少年身体（粗线条） -->
-    <ellipse cx="100" cy="115" rx="54" ry="50" fill="${color}" stroke="${STROKE}" stroke-width="4"/>
-    <ellipse cx="100" cy="128" rx="32" ry="27" fill="#FFF8E7" stroke="${STROKE}" stroke-width="3"/>
+    `<!-- 少年身体（粗黑线） -->
+    <ellipse cx="100" cy="118" rx="50" ry="46" fill="${color}" stroke="#1a1a1a" stroke-width="5"/>
+    <ellipse cx="100" cy="130" rx="30" ry="25" fill="#FFF8E7" stroke="#1a1a1a" stroke-width="3"/>
     <!-- 折耳 -->
-    <path d="M48 65 L36 48 L42 80 L52 88 Z" fill="${color}" stroke="${STROKE}" stroke-width="4" stroke-linejoin="round"/>
-    <path d="M44 68 L40 60 L44 76 Z" fill="#E8C8A0" stroke="${STROKE}" stroke-width="2"/>
-    <path d="M152 65 L164 48 L158 80 L148 88 Z" fill="${color}" stroke="${STROKE}" stroke-width="4" stroke-linejoin="round"/>
-    <path d="M156 68 L160 60 L156 76 Z" fill="#E8C8A0" stroke="${STROKE}" stroke-width="2"/>
+    <path d="M48 62 L36 42 L42 76 L52 85 Z" fill="${color}" stroke="#1a1a1a" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M152 62 L164 42 L158 76 L148 85 Z" fill="${color}" stroke="#1a1a1a" stroke-width="5" stroke-linejoin="round"/>
     <!-- 口鼻部 -->
-    <ellipse cx="100" cy="120" rx="23" ry="19" fill="#FFF8E7" stroke="${STROKE}" stroke-width="3"/>
-    <ellipse cx="100" cy="113" rx="7" ry="6" fill="#2a2a2a"/>
-    <line x1="100" y1="120" x2="100" y2="127" stroke="#2a2a2a" stroke-width="2.5" stroke-linecap="round"/>
-    <!-- 大眼 -->
-    <circle cx="76" cy="96" r="17" fill="#fff" stroke="${STROKE}" stroke-width="4"/>
-    <circle cx="124" cy="96" r="17" fill="#fff" stroke="${STROKE}" stroke-width="4"/>
-    <circle cx="78" cy="98" r="7.5" fill="#2a2a2a"/>
-    <circle cx="126" cy="98" r="7.5" fill="#2a2a2a"/>
-    <circle cx="74" cy="94" r="4.5" fill="#fff"/>
-    <circle cx="122" cy="94" r="4.5" fill="#fff"/>
-    <circle cx="62" cy="116" r="10" fill="#FFAB91" opacity="0.5" stroke="${STROKE}" stroke-width="2"/>
-    <circle cx="138" cy="116" r="10" fill="#FFAB91" opacity="0.5" stroke="${STROKE}" stroke-width="2"/>
+    <ellipse cx="100" cy="122" rx="22" ry="18" fill="#FFF8E7" stroke="#1a1a1a" stroke-width="4"/>
+    <ellipse cx="100" cy="115" rx="6" ry="5" fill="#1a1a1a"/>
+    <line x1="100" y1="122" x2="100" y2="129" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- 大眼白小瞳孔 -->
+    <circle cx="76" cy="96" r="18" fill="#fff" stroke="#1a1a1a" stroke-width="5"/>
+    <circle cx="124" cy="96" r="18" fill="#fff" stroke="#1a1a1a" stroke-width="5"/>
+    <circle cx="78" cy="98" r="6.5" fill="#1a1a1a"/>
+    <circle cx="126" cy="98" r="6.5" fill="#1a1a1a"/>
     <!-- 微笑 -->
-    <path d="M86 132 Q100 140 114 132" fill="none" stroke="${STROKE}" stroke-width="4" stroke-linecap="round"/>
+    <path d="M86 134 Q100 142 114 134" fill="none" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round"/>
     <!-- 蓬松尾巴 -->
-    <path d="M130 145 Q150 155 158 130" fill="none" stroke="${STROKE}" stroke-width="4" stroke-linecap="round"/>
-    <circle cx="160" cy="128" r="6" fill="#FFF8E7" stroke="${STROKE}" stroke-width="2"/>
+    <path d="M130 148 Q150 158 158 132" fill="none" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="160" cy="130" r="6" fill="#FFF8E7" stroke="#1a1a1a" stroke-width="2"/>
     <!-- 前爪 -->
-    <ellipse cx="72" cy="158" rx="10" ry="8" fill="${color}" stroke="${STROKE}" stroke-width="4"/>
-    <ellipse cx="128" cy="158" rx="10" ry="8" fill="${color}" stroke="${STROKE}" stroke-width="4"/>`
+    <ellipse cx="72" cy="158" rx="10" ry="8" fill="${color}" stroke="#1a1a1a" stroke-width="4"/>
+    <ellipse cx="128" cy="158" rx="10" ry="8" fill="${color}" stroke="#1a1a1a" stroke-width="4"/>`
   );
 }
 
 /* 成熟版（完整版，等同于上面的小狗） */
-export function puppyMatureSvg(color = '#D4A05A') {
+export function puppyMatureSvg(color = '#C8956C') {
   return svg(
     `${puppyBody(color)}
-    <circle cx="62" cy="115" r="10" fill="#FFAB91" opacity="0.6" stroke="${STROKE}" stroke-width="2"/>
-    <circle cx="138" cy="115" r="10" fill="#FFAB91" opacity="0.6" stroke="${STROKE}" stroke-width="2"/>
-    <circle cx="76" cy="92" r="16" fill="#fff" stroke="${STROKE}" stroke-width="4"/>
-    <circle cx="124" cy="92" r="16" fill="#fff" stroke="${STROKE}" stroke-width="4"/>
-    <circle cx="78" cy="94" r="7" fill="#2a2a2a"/>
-    <circle cx="126" cy="94" r="7" fill="#2a2a2a"/>
-    <circle cx="74" cy="90" r="4" fill="#fff"/>
-    <circle cx="122" cy="90" r="4" fill="#fff"/>
-    <path d="M86 128 Q100 136 114 128" fill="none" stroke="${STROKE}" stroke-width="4" stroke-linecap="round"/>`
+    <circle cx="76" cy="95" r="18" fill="#fff" stroke="#1a1a1a" stroke-width="5"/>
+    <circle cx="124" cy="95" r="18" fill="#fff" stroke="#1a1a1a" stroke-width="5"/>
+    <circle cx="78" cy="97" r="7" fill="#1a1a1a"/>
+    <circle cx="126" cy="97" r="7" fill="#1a1a1a"/>
+    <path d="M86 132 Q100 140 114 132" fill="none" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round"/>`
   );
 }
 
@@ -648,7 +611,7 @@ const GROWTH_MAP = {
 };
 
 const DEFAULT_COLORS = {
-  '小狗': '#D4A05A', 'puppy': '#D4A05A', 'dog': '#D4A05A',
+  '小狗': '#C8956C', 'puppy': '#C8956C', 'dog': '#C8956C',
   '小猫': '#b8b8c8', 'cat': '#b8b8c8',
   '兔子': '#f5e6d3', 'rabbit': '#f5e6d3',
   '仓鼠': '#e0a96d', 'hamster': '#e0a96d',

@@ -3,7 +3,7 @@
 import { getState, update } from './store.js';
 import { todayKey, uid, chance, randInt, weightedPick } from './utils.js';
 import {
-  MONSTER_TIERS, RARITY_TABLE, SPECIES_BY_RARITY, DAILY_REGEN_RATIO, EGG_HATCH_HOURS,
+  MONSTER_TIERS, RARITY_TABLE, SPECIES_BY_RARITY, DAILY_REGEN_RATIO,
 } from './db2.js';
 import { generateMonsterFor } from './battle.js';
 

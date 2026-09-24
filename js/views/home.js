@@ -6,8 +6,7 @@ import { getActivePet, petStats } from '../pets.js';
 import { MONSTER_TIERS, STUDY_MIN_FOR_DUEL, RARITY_NAME, RARITY_COLOR, COMPANIONS, findCompanion } from '../db2.js';
 import { esc, relDay, todayKey, dayOffset } from '../utils.js';
 import { showOverlay, closeOverlay, switchTab, toast, celebrate, celebrateWithCake } from '../app.js';
-import { runBattle, winReward, shouldDropEgg } from '../battle.js';
-import { addEgg } from '../daily.js';
+import { runBattle, winReward } from '../battle.js';
 import { renderPet, attackMotion } from '../pet-render.js';
 import { openPetDex } from './pets.js';
 import { getAchievementList, markSeen } from '../achievements.js';
@@ -601,11 +600,11 @@ function playBattleAnimation(pet, monster, result, onDone) {
 function settleDailyDuel(pet, monster, result) {
   const s = getState();
   const won = result.result === 'win';
-  let reward = 0, dropEgg = false;
+  let reward = 0;
   update(st => {
     const p = st.pets.find(pp => pp.id === pet.id);
     if (p) { p.currentHp = Math.max(won ? 1 : 0, result.petHpLeft); p.buffs = []; }
-    st.battles.push({ id: 'b_' + Date.now().toString(36), date: monster.date, petId: pet.id, monsterId: monster.id, result: result.result, turns: result.turns, dropEgg: false, earnedPoints: 0, attempt: 1 });
+    st.battles.push({ id: 'b_' + Date.now().toString(36), date: monster.date, petId: pet.id, monsterId: monster.id, result: result.result, turns: result.turns, earnedPoints: 0, attempt: 1 });
     st.stats.totalBattles++;
     if (!st.pokedex.monsters.includes(monster.tier)) st.pokedex.monsters.push(monster.tier);
     if (won) {
@@ -613,18 +612,15 @@ function settleDailyDuel(pet, monster, result) {
       if (st.stats.streak > st.stats.bestStreak) st.stats.bestStreak = st.stats.streak;
       st.stats.totalWins++;
       reward = winReward(monster.tier);
-      dropEgg = shouldDropEgg(monster.tier, st.stats.noDropStreak || 0);
-      st.stats.noDropStreak = dropEgg ? 0 : (st.stats.noDropStreak || 0) + 1;
     } else { st.stats.streak = 0; reward = 2; }
     st.wallet.points += reward; st.wallet.totalEarned += reward;
   });
-  if (dropEgg) addEgg('daily-duel');
 
   if (won) {
-    recordDailyDuel({ result: result.result, dropEgg, reward, monsterId: monster.id });
+    recordDailyDuel({ result: result.result, reward, monsterId: monster.id });
     const streakAfter = getState().stats.streak;
     closeOverlay();
-    const sub = dropEgg ? `获得 ${reward} 金币 · 掉落宠物蛋🥚` : `获得 ${reward} 金币 · 连胜 ${streakAfter}`;
+    const sub = `获得 ${reward} 金币 · 连胜 ${streakAfter}`;
     celebrateWithCake('决斗胜利', sub);
     setTimeout(()=>switchTab('home'),100);
     return;
@@ -633,7 +629,6 @@ function settleDailyDuel(pet, monster, result) {
   // 失败：记录怪物剩余状态，允许二次决斗
   recordDailyDuel({
     result: 'lose',
-    dropEgg: false,
     reward,
     monsterId: monster.id,
     retryState: {
@@ -665,32 +660,29 @@ function settleDailyDuel(pet, monster, result) {
 /** 二次决斗结算 */
 function settleDailyDuelRetry(pet, weakenedMonster, result) {
   const won = result.result === 'win';
-  let reward = 0, dropEgg = false;
+  let reward = 0;
   update(st => {
     const p = st.pets.find(pp => pp.id === pet.id);
     if (p) { p.currentHp = Math.max(won ? 1 : 0, result.petHpLeft); p.buffs = []; }
-    st.battles.push({ id: 'b_' + Date.now().toString(36), date: weakenedMonster.date, petId: pet.id, monsterId: weakenedMonster.id, result: result.result, turns: result.turns, dropEgg: false, earnedPoints: 0, attempt: 2 });
+    st.battles.push({ id: 'b_' + Date.now().toString(36), date: weakenedMonster.date, petId: pet.id, monsterId: weakenedMonster.id, result: result.result, turns: result.turns, earnedPoints: 0, attempt: 2 });
     st.stats.totalBattles++;
     if (won) {
       st.stats.streak = (st.stats.streak || 0) + 1;
       if (st.stats.streak > st.stats.bestStreak) st.stats.bestStreak = st.stats.streak;
       st.stats.totalWins++;
       reward = winReward(weakenedMonster.tier);
-      dropEgg = shouldDropEgg(weakenedMonster.tier, st.stats.noDropStreak || 0);
-      st.stats.noDropStreak = dropEgg ? 0 : (st.stats.noDropStreak || 0) + 1;
     } else { st.stats.streak = 0; reward = 2; }
     st.wallet.points += reward; st.wallet.totalEarned += reward;
   });
-  if (dropEgg) addEgg('daily-duel');
 
   // 二次决斗后清除重试状态（无论胜负，不再有第三次机会）
   clearDuelRetryState();
-  recordDailyDuel({ result: result.result, dropEgg, reward, monsterId: weakenedMonster.id });
+  recordDailyDuel({ result: result.result, reward, monsterId: weakenedMonster.id });
 
   if (won) {
     const streakAfter = getState().stats.streak;
     closeOverlay();
-    const sub = dropEgg ? `获得 ${reward} 金币 · 掉落宠物蛋🥚` : `获得 ${reward} 金币 · 连胜 ${streakAfter}`;
+    const sub = `获得 ${reward} 金币 · 连胜 ${streakAfter}`;
     celebrateWithCake('二次决斗胜利', sub);
     setTimeout(()=>switchTab('home'),100);
     return;

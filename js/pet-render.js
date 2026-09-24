@@ -19,8 +19,9 @@ export function renderPet(pet, size = '', moodOverride = null, showWeapon = fals
   // 获取宠物 SVG 或 PNG
   let svgContent = '';
   let useImg = false;
-  if (sp && sp.img && sp.species !== '小狗') {
-    // 新PNG宠物（5种狗）
+  // 5种新狗（PNG图片）：中华田园犬、西高地、边牧、德牧、萨摩耶
+  const pngDogs = ['中华田园犬', '西高地', '边牧', '德牧', '萨摩耶'];
+  if (sp && pngDogs.includes(sp.species)) {
     useImg = true;
   } else if (sp && sp.species === '小狗') {
     svgContent = getPetSvg(pet.species, pet.bgColor, mood, growthStage);

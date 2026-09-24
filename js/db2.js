@@ -194,7 +194,6 @@ export const RARITY_COLOR = { common: '#9ca3af', rare: '#3b82f6', epic: '#a855f7
 
 export const BATTLE_MIN_TASKS = 3;   // 学习模块完成数达此即可发起每日对决
 export const STUDY_MIN_FOR_DUEL = 3; // 发起每日对决需完成的学习模块数（识字/英语/数学/开口 中至少3个）
-export const EGG_HATCH_HOURS = 24;
 export const DAILY_REGEN_RATIO = 0.1;
 
 /* ============================================================

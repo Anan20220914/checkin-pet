@@ -161,14 +161,6 @@ export function runBattle(pet, monster, companionId = null) {
   return { log, result: 'win', petHpLeft: Math.max(0, petHp), monsterHpLeft: 0, usedRevive, turns: MAX_TURNS };
 }
 
-/** 判定每日对决是否掉蛋：按 tier 掉率 + pity（连续2次未掉则必掉） */
-export function shouldDropEgg(tier, noDropStreak) {
-  const tierCfg = MONSTER_TIERS.find(t => t.tier === tier);
-  if (!tierCfg) return false;
-  if (noDropStreak >= 2) return true;
-  return chance(tierCfg.drop);
-}
-
 /** 每日对决胜利奖励积分（按 tier） */
 export function winReward(tier) {
   const tierCfg = MONSTER_TIERS.find(t => t.tier === tier);

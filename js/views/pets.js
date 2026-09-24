@@ -243,25 +243,44 @@ function openEquipMenu() {
   });
 }
 
-/** 宠物图鉴 */
+/** 宠物图鉴（5种狗+能力+点击切换出战） */
 export function openPetDex() {
   try {
-  const unlocked = (getState().pokedex?.pets || []);
-  const ownedSpecies = (getState().pets || []).map(p => p.species);
+  const s = getState();
+  const ownedSpecies = (s.pets || []).map(p => p.species);
+  const activePet = getActivePet();
   let grid = '<div class="dex-grid">';
   for (const [rarity, list] of Object.entries(SPECIES_BY_RARITY)) {
     for (const sp of list) {
-      const has = unlocked.includes(sp.species) || ownedSpecies.includes(sp.species);
-      grid += `<div class="dex-cell ${has ? '' : 'locked'}" data-sp="${sp.species}">
-        <div class="dex-emoji" style="font-size:40px">${has ? sp.emoji : '🐾'}</div>
+      const has = ownedSpecies.includes(sp.species);
+      const isActive = activePet && activePet.species === sp.species;
+      const ability = sp.ability || '暂无特殊能力';
+      grid += `<div class="dex-cell ${has ? '' : 'locked'} ${isActive ? 'active' : ''}" data-sp="${sp.species}" data-has="${has}">
+        <div class="dex-img">${has ? `<img src="${sp.img}" style="width:56px;height:56px;object-fit:contain" onerror="this.style.display='none'">` : '<div style="font-size:40px">🐾</div>'}</div>
         <div class="dex-name">${has ? sp.species : '？？'}</div>
+        ${has ? `<div class="dex-ability" style="font-size:10px;color:var(--text-soft);margin-top:2px;line-height:1.2">${ability}</div>` : ''}
+        ${has ? `<div class="dex-status" style="font-size:10px;margin-top:4px;font-weight:700;color:${isActive ? 'var(--primary)' : 'var(--text-soft)'}">${isActive ? '出战中' : '点击出战'}</div>` : ''}
       </div>`;
     }
   }
   grid += '</div>';
-  const html = `<h2>📖 宠物图鉴</h2><div class="desc">已解锁 ${unlocked.length} / ${totalSpecies()} 种</div>${grid}<button class="btn secondary block" id="close" style="margin-top:12px">关闭</button>`;
+  const html = `<h2>📖 宠物图鉴</h2><div class="desc">已收集 ${ownedSpecies.length} / ${totalSpecies()} 种狗 · 点击切换出战</div>${grid}<button class="btn secondary block" id="close" style="margin-top:12px">关闭</button>`;
   showOverlay(html, {
-    onMount: c => { c.querySelector('#close').onclick = closeOverlay; },
+    onMount: c => {
+      c.querySelector('#close').onclick = closeOverlay;
+      c.querySelectorAll('.dex-cell:not(.locked)').forEach(cell => {
+        cell.onclick = () => {
+          const species = cell.dataset.sp;
+          const pet = (getState().pets || []).find(p => p.species === species);
+          if (pet) {
+            switchActive(pet.id);
+            toast(`已切换 ${species} 出战！`);
+            closeOverlay();
+            renderPets();
+          }
+        };
+      });
+    },
   });
   } catch(e) { console.error('[openPetDex]', e); alert('图鉴错误: '+e.message); }
 }
